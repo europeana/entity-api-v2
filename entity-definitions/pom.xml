@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>entity-api</artifactId>
+		<groupId>eu.europeana.entity</groupId>
+		<version>${version.entityApi}</version>
+	</parent>
+
+	<artifactId>entity-definitions</artifactId>
+	<name>Europeana Entity Collection - Definitions</name>
+	<organization>
+		<name>Europeana Foundation + AIT</name>
+	</organization>
+	
+	<dependencies>
+		
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-definitions</artifactId>
+			<version>${version.commonsApi}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.europeana.corelib</groupId>
+					<artifactId>corelib-definitions</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mongodb</groupId>
+					<artifactId>mongo-java-driver</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- Other -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<!-- 
+			<version>${version.commonsLang3}</version>
+			 -->
+		</dependency>
+	</dependencies>
+</project>

@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<artifactId>entity-solr</artifactId>
+	<name>Europeana Entity Collection - Solr index management </name>
+	<organization>
+		<name>Europeana Foundation + AIT</name>
+	</organization>
+	<url>http://www.europeanalabs.eu</url>
+	
+	<parent>
+		<artifactId>entity-api</artifactId>
+		<groupId>eu.europeana.entity</groupId>
+		<version>${version.entityApi}</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	
+	
+	<dependencies>
+		<dependency>
+			<groupId>eu.europeana.entity</groupId>
+			<artifactId>entity-definitions</artifactId>
+			<version>${version.entityApi}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<!-- 
+			<version>${version.javax.annotation}</version>
+			 -->
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<!--  
+			<version>${version.apacheSolr}</version>
+			-->
+			<exclusions>
+				<exclusion>
+					<artifactId>wstx-asl</artifactId>
+					<groupId>org.codehaus.woodstox</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-search</artifactId>
+			<version>${version.commonsApi}</version>
+			<exclusions>
+			<exclusion>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			
+			</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<!-- 
+			<version>${version.spring}</version>
+			 -->
+		</dependency>
+		
+         <dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<!-- 
+			<version>${version.jackson}</version>
+			 -->
+		</dependency>
+		
+		<!-- Other -->
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+					<artifactId>android-json</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<scope>test</scope>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<!-- 
+			<version>${version.spring}</version>
+			 -->
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<!-- 
+			<version>${version.junit}</version>
+			 -->
+			<scope>test</scope>
+		</dependency>
+        		
+	</dependencies>
+	
+</project>

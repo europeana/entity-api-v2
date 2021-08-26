@@ -1,0 +1,14 @@
+**/.project
+**/.classpath
+**/.settings/
+**.classpath
+**.log
+**/target/
+
+#properties files
+**/entity-solr.properties
+
+
+#IntelliJ project files
+.idea
+*.iml

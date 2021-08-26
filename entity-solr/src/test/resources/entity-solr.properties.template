@@ -1,0 +1,6 @@
+entity.suggester.snippets=10
+entity.solr.timeout=60000
+entity.solr.facetLimit=750
+entity.solr.url=
+entity.solr.zookeeper.url=
+entity.solr.collection=
