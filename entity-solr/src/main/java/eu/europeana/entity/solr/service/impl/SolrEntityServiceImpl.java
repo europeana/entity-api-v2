@@ -23,7 +23,8 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.SimpleOrderedMap;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
@@ -43,11 +44,11 @@ import eu.europeana.entity.solr.model.vocabulary.SuggestionFields;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.web.model.view.EntityPreview;
 
-@Component(EntitySolrConfig.ENTITY_SOLR_SERVICE)
+@Service(EntitySolrConfig.ENTITY_SOLR_SERVICE)
 public class SolrEntityServiceImpl extends BaseEntityService implements SolrEntityService {
 
-    @Resource
-    SolrClient solrServer;
+    @Resource(name = EntitySolrConfig.ENTITY_SOLR_CLIENT)
+    SolrClient solrClient;
 
     @Resource
     EntitySolrConfig entitySolrConfig;
@@ -56,8 +57,8 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 
     private final Logger log = LogManager.getLogger(getClass());
 
-    public void setSolrServer(SolrClient solrServer) {
-	this.solrServer = solrServer;
+    public void setSolrServer(SolrClient solrClient) {
+	this.solrClient = solrClient;
     }
 
     public void setEntityConfiguration(EntitySolrConfig entitySolrConfig) {
@@ -90,7 +91,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	 * Query the server
 	 */
 	try {
-	    QueryResponse rsp = solrServer.query(query);
+	    QueryResponse rsp = solrClient.query(query);
 
 	    Class<? extends Entity> concreteClass = null;
 	    // String entityType = getTypeFromEntityId(entityId);
@@ -122,7 +123,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	try {
 	    getLogger().debug("invoke suggest handler: " + SolrEntityService.HANDLER_SELECT);
 	    getLogger().debug("search query: " + query);
-	    QueryResponse rsp = solrServer.query(query);
+	    QueryResponse rsp = solrClient.query(query);
 	    res = buildResultSet(rsp, outLanguage);
 	    getLogger().debug("search obj res size: " + res.getResultSize());
 	} catch (RemoteSolrException e) {
@@ -196,7 +197,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	try {
 	    getLogger().debug("invoke select handler: " + SolrEntityService.HANDLER_SELECT);
 	    getLogger().debug("suggest text: " + text);
-	    QueryResponse rsp = solrServer.query(solrQuery);
+	    QueryResponse rsp = solrClient.query(solrQuery);
 
 	    res = buildSuggestionSet(text, rsp, requestedLanguages, rows);
 	    getLogger().debug("search obj res size: " + res.getResultSize());
@@ -424,7 +425,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	query.addField(ConceptSolrFields.ID);
 
 	try {
-	    QueryResponse rsp = solrServer.query(query);
+	    QueryResponse rsp = solrClient.query(query);
 	    SolrDocumentList docs = rsp.getResults();
 
 	    if (docs.getNumFound() == 0)
@@ -446,29 +447,29 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     }
 
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * eu.europeana.entity.solr.service.SolrEntityService#delete(java.lang.String)
-     */
-    @Override
-    public void delete(String entityUrl) throws EntityServiceException {
-	try {
-	    getLogger().debug("delete concept scheme with ID: " + entityUrl);
-	    UpdateResponse rsp = solrServer.deleteById(entityUrl);
-	    getLogger().trace("delete response: " + rsp.toString());
-	    solrServer.commit();
-	} catch (SolrServerException ex) {
-	    throw new EntityServiceException(
-		    "Unexpected solr server exception occured when deleting concept scheme for: " + entityUrl, ex);
-	} catch (IOException ex) {
-	    throw new EntityServiceException(
-		    "Unexpected IO exception occured when deleting concept scheme for: " + entityUrl, ex);
-	} catch (Throwable th) {
-	    throw new EntityServiceException(
-		    "Unexpected exception occured when deleting concept scheme for: " + entityUrl, th);
-	}
-    }
+//    /*
+//     * (non-Javadoc)
+//     * 
+//     * @see
+//     * eu.europeana.entity.solr.service.SolrEntityService#delete(java.lang.String)
+//     */
+//    @Override
+//    public void delete(String entityUrl) throws EntityServiceException {
+//	try {
+//	    getLogger().debug("delete concept scheme with ID: " + entityUrl);
+//	    UpdateResponse rsp = solrClient.deleteById(entityUrl);
+//	    getLogger().trace("delete response: " + rsp.toString());
+//	    solrClient.commit();
+//	} catch (SolrServerException ex) {
+//	    throw new EntityServiceException(
+//		    "Unexpected solr server exception occured when deleting concept scheme for: " + entityUrl, ex);
+//	} catch (IOException ex) {
+//	    throw new EntityServiceException(
+//		    "Unexpected IO exception occured when deleting concept scheme for: " + entityUrl, ex);
+//	} catch (Throwable th) {
+//	    throw new EntityServiceException(
+//		    "Unexpected exception occured when deleting concept scheme for: " + entityUrl, th);
+//	}
+//    }
 
 }

@@ -7,7 +7,6 @@ public interface WebEntityConstants extends WebEntityFields {
     public static final String PAR_CHAR = "?";
 
     public static final String PATH_PARAM_TYPE = "type";
-    public static final String PATH_PARAM_NAMESPACE = "namespace";
     public static final String PATH_PARAM_IDENTIFIER = "identifier";
 
     public static final String QUERY_PARAM_TYPE = "type";

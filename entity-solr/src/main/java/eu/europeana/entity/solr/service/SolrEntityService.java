@@ -89,11 +89,11 @@ public interface SolrEntityService {
 	 */
 	public String searchByCoref(String uri) throws EntityRetrievalException;
 	
-	/**
-	 * @param entityUrl
-	 * @throws EntityServiceException
-	 */
-	public void delete(String entityUrl) throws EntityServiceException;
+//	/**
+//	 * @param entityUrl
+//	 * @throws EntityServiceException
+//	 */
+//	public void delete(String entityUrl) throws EntityServiceException;
 
 
 }
