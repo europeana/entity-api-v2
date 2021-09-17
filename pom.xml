@@ -13,16 +13,22 @@
 
 	<repositories>
 		<repository>
-			<id>libs-release-local</id>
+			<id>libs-release</id>
 			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
 		</repository>
 		<repository>
-			<id>libs-snapshots-local</id>
+			<id>libs-snapshots</id>
 			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
-
+		<repository>
+			<id>repo1-cache</id>
+			<name>repo1-cache</name>
+			<url>http://artifactory.eanadev.org/artifactory/repo1-cache/</url>
+		</repository>
+		
+		<!-- 
 		<repository>
 			<id>central</id>
 			<url>http://central.maven.org/maven2/</url>
@@ -30,6 +36,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		 -->
 	</repositories>
 
 
