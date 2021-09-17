@@ -38,6 +38,8 @@
 		<module>entity-utils</module>
 		<module>entity-solr</module>
 		<module>entity-web</module>
+		<module>entity-stats</module>
+
 	</modules>
 
 	<dependencyManagement>
