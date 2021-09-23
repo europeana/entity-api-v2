@@ -2,14 +2,14 @@ package eu.europeana.entity.stats.service;
 
 import eu.europeana.api.commons.definitions.search.FacetFieldView;
 import eu.europeana.api.commons.definitions.search.Query;
+import eu.europeana.api.commons.definitions.statistics.entity.EntitiesPerLanguage;
+import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
+import eu.europeana.api.commons.definitions.statistics.entity.EntityStats;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
 import eu.europeana.entity.solr.config.EntitySolrConfig;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.solr.service.impl.EntityQueryBuilder;
 import eu.europeana.entity.stats.exception.UsageStatsException;
-import eu.europeana.entity.stats.model.EntitiesPerLanguage;
-import eu.europeana.entity.stats.model.EntityStats;
-import eu.europeana.entity.stats.model.Metric;
 import eu.europeana.entity.stats.vocabulary.UsageStatsFields;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +42,7 @@ public class UsageStatsService {
      *
      * @param metric
      */
-    public void getStatsForLang(Metric metric) throws UsageStatsException {
+    public void getStatsForLang(EntityMetric metric) throws UsageStatsException {
        // for total entities : query=*&profile=facets&facet=type&pageSize=0
        EntityStats entityTotal = getFacetsResults(buildSearchQuery(UsageStatsFields.QUERY_ALL, UsageStatsFields.FACET));
        if (entityTotal == null) {

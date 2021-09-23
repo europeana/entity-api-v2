@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import eu.europeana.entity.stats.model.Metric;
+import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.entity.stats.service.UsageStatsService;
 import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
 import eu.europeana.entity.web.jsonld.JsonLdSerializer;
@@ -128,7 +128,7 @@ public abstract class BaseRest extends BaseRestController {
 	return serializer.serialize(profileVal);
     }
 
-	protected String serializeMetricView(Metric metricData) throws EntityApiRuntimeException {
+	protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
 		return jsonLdSerializer.serializeMetric(metricData);
 	}
     /**

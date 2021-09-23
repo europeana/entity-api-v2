@@ -2,8 +2,8 @@ package eu.europeana.entity.web.jsonld;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.entity.app.AppConfigConstants;
-import eu.europeana.entity.stats.model.Metric;
 import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class JsonLdSerializer {
         mapper.setDateFormat(df);
     }
 
-    public String serializeMetric(Metric metric) throws EntityApiRuntimeException {
+    public String serializeMetric(EntityMetric metric) throws EntityApiRuntimeException {
         try {
             return mapper.writer().writeValueAsString(metric);
         } catch (JsonProcessingException e) {
