@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
+import eu.europeana.entity.stats.service.UsageStatsService;
+import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
+import eu.europeana.entity.web.jsonld.JsonLdSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,9 +65,14 @@ public abstract class BaseRest extends BaseRestController {
     
     @Resource(name = AppConfigConstants.BEAN_XML_SERIALIZER)
     EntityXmlSerializer entityXmlSerializer;
-    
-    
-    Logger logger = LogManager.getLogger(getClass());
+
+	@Resource(name = AppConfigConstants.BEAN_EM_JSONLD_SERIALIZER)
+	JsonLdSerializer jsonLdSerializer;
+
+	@Resource(name = AppConfigConstants.BEAN_USAGE_SERVICE)
+	private UsageStatsService usageStatsService ;
+
+	Logger logger = LogManager.getLogger(getClass());
 
     Pattern pattern = null;
 
@@ -82,7 +91,15 @@ public abstract class BaseRest extends BaseRestController {
 	this.entityService = entityService;
     }
 
-    public Logger getLogger() {
+	public void setUsageStatsService(UsageStatsService usageStatsService) {
+		this.usageStatsService = usageStatsService;
+	}
+
+	public UsageStatsService getUsageStatsService() {
+		return usageStatsService;
+	}
+
+	public Logger getLogger() {
 	return logger;
     }
 
@@ -111,6 +128,9 @@ public abstract class BaseRest extends BaseRestController {
 	return serializer.serialize(profileVal);
     }
 
+	protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
+		return jsonLdSerializer.serializeMetric(metricData);
+	}
     /**
      * This method verifies if the provided scope parameter is a valid one
      * 

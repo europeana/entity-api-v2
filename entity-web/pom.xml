@@ -59,6 +59,11 @@
 		</dependency>
 		 -->
 
+		<dependency>
+			<groupId>eu.europeana.entity</groupId>
+			<artifactId>entity-stats</artifactId>
+			<version>${version.entityApi}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.entity</groupId>
