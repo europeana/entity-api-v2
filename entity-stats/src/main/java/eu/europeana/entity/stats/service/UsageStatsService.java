@@ -43,8 +43,11 @@ public class UsageStatsService {
      * @param metric
      */
     public void getStatsForLang(EntityMetric metric) throws UsageStatsException {
-       // for total entities : query=*&profile=facets&facet=type&pageSize=0
+       // 1) for total entities per type : query=*&profile=facets&facet=type&pageSize=0
        EntityStats entityTotal = getFacetsResults(buildSearchQuery(UsageStatsFields.QUERY_ALL, UsageStatsFields.FACET));
+       metric.setEntitiesPerType(entityTotal);
+
+       // 2) get entities per language in percentages
        if (entityTotal == null) {
            throw new UsageStatsException(" There are no entities present for facet=type. No stats will be generated");
        }
@@ -57,7 +60,7 @@ public class UsageStatsService {
                 LOG.error("No stats found for lang {} in entity api", lang);
             }
         }
-        metric.setEntities(entitiesPerLanguageList);
+        metric.setEntitiesPerLanguages(entitiesPerLanguageList);
     }
 
     /**
