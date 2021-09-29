@@ -39,7 +39,7 @@ public class EntityApp extends SpringBootServletInitializer {
                     System.getenv("CF_INSTANCE_IP"));
 
         // Activate socks proxy (if your application requires it)
-        EntitySocksProxyActivator.activate(new SocksProxyConfig("entitymanagement.properties", "entitymanagement.user.properties"));
+        EntitySocksProxyActivator.activate(new SocksProxyConfig("entity.properties", "entity.user.properties"));
 
         SpringApplication.run(EntityApp.class, args);
     }
