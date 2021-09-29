@@ -14,8 +14,12 @@ europeana.apikey.serviceurl=
 authorization.api.name=
 
 #Socks proxy configuration. If provided it will be used for all http connections (e.g. solr.entity.url)
-# Url Format: socks://username:password@socks_proxy_server:1080 
-socks.proxy.url =
+# Socks proxy
+socks.enabled=false
+socks.host=
+socks.port=
+socks.user=
+socks.password=
 
 # ========  SOLR access config - see entity-solr.properties.template =====
 entity.suggester.snippets=10
