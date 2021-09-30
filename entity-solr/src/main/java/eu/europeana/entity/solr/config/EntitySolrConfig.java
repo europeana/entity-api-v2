@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,8 +60,14 @@ public class EntitySolrConfig {
     }
 
     private SolrClient initSolrClient() {
-        HttpSolrClient.Builder builder = new HttpSolrClient.Builder();
-        return builder.withBaseSolrUrl(solrUrl).withConnectionTimeout(solrTimeout).build();
+        if(solrUrl.contains(",")) {
+            LBHttpSolrClient.Builder builder = new LBHttpSolrClient.Builder();
+            return builder.withBaseSolrUrls(solrUrl.split(",")).withConnectionTimeout(solrTimeout).build();    
+        }else {
+            HttpSolrClient.Builder builder = new HttpSolrClient.Builder();
+            return builder.withBaseSolrUrl(solrUrl).withConnectionTimeout(solrTimeout).build();
+        }
+        
     }
 
     private SolrClient initSolrCloudClient() {
