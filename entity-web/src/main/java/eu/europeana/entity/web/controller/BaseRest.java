@@ -129,7 +129,7 @@ public abstract class BaseRest extends BaseRestController {
     }
 
 	protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
-		return jsonLdSerializer.serializeMetric(metricData);
+		return jsonLdSerializer.serializeToJson(metricData);
 	}
     /**
      * This method verifies if the provided scope parameter is a valid one

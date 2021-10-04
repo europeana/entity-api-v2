@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Controller
-@Api(tags = "Discovery API")
+@Api(tags = "Usage Statistics API")
 @SwaggerSelect
 public class UsageStatsController extends BaseRest {
 

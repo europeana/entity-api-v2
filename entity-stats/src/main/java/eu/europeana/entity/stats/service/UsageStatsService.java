@@ -6,6 +6,7 @@ import eu.europeana.api.commons.definitions.statistics.entity.EntitiesPerLanguag
 import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons.definitions.statistics.entity.EntityStats;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
+import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.solr.config.EntitySolrConfig;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.solr.service.impl.EntityQueryBuilder;
@@ -106,19 +107,19 @@ public class UsageStatsService {
             // fetch the first facet result view
             Map<String, Long> map = facets.get(0).getValueCountMap();
             for (Map.Entry<String, Long> entry : map.entrySet()) {
-                if(entry.getKey().equals("Agent")) {
+                if(entry.getKey().equals(EntityTypes.Agent.getInternalType())) {
                     entityStats.setAgents(entry.getValue());
                 }
-                if(entry.getKey().equals("Concept")) {
+                if(entry.getKey().equals(EntityTypes.Concept.getInternalType())) {
                     entityStats.setConcepts(entry.getValue());
                 }
-                if(entry.getKey().equals("Place")) {
+                if(entry.getKey().equals(EntityTypes.Place.getInternalType())) {
                     entityStats.setPlaces(entry.getValue());
                 }
-                if(entry.getKey().equals("Timespan")) {
+                if(entry.getKey().equals(EntityTypes.Timespan.getInternalType())) {
                     entityStats.setTimespans(entry.getValue());
                 }
-                if(entry.getKey().equals("Organization")) {
+                if(entry.getKey().equals(EntityTypes.Organization.getInternalType())) {
                     entityStats.setOrganisations(entry.getValue());
                 }
             }
@@ -128,6 +129,14 @@ public class UsageStatsService {
         return null;
     }
 
+    /**
+     *
+     * @param entityPerLanguage entity value per language
+     * @param entitystatsTotal entity values per type
+     * @param entities  the final calculated percentages values are being set here.
+     *
+     * @throws UsageStatsException
+     */
     private static void calculatePercentageValues(EntityStats entityPerLanguage, EntityStats entitystatsTotal, EntitiesPerLanguage entities) throws UsageStatsException {
        entities.setTimespans(getPercentage(entityPerLanguage.getTimespans(), entitystatsTotal.getTimespans()));
        entities.setPlaces(getPercentage(entityPerLanguage.getPlaces(), entitystatsTotal.getPlaces()));
@@ -137,10 +146,20 @@ public class UsageStatsService {
        entities.setTotal(getPercentage(entityPerLanguage.getTotal(), entitystatsTotal.getTotal()));
     }
 
-    private static float getPercentage(float value, float total) throws UsageStatsException {
+    /**
+     * Calculates percentage :
+     * example : count : 25 entities for language 'en' for type 'Agent'
+     *           totalCount : 100 entities for type 'Agent'
+     * @param count value of the entity per language and per type
+     * @param totalCount total entity value per type
+     *
+     * @return
+     * @throws UsageStatsException
+     */
+    private static float getPercentage(float count, float totalCount) throws UsageStatsException {
       try {
-          if (total != 0.0) {
-              return (value / total) * 100;
+          if (totalCount > 0) {
+              return (count / totalCount) * 100;
           }
         } catch (Exception e) {
             throw new UsageStatsException("Error calculating the percentage values." +e.getMessage());
