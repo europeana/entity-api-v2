@@ -7,7 +7,7 @@
 
 #properties files
 **/entity-solr.properties
-
+**/entity.properties
 
 #IntelliJ project files
 .idea
