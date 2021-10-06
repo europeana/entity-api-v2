@@ -2,7 +2,6 @@ package eu.europeana.entity.web.jsonld;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.entity.app.AppConfigConstants;
 import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
 import org.springframework.stereotype.Component;
@@ -22,11 +21,11 @@ public class JsonLdSerializer {
         mapper.setDateFormat(df);
     }
 
-    public String serializeMetric(EntityMetric metric) throws EntityApiRuntimeException {
+    public String serializeToJson(Object object) throws EntityApiRuntimeException {
         try {
-            return mapper.writer().writeValueAsString(metric);
+            return mapper.writer().writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new EntityApiRuntimeException("Unexpected exception occurred when serializing metric!",e);
+            throw new EntityApiRuntimeException("Unexpected exception occurred when serializing!",e);
         }
     }
 }
