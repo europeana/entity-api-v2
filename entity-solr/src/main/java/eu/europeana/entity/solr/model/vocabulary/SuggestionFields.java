@@ -10,7 +10,7 @@ public interface SuggestionFields {
 	public static final String SUFFIX_FUZZY = "_fuzzy";
 	public static final String PREFIX_SUGGEST_ENTITY = "suggestEntity";
 	
-	public static final String FILTER_IN_EUROPEANA = "in_europeana";
+	public static final String FILTER_EUROPEANA = "europeana";
 	
 	public static final String TERM = "term";
 	public static final String PAYLOAD = "payload";
