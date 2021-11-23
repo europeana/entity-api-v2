@@ -57,7 +57,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	    boolean suggest) {
 
 	if (hasScopeEuropeana(scope))
-	    query.addFilterQuery("suggest_filters:" + SuggestionFields.FILTER_IN_EUROPEANA);
+	    query.addFilterQuery("suggest_filters:" + SuggestionFields.FILTER_EUROPEANA);
 
 	String typeCondition = buildEntityTypeCondition(entityTypes);
 	if (typeCondition != null)
@@ -70,7 +70,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	String entityTypeFilter = buildEntityTypeCondition(entityTypes);
 
 	// build scopeFilter
-	String scopeFilter = hasScopeEuropeana(scope) ? SuggestionFields.FILTER_IN_EUROPEANA : null;
+	String scopeFilter = hasScopeEuropeana(scope) ? SuggestionFields.FILTER_EUROPEANA : null;
 
 	// add filters to query
 	String filter = null;
