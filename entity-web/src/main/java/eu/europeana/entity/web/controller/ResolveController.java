@@ -142,8 +142,7 @@ public class ResolveController extends BaseRest {
 	
 	
 	@ApiOperation(value = "Performs a lookup for the entity in all 4 datasets", nickname = "resolveEntity", response = java.lang.Void.class)
-	@RequestMapping(value = {"/entity/resolve"}, method = RequestMethod.GET,
-			produces = { HttpHeaders.CONTENT_TYPE_JSON_UTF8})
+	@RequestMapping(value = {"/entity/resolve"}, method = RequestMethod.GET)
 	public ResponseEntity<String> resolveEntity(
 			@RequestParam(value = CommonApiConstants.PARAM_WSKEY, required=false) String wskey,
 			@RequestParam(value = WebEntityConstants.QUERY_PARAM_URI) String uri,
