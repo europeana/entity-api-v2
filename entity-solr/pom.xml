@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.entity</groupId>
-			<artifactId>entity-definitions</artifactId>
+			<artifactId>entity-common</artifactId>
 			<version>${version.entityApi}</version>
 		</dependency>
 		
