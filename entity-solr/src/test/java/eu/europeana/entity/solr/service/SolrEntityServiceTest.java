@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.api.commons.definitions.search.impl.QueryImpl;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Agent;
 import eu.europeana.entity.definitions.model.Entity;
@@ -44,7 +45,7 @@ public class SolrEntityServiceTest {
 			"preferredLabel: {de=Leszek Możdżer, en=Leszek Możdżer, fr=Leszek Możdżer}, entityId: http://data.europeana.eu/agent/base/145487\n" + 
 			"preferredLabel: {de=Mozi, en=Mozi, fr=Mozi}], facetFields=null, resultSize=10, searchTime=0]";
 	
-	@Resource(name = EntitySolrConfig.ENTITY_SOLR_SERVICE)
+	@Resource(name = AppConfigConstants.ENTITY_SOLR_SERVICE)
 	SolrEntityService solrEntityService;
 
 	private final Logger log = LogManager.getLogger(getClass());

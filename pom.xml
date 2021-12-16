@@ -42,6 +42,7 @@
 
 	<modules>
 		<module>entity-definitions</module>
+		<module>entity-common</module>
 		<module>entity-utils</module>
 		<module>entity-solr</module>
 		<module>entity-web</module>

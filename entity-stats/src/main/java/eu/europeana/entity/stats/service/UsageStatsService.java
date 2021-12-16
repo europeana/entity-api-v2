@@ -1,26 +1,28 @@
 package eu.europeana.entity.stats.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+
 import eu.europeana.api.commons.definitions.search.FacetFieldView;
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.statistics.entity.EntitiesPerLanguage;
 import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons.definitions.statistics.entity.EntityStats;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
-import eu.europeana.entity.solr.config.EntitySolrConfig;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.solr.service.impl.EntityQueryBuilder;
 import eu.europeana.entity.stats.exception.UsageStatsException;
 import eu.europeana.entity.stats.vocabulary.UsageStatsFields;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Usage Statistics Service class
@@ -31,7 +33,7 @@ import java.util.Map;
 @Service(UsageStatsFields.BEAN_USAGE_SERVICE)
 public class UsageStatsService {
 
-    @Resource(name = EntitySolrConfig.ENTITY_SOLR_SERVICE)
+    @Resource(name = AppConfigConstants.ENTITY_SOLR_SERVICE)
     SolrEntityService solrEntityService;
 
     private static final Logger LOG = LogManager.getLogger(UsageStatsService.class);
