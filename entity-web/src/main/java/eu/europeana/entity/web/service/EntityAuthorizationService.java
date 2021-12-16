@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
-import eu.europeana.entity.app.AppConfigConstants;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.model.vocabulary.UserRoles;
 
