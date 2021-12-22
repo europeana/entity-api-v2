@@ -118,7 +118,7 @@ public class UsageStatsService {
                 if(entry.getKey().equals(EntityTypes.Place.getInternalType())) {
                     entityStats.setPlaces(entry.getValue());
                 }
-                if(entry.getKey().equals(EntityTypes.Timespan.getInternalType())) {
+                if(entry.getKey().equals(EntityTypes.TimeSpan.getInternalType())) {
                     entityStats.setTimespans(entry.getValue());
                 }
                 if(entry.getKey().equals(EntityTypes.Organization.getInternalType())) {

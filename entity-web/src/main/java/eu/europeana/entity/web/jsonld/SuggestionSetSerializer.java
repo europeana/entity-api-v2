@@ -197,8 +197,8 @@ public class SuggestionSetSerializer extends JsonLd {
 		putPlaceSpecificProperties((PlacePreview) entityPreview, entityPreviewPropValue);
 		break;
 
-	    case Timespan:
-		putTimespanSpecificProperties((TimeSpanPreview) entityPreview, entityPreviewPropValue);
+	    case TimeSpan:
+		putTimeSpanSpecificProperties((TimeSpanPreview) entityPreview, entityPreviewPropValue);
 		break;
 	    
 	    default:
@@ -211,7 +211,7 @@ public class SuggestionSetSerializer extends JsonLd {
 	return entityPreviewPropValue;
     }
 
-    private void putTimespanSpecificProperties(TimeSpanPreview entityPreview,
+    private void putTimeSpanSpecificProperties(TimeSpanPreview entityPreview,
 	    JsonLdPropertyValue entityPreviewPropValue) {
 	if (entityPreview.getBegin() != null)
 	    entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.BEGIN, entityPreview.getBegin()));

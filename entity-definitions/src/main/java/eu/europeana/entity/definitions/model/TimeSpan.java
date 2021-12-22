@@ -1,6 +1,6 @@
 package eu.europeana.entity.definitions.model;
 
-public interface Timespan extends Entity {
+public interface TimeSpan extends Entity {
 
     void setIsNextInSequence(String[] isNextInSequence);
 

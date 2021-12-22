@@ -6,11 +6,11 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.beans.Field;
 
-import eu.europeana.entity.definitions.model.Timespan;
-import eu.europeana.entity.definitions.model.impl.BaseTimespan;
+import eu.europeana.entity.definitions.model.TimeSpan;
+import eu.europeana.entity.definitions.model.impl.BaseTimeSpan;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 
-public class SolrTimespanImpl extends BaseTimespan implements Timespan {
+public class SolrTimeSpanImpl extends BaseTimeSpan implements TimeSpan {
 
     // COMMON FIELDS
     // Need to annotate concept fields as well as this class doesn't extend the

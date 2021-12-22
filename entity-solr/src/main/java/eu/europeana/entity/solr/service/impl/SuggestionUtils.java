@@ -267,8 +267,8 @@ public class SuggestionUtils {
 		case Place:
 			putPlaceSpecificProperties((PlacePreview) preview, payloadNode, preferredLanguages);
 			break;
-		case Timespan:
-			putTimespanSpecificProperties((TimeSpanPreview) preview, payloadNode);
+		case TimeSpan:
+			putTimeSpanSpecificProperties((TimeSpanPreview) preview, payloadNode);
 			break;
 		default:
 			break;
@@ -360,7 +360,7 @@ public class SuggestionUtils {
 		}
 	}
 
-	private void putTimespanSpecificProperties(TimeSpanPreview preview, JsonNode payloadNode) {
+	private void putTimeSpanSpecificProperties(TimeSpanPreview preview, JsonNode payloadNode) {
 		JsonNode propertyNode = payloadNode.get(SuggestionFields.TIME_SPAN_START);
 
 		if (propertyNode != null)
