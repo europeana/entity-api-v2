@@ -13,14 +13,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 
+import eu.europeana.entity.config.AppConfigConstants;
+
 @Configuration
 @PropertySources({ @PropertySource(value = "classpath:entity.properties", ignoreResourceNotFound = true),
         @PropertySource(value = "classpath:entity-solr.properties", ignoreResourceNotFound = true) })
 public class EntitySolrConfig {
 
-    public static final String ENTITY_SOLR_CLIENT = "entitySolrClient";
-    public static final String ENTITY_SOLR_SERVICE = "entitySolrService";
-    
     @Value("${entity.suggester.snippets:10}")
     private int suggesterSnippets;
     
@@ -46,7 +45,7 @@ public class EntitySolrConfig {
 
     private SolrClient solrClient;
     
-    @Bean(ENTITY_SOLR_CLIENT)
+    @Bean(AppConfigConstants.ENTITY_SOLR_CLIENT)
     public SolrClient getSolrClient(){
         if(solrClient != null) {
             return solrClient;

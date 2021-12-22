@@ -1,7 +1,4 @@
-package eu.europeana.entity.app;
-
-import eu.europeana.entity.solr.config.EntitySolrConfig;
-import eu.europeana.entity.stats.vocabulary.UsageStatsFields;
+package eu.europeana.entity.config;
 
 public class AppConfigConstants {
 
@@ -13,7 +10,11 @@ public class AppConfigConstants {
     public static final String BEAN_ENTITY_SERVICE = "entityService";
     public static final String BEAN_WEB_CONFIG = "entityWebConfig";
     public static final String BEAN_XML_SERIALIZER = "entityXmlSerializer";
-    public static final String ENTITY_SOLR_SERVICE = EntitySolrConfig.ENTITY_SOLR_SERVICE;
+    public static final String ENTITY_SOLR_SERVICE = "entitySolrService";
+    public static final String ENTITY_SOLR_CLIENT = "entitySolrClient";
+    
     public static final String BEAN_EM_JSONLD_SERIALIZER = "entityJsonLdSerialiser";
-    public static final String BEAN_USAGE_SERVICE = UsageStatsFields.BEAN_USAGE_SERVICE;
+    /** same as UsageStatsFields.BEAN_USAGE_SERVICE **/
+    public static final String BEAN_USAGE_SERVICE = "usageConfig";
+
 }

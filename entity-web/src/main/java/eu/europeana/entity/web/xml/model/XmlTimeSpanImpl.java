@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-import eu.europeana.entity.definitions.model.Timespan;
+import eu.europeana.entity.definitions.model.TimeSpan;
 
 @JacksonXmlRootElement(localName = XmlConstants.XML_EDM_TIMESPAN)
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
@@ -18,28 +18,28 @@ import eu.europeana.entity.definitions.model.Timespan;
     XmlConstants.XML_EDM_BEGIN,XmlConstants.XML_EDM_END,XmlConstants.XML_SKOS_NOTE, 
     XmlConstants.XML_DCTERMS_HAS_PART, XmlConstants.XML_DCTERMS_IS_PART_OF, 
     XmlConstants.XML_EDM_IS_NEXT_IN_SEQUENCE, XmlConstants.XML_OWL_SAME_AS, XmlConstants.XML_EDM_WEB_RESOURCE})
-public class XmlTimespanImpl extends XmlBaseEntityImpl {
+public class XmlTimeSpanImpl extends XmlBaseEntityImpl {
     	
-    	public XmlTimespanImpl(Timespan timespan) {
+    	public XmlTimeSpanImpl(TimeSpan timespan) {
     	    	super(timespan);
     	}
 
 	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_DCTERMS_IS_PART_OF)
 	public List<RdfResource> getIsPartOf() {
-	    	return RdfXmlUtils.convertToRdfResource(((Timespan)entity).getIsPartOf());
+	    	return RdfXmlUtils.convertToRdfResource(((TimeSpan)entity).getIsPartOf());
 	}
 	
 	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_EDM_BEGIN)
 	public String getBegin() {
-	    	return ((Timespan)entity).getBegin();
+	    	return ((TimeSpan)entity).getBegin();
 	}
 
 	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_EDM_END)
 	public String getEnd() {
-	    	return ((Timespan)entity).getEnd();
+	    	return ((TimeSpan)entity).getEnd();
 	}
 	
 	@JacksonXmlElementWrapper(useWrapping=false)
@@ -51,7 +51,7 @@ public class XmlTimespanImpl extends XmlBaseEntityImpl {
 	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_EDM_IS_NEXT_IN_SEQUENCE)
 	public List<RdfResource> getIsNextInSequence() {
-	    	return RdfXmlUtils.convertToRdfResource(((Timespan)entity).getIsNextInSequence());
+	    	return RdfXmlUtils.convertToRdfResource(((TimeSpan)entity).getIsNextInSequence());
 	}
 
 	

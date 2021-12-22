@@ -10,7 +10,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.config.i18n.I18nServiceImpl;
 import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
-import eu.europeana.entity.app.AppConfigConstants;
+import eu.europeana.entity.config.AppConfigConstants;
 
 @Configuration
 public class EntityAppConfig extends AppConfigConstants {

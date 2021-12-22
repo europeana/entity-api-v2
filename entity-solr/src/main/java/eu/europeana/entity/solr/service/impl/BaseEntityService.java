@@ -93,7 +93,7 @@ public abstract class BaseEntityService{
 				break;
 			case Place:
 				break;//has only common language maps
-			case Timespan:
+			case TimeSpan:
 				break;//not supported yet
 			case Organization:
 				 processSpecificLanguageMaps((Organization) entity, outLanguage);

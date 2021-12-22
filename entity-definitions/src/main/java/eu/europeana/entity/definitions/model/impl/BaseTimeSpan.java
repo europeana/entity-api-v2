@@ -1,8 +1,8 @@
 package eu.europeana.entity.definitions.model.impl;
 
-import eu.europeana.entity.definitions.model.Timespan;
+import eu.europeana.entity.definitions.model.TimeSpan;
 
-public class BaseTimespan extends BaseEntity implements Timespan {
+public class BaseTimeSpan extends BaseEntity implements TimeSpan {
 
     private String[] isNextInSequence;
     private String begin;

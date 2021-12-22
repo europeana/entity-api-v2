@@ -15,8 +15,8 @@ import eu.europeana.api.commons.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons.definitions.search.result.impl.ResultsPageImpl;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.entity.app.AppConfigConstants;
 import eu.europeana.entity.app.I18nConstants;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
@@ -153,7 +153,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 		entityTypes.add(EntityTypes.Agent);
 		entityTypes.add(EntityTypes.Place);
 		entityTypes.add(EntityTypes.Organization);
-		entityTypes.add(EntityTypes.Timespan);
+		entityTypes.add(EntityTypes.TimeSpan);
 	    }
 	    
 	}

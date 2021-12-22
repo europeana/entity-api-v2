@@ -8,7 +8,7 @@ public enum EntityTypes implements EntityKeyword {
     Concept("skos", "Concept", "https://www.w3.org/2009/08/skos-reference/skos.html#Concept"),
     Agent("edm", "Agent", "http://www.europeana.eu/schemas/edm/Agent"),
     Place("edm", "Place", "http://www.europeana.eu/schemas/edm/Place"),
-    Timespan("edm", "Timespan", "http://www.europeana.eu/schemas/edm/Timespan"),
+    TimeSpan("edm", "TimeSpan", "http://www.europeana.eu/schemas/edm/TimeSpan"),
     All("*", "All", "http://www.europeana.eu/schemas/edm/Entity");
 
     private String modelNameSpace;

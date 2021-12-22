@@ -10,21 +10,21 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import eu.europeana.entity.app.AppConfigConstants;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.solr.model.SolrAgentImpl;
 import eu.europeana.entity.solr.model.SolrConceptImpl;
 import eu.europeana.entity.solr.model.SolrOrganizationImpl;
 import eu.europeana.entity.solr.model.SolrPlaceImpl;
-import eu.europeana.entity.solr.model.SolrTimespanImpl;
+import eu.europeana.entity.solr.model.SolrTimeSpanImpl;
 import eu.europeana.entity.web.xml.model.XmlAgentImpl;
 import eu.europeana.entity.web.xml.model.XmlAggregationImpl;
 import eu.europeana.entity.web.xml.model.XmlBaseEntityImpl;
 import eu.europeana.entity.web.xml.model.XmlConceptImpl;
 import eu.europeana.entity.web.xml.model.XmlOrganizationImpl;
 import eu.europeana.entity.web.xml.model.XmlPlaceImpl;
-import eu.europeana.entity.web.xml.model.XmlTimespanImpl;
+import eu.europeana.entity.web.xml.model.XmlTimeSpanImpl;
 
 @Component(AppConfigConstants.BEAN_XML_SERIALIZER)
 public class EntityXmlSerializer {
@@ -114,8 +114,8 @@ public class EntityXmlSerializer {
     			xmlElement = new XmlOrganizationImpl((SolrOrganizationImpl) entity);
     			outputHeader = XML_HEADER_TAG_ORGANIZATION;
     		    }
-    		    else if(entity instanceof SolrTimespanImpl) {
-    			xmlElement = new XmlTimespanImpl((SolrTimespanImpl) entity);
+    		    else if(entity instanceof SolrTimeSpanImpl) {
+    			xmlElement = new XmlTimeSpanImpl((SolrTimeSpanImpl) entity);
     			outputHeader = XML_HEADER_TAG_TIMESPAN;
     		    }
     		    else {

@@ -75,7 +75,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	// add filters to query
 	String filter = null;
 
-	if (entityTypeFilter != null & scopeFilter != null) {
+	if (entityTypeFilter != null && scopeFilter != null) {
 	    // combine filters
 	    filter = entityTypeFilter + AND + scopeFilter;
 	} else if (entityTypeFilter != null) {

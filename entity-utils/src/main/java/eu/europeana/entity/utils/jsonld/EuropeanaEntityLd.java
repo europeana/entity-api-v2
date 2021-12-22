@@ -15,7 +15,7 @@ import eu.europeana.entity.definitions.model.Concept;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.Organization;
 import eu.europeana.entity.definitions.model.Place;
-import eu.europeana.entity.definitions.model.Timespan;
+import eu.europeana.entity.definitions.model.TimeSpan;
 import eu.europeana.entity.definitions.model.impl.BaseEntity;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
@@ -154,8 +154,8 @@ public class EuropeanaEntityLd extends JsonLd {
 	    putPlaceSpecificProperties((Place) entity, jsonLdResource);
 	    break;
 
-	case Timespan:
-	    putTimespanSpecificProperties((Timespan) entity, jsonLdResource);
+	case TimeSpan:
+	    putTimeSpanSpecificProperties((TimeSpan) entity, jsonLdResource);
 	    break;
 
 	default:
@@ -164,7 +164,7 @@ public class EuropeanaEntityLd extends JsonLd {
 
     }
 
-    private void putTimespanSpecificProperties(Timespan entity, JsonLdResource jsonLdResource) {
+    private void putTimeSpanSpecificProperties(TimeSpan entity, JsonLdResource jsonLdResource) {
 	putBaseEntityProperties((BaseEntity) entity, jsonLdResource);
 	putStringArrayProperty(WebEntityFields.IS_NEXT_IN_SEQUENCE, entity.getIsNextInSequence(), jsonLdResource);
 	

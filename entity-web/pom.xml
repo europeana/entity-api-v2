@@ -17,18 +17,77 @@
 
 	<dependencies>
 		<!-- entity projects -->
-		<!-- 
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>	
 		</dependency>
- 		-->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
+ 		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
  		
+ 		<dependency>
+			<groupId>eu.europeana.entity</groupId>
+			<artifactId>entity-utils</artifactId>
+			<version>${version.entityApi}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+			</exclusions>
+ 		</dependency>
+ 		<dependency>
+			<groupId>eu.europeana.entity</groupId>
+			<artifactId>entity-stats</artifactId>
+			<version>${version.entityApi}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europeana.entity</groupId>
+			<artifactId>entity-solr</artifactId>
+			<version>${version.entityApi}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	
+		<dependency>
+			<groupId>eu.europeana.corelib</groupId>
+			<artifactId>corelib-schemaorg</artifactId>
+			<version>${version.corelib}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 		<dependency>
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>
 			<version>${version.annotationLd}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -48,6 +107,14 @@
 					<groupId>io.springfox</groupId>
 					<artifactId>springfox-swagger2</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
@@ -60,31 +127,6 @@
 		 -->
 
 		<dependency>
-			<groupId>eu.europeana.entity</groupId>
-			<artifactId>entity-stats</artifactId>
-			<version>${version.entityApi}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europeana.entity</groupId>
-			<artifactId>entity-solr</artifactId>
-			<version>${version.entityApi}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>eu.europeana.entity</groupId>
-			<artifactId>entity-utils</artifactId>
-			<version>${version.entityApi}</version>
-		</dependency>
-
-	
-		<dependency>
-			<groupId>eu.europeana.corelib</groupId>
-			<artifactId>corelib-schemaorg</artifactId>
-			<version>${version.corelib}</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
 			<version>${version.commonsText}</version>
@@ -92,19 +134,6 @@
 
 
 		<!-- spring -->
-		
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>${version.swagger}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -119,7 +148,36 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
+			<exclusions>
+				<!-- 
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+				 -->
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-jul</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${version.swagger}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 		
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -144,13 +202,6 @@
 		    <groupId>com.fasterxml.jackson.dataformat</groupId>
 		    <artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>	
-		<!-- 
-		<dependency>
-			<groupId>org.codehaus.jettison</groupId>
-			<artifactId>jettison</artifactId>
-			<version>1.1</version>
-		</dependency>
-		 -->
 
 		<!-- fixes for JDK 11 -->
 		<dependency>
@@ -162,7 +213,6 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
-
 
 		<dependency>
 			<groupId>javax.servlet</groupId>

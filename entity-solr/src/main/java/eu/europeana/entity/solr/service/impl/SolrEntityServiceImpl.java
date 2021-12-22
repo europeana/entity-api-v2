@@ -19,15 +19,14 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.BaseHttpSolrClient.RemoteSolrException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.SimpleOrderedMap;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
@@ -36,7 +35,6 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.config.EntitySolrConfig;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntityRuntimeException;
-import eu.europeana.entity.solr.exception.EntityServiceException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import eu.europeana.entity.solr.model.factory.EntityObjectFactory;
@@ -44,10 +42,10 @@ import eu.europeana.entity.solr.model.vocabulary.SuggestionFields;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.web.model.view.EntityPreview;
 
-@Service(EntitySolrConfig.ENTITY_SOLR_SERVICE)
+@Service(AppConfigConstants.ENTITY_SOLR_SERVICE)
 public class SolrEntityServiceImpl extends BaseEntityService implements SolrEntityService {
 
-    @Resource(name = EntitySolrConfig.ENTITY_SOLR_CLIENT)
+    @Resource(name = AppConfigConstants.ENTITY_SOLR_CLIENT)
     SolrClient solrClient;
 
     @Resource
