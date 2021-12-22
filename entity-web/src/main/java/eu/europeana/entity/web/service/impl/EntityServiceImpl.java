@@ -153,7 +153,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 		entityTypes.add(EntityTypes.Agent);
 		entityTypes.add(EntityTypes.Place);
 		entityTypes.add(EntityTypes.Organization);
-		entityTypes.add(EntityTypes.Timespan);
+		entityTypes.add(EntityTypes.TimeSpan);
 	    }
 	    
 	}

@@ -58,7 +58,7 @@ public class EntityPreviewObjectFactory extends AbstractModelObjectFactory<Entit
 		case Place:
 			ret = PlacePreviewImpl.class;
 			break;
-		case Timespan:
+		case TimeSpan:
 			ret = TimeSpanPreviewImpl.class;
 			break;
 		default:

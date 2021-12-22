@@ -6,7 +6,7 @@ import eu.europeana.entity.solr.model.SolrAgentImpl;
 import eu.europeana.entity.solr.model.SolrConceptImpl;
 import eu.europeana.entity.solr.model.SolrOrganizationImpl;
 import eu.europeana.entity.solr.model.SolrPlaceImpl;
-import eu.europeana.entity.solr.model.SolrTimespanImpl;
+import eu.europeana.entity.solr.model.SolrTimeSpanImpl;
 
 
 public class EntityObjectFactory extends AbstractModelObjectFactory<Entity, EntityTypes>{
@@ -58,8 +58,8 @@ public class EntityObjectFactory extends AbstractModelObjectFactory<Entity, Enti
 		case Place:
 			ret = SolrPlaceImpl.class;
 			break;
-		case Timespan:
-			ret = SolrTimespanImpl.class;
+		case TimeSpan:
+			ret = SolrTimeSpanImpl.class;
 			break;
 		default:
 			throw new RuntimeException(
