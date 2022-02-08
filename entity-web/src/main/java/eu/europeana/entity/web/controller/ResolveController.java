@@ -40,7 +40,7 @@ public class ResolveController extends BaseRest {
     	private static final String ACCEPT_HEADER_APPLICATION_XML = ACCEPT + MediaType.APPLICATION_XML_VALUE;
     
 	@ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-	@RequestMapping(value = {"/entity/{type}/{namespace}/{identifier}.jsonld"}, method = RequestMethod.GET,
+	@RequestMapping(value = {"/entity/{type}/{identifier}.jsonld", "/entity/{type}/base/{identifier}.jsonld"}, method = RequestMethod.GET,
 			produces = {HttpHeaders.CONTENT_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<String> getJsonLdEntity(
 			@RequestParam(value = CommonApiConstants.PARAM_WSKEY, required=false) String wskey,
@@ -52,7 +52,7 @@ public class ResolveController extends BaseRest {
 	}
 	
 	@ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-	@RequestMapping(value = {"/entity/{type}/{namespace}/{identifier}.schema.jsonld"}, method = RequestMethod.GET,
+	@RequestMapping(value = {"/entity/{type}/{identifier}.schema.jsonld", "/entity/{type}/base/{identifier}.schema.jsonld"}, method = RequestMethod.GET,
 			produces = {HttpHeaders.CONTENT_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<String> getSchemaJsonLdEntity(
 			@RequestParam(value = CommonApiConstants.PARAM_WSKEY, required=false) String wskey,
@@ -64,7 +64,7 @@ public class ResolveController extends BaseRest {
 	}
 	
 	@ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-	@RequestMapping(value = {"/entity/{type}/{namespace}/{identifier}.xml"}, method = RequestMethod.GET, 
+	@RequestMapping(value = {"/entity/{type}/{identifier}.xml", "/entity/{type}/base/{identifier}.xml"}, method = RequestMethod.GET, 
 		produces = {HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML, HttpHeaders.CONTENT_TYPE_RDF_XML, MediaType.APPLICATION_XML_VALUE})
 	public ResponseEntity<String> getXmlEntity(
 			@RequestParam(value = CommonApiConstants.PARAM_WSKEY, required=false) String wskey,
@@ -76,7 +76,7 @@ public class ResolveController extends BaseRest {
 	}
 	
 	@ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-	@RequestMapping(value = {"/entity/{type}/{namespace}/{identifier}"}, method = RequestMethod.GET, 
+	@RequestMapping(value = {"/entity/{type}/{identifier}", "/entity/{type}/base/{identifier}"}, method = RequestMethod.GET, 
 			headers = { ACCEPT_HEADER_JSONLD, ACCEPT_HEADER_JSON},
 			produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8})
 	public ResponseEntity<String> getEntity(
@@ -90,7 +90,7 @@ public class ResolveController extends BaseRest {
 	}
 	
 	@ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-	@RequestMapping(value = {"/entity/{type}/{namespace}/{identifier}"}, method = RequestMethod.GET, 
+	@RequestMapping(value = {"/entity/{type}/{identifier}", "/entity/{type}/base/{identifier}"}, method = RequestMethod.GET, 
 			headers = { ACCEPT_HEADER_APPLICATION_RDF_XML, ACCEPT_HEADER_RDF_XML, ACCEPT_HEADER_APPLICATION_XML},
 			produces = {HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML, HttpHeaders.CONTENT_TYPE_RDF_XML, MediaType.APPLICATION_XML_VALUE})
 	public ResponseEntity<String> getXmlHeaderEntity(
