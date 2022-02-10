@@ -110,13 +110,12 @@ public class SuggestionUtils {
 		//Fallback no pref label matched
 		if (prefLabel.isEmpty()) {
 			//no prefLabel was matched, the suggestion was based on the acronym
-			log.error("Fallback, return all languages, no preferredLabel matched for entity: " + preview.getEntityId() 
+			log.debug("Fallback, return all languages, no preferredLabel matched for entity: " + preview.getEntityId() 
 				+ ", using searched terms: " + StringUtils.join(highlightTerms, ", ") 
 				+ ", and languages: " + StringUtils.join(preferredLanguages, ','));
 			
 			//#EA-1368 include all languages
 			preferredLanguages.add(WebEntityConstants.PARAM_LANGUAGE_ALL);
-			
 			prefLabel = getValuesAsLanguageMap(entityNode, SuggestionFields.PREF_LABEL, preferredLanguages);		
 		} 
 		
