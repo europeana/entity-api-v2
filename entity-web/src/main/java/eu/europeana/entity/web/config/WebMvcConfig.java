@@ -46,34 +46,30 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/entity/resolve")
         .allowedOrigins("*")
         .allowedMethods("GET")
-        .exposedHeaders("Location,Allow")
+        .exposedHeaders(HttpHeaders.LOCATION, HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false)
-        .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .maxAge(600L); // in seconds
         
         registry.addMapping("/entity/suggest")
         .allowedOrigins("*")
         .allowedMethods("GET")
-        .exposedHeaders("Allow")
+        .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false)
-        .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .maxAge(600L); // in seconds
         
         registry.addMapping("/entity/search")
         .allowedOrigins("*")
         .allowedMethods("GET")
-        .exposedHeaders("Allow")
+        .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false)
-        .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .maxAge(600L); // in seconds
         
         registry.addMapping("/entity/**")
         .allowedOrigins("*")
         .allowedMethods("GET")
         .allowedHeaders("If-Match")
-        .exposedHeaders("Allow, Vary,Link,ETag")
+        .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.VARY, HttpHeaders.LINK, HttpHeaders.ETAG, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false)
-        .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .maxAge(600L); // in seconds
         
     }
