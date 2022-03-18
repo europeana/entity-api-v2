@@ -121,11 +121,18 @@ public class EntityQueryBuilder extends QueryBuilder {
     }
 
     private List<String> generateLanguageSpecificFields(String fieldPrefix, List<String> languages) {
-	List<String> res = new ArrayList<String>(languages.size());
+	if (hasAllLanguages(languages)){
+	    return List.of(fieldPrefix);
+	}
+        List<String> res = new ArrayList<String>(languages.size());
 	for (String language : languages) {
 	    res.add(fieldPrefix + "." + language); 
 	}
 	return res;
+    }
+
+    private boolean hasAllLanguages(List<String> languages) {
+        return languages.contains(WebEntityConstants.PARAM_LANGUAGE_ALL);
     }
 
     private List<String> generateLanguageSpecificQueries(String text, List<String> searchFields) {
