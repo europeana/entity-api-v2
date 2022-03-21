@@ -34,7 +34,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/api-docs")
                 .allowedOrigins("*")
                 .allowedMethods("GET")
-                .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+                .exposedHeaders("Access-Control-Allow-Origin", HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
                 .allowCredentials(false)   
                 .maxAge(600L); // in seconds
         
