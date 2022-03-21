@@ -31,17 +31,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api-docs")
+        registry.addMapping("/v2/api-docs")
                 .allowedOrigins("*")
                 .allowedMethods("GET")
                 .exposedHeaders("Access-Control-Allow-Origin", HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
                 .allowCredentials(false)   
                 .maxAge(600L); // in seconds
         
-        registry.addMapping("/api-docs/**")
+        registry.addMapping("/v2/api-docs/**")
         .allowedOrigins("*")
-        .allowCredentials(false)
-        .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+        .allowedMethods("GET")
+        .exposedHeaders("Access-Control-Allow-Origin", HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+        .allowCredentials(false)   
         .maxAge(600L); // in seconds
         
         registry.addMapping("/entity/resolve")
