@@ -33,8 +33,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api-docs")
                 .allowedOrigins("*")
-                .allowCredentials(false)
-                .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+                .allowedMethods("GET")
+                .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+                .allowCredentials(false)   
                 .maxAge(600L); // in seconds
         
         registry.addMapping("/api-docs/**")
