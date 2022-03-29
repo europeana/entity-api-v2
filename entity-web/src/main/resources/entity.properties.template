@@ -28,3 +28,5 @@ entity.solr.facetLimit=750
 entity.solr.url=
 entity.solr.zookeeper.url=
 entity.solr.collection=entity-test
+entity.api.endpoint=
+entity.data.endpoint=

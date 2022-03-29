@@ -69,10 +69,7 @@ public interface EntityService {
 	 * @param reqParams
 	 * @return
 	 */
-	public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results,
-			StringBuffer requestUrl, String reqParams);
-	
-		
+	public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, String reqParams);
 	
 	/**
 	 * @param entityTypes

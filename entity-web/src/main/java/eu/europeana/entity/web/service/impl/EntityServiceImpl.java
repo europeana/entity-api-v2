@@ -25,6 +25,7 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.service.SolrEntityService;
+import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.InternalServerException;
 import eu.europeana.entity.web.exception.ParamValidationException;
 import eu.europeana.entity.web.model.view.EntityPreview;
@@ -37,17 +38,18 @@ import eu.europeana.entity.web.service.EntityService;
 @Service(AppConfigConstants.BEAN_ENTITY_SERVICE)
 public class EntityServiceImpl extends BaseEntityServiceImpl implements EntityService {
 
-    public final String BASE_URL_DATA = "http://data.europeana.eu/";
-
     @Resource(name = AppConfigConstants.ENTITY_SOLR_SERVICE)
     SolrEntityService solrEntityService;
-
+    
+    @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
+    private EntityWebConfig entityWebConfig;
+    
     @Override
     public Entity retrieveByUrl(String type, String identifier) throws HttpException {
 
 	StringBuilder stringBuilder = new StringBuilder();
 
-	stringBuilder.append(BASE_URL_DATA);
+	stringBuilder.append(entityWebConfig.getEntityDataEndpoint());
 	if (StringUtils.isNotEmpty(type))
 	    stringBuilder.append(type.toLowerCase() + "/");
 	if (StringUtils.isNotEmpty(identifier))
@@ -166,8 +168,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
     }
 
     // TODO: consider usage of a helper class for helper methods
-    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results,
-	    StringBuffer requestUrl, String reqParams) {
+    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, String reqParams) {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	ResultsPage<T> resPage = new ResultsPageImpl();
 
@@ -177,6 +178,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	resPage.setTotalInPage(results.getResults().size());
 	resPage.setTotalInCollection(results.getResultSize());
 
+	StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint() + "/search");
 	String collectionUrl = buildCollectionUrl(searchQuery, requestUrl, reqParams);
 	resPage.setCollectionUri(collectionUrl);
 

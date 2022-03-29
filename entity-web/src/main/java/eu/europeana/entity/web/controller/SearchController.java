@@ -180,8 +180,7 @@ public class SearchController extends BaseRest {
 	    ResultSet<? extends Entity> results = getEntityService().search(searchQuery, preferredLanguages, entityTypes,
 		    scope);
 
-	    ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results,
-		    request.getRequestURL(), request.getQueryString());
+	    ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, request.getQueryString());
 	    String jsonLd = serializeResultsPage(resPage, searchProfile);
 
 	    // build response
