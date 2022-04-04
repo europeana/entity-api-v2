@@ -433,11 +433,16 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 		return docs.get(0).getFieldValue(ConceptSolrFields.ID).toString();
 
 	    // TODO: can this return >1 result? should it?
-	    else if (docs.getNumFound() > 1)
-		throw new EntityRetrievalException("Too many solr entries found for coref uri: " + uri
-			+ ". Expected 0..1, but found " + docs.getNumFound());
+	    else if (docs.getNumFound() > 1) {
+	      String multipleIds = "";
+	      for(int i=0;i<docs.getNumFound();i++) {
+	        multipleIds += " " + docs.get(i).getFieldValue(ConceptSolrFields.ID).toString();
+	      }
+	      throw new EntityRetrievalException("Too many solr entries found for coref uri: " + uri
+			+ ". Expected 0..1, but found " + docs.getNumFound() + ": " + multipleIds);
+	    }
 
-	} catch (RuntimeException | SolrServerException | IOException e) {
+	} catch (SolrServerException | IOException e) {
 	    throw new EntityRuntimeException("Unexpected exception occured when searching Solr entities. ", e);
 	}
 
