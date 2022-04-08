@@ -248,7 +248,6 @@ public class SearchController extends BaseRest {
 			EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
 			Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(text, lang, entityTypes, rows);
 
-			System.out.println(searchQuery.toString());
 			ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,
 					null);
 
