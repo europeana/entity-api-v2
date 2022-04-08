@@ -23,6 +23,10 @@ public interface WebEntityFields {
     public static final String THUMBNAIL = "thumbnail";
     public static final String IS_SHOWN_BY = "isShownBy";
 
+    //Enrichment field
+    public static final String ENRICH_LABEL_FIELD = "label_enrich";
+    public static final String DERIVED_SCORE = "derived_score";
+
     // common administrative information
     public static final String CREATED = "created";
     public static final String MODIFIED = "modified";

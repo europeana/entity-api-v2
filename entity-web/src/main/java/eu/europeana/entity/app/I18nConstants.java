@@ -7,7 +7,8 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	//400
 //	#static final String INVALID_FIELD_NAME = "error.invalid_field_name";
     	static final String BAD_HEADER_REQUEST = "error.extension_and_accept";
-	
+	static final String UNSUPPORTED_MULTIPLE_LANG_VALUE = "error.multiple_lang_value";
+
 	//401
 	//replaced by generic error message
 	static final String NO_APPLICATION_FOR_APIKEY = "error.entity_no_application_for_apikey";

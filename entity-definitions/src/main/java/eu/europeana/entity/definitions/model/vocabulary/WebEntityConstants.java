@@ -30,6 +30,12 @@ public interface WebEntityConstants extends WebEntityFields {
 //	public static final String PARAM_TIMESPAN = "timespan";
     public static final String PARAM_DEFAULT_ROWS = "10";
 
+    // Enrichment Constants
+    public static final int ENRICH_MAX_PAGE_SIZE = 50;
+    public static final String LANG_FIELD_DELIMITER = ".";
+    public static final String COMMA = ",";
+    public static final String LANG_REGEX = "[a-zA-Z]+";
+
     public static final String PARAM_PROFILE_FACETS = "facets";
 
     public static final String TYPE_BASIC_CONTAINER = "BasicContainer";
@@ -44,6 +50,7 @@ public interface WebEntityConstants extends WebEntityFields {
     public static final String FIELD_DELIMITER = ":";
     public static final String SOLR_AND = " AND ";
     public static final String SOLR_OR = " OR ";
+    public static final String SOLR_DESC = " desc";
 
     /**
      * Model attribute names

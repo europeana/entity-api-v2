@@ -120,8 +120,7 @@ public abstract class BaseRest extends BaseRestController {
      * @return
      * @throws JsonProcessingException
      */
-    protected String searializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile)
-	    throws JsonProcessingException {
+    protected String searializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile) {
 	ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
 		ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE);
 	String profileVal = (profile == null) ? null : profile.name();
@@ -228,6 +227,24 @@ public abstract class BaseRest extends BaseRestController {
 	return fieldName;
     }
 
+	/**
+	 * Validate language parameter
+	 * @param language
+	 * @throws ParamValidationException
+	 */
+	protected void validateLanguage(String language) throws ParamValidationException {
+	if (StringUtils.contains(language, WebEntityConstants.COMMA)) {
+		throw new ParamValidationException(I18nConstants.UNSUPPORTED_MULTIPLE_LANG_VALUE,
+				CommonApiConstants.QUERY_PARAM_LANG, language);
+	}
+
+	if (!language.matches(WebEntityConstants.LANG_REGEX)) {
+		throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+				CommonApiConstants.QUERY_PARAM_LANG, language);
+	}
+	// TODO validate supported ISO letters
+    }
+
     /**
      * This method verifies if the provided algorithm parameter is a valid one
      * 
@@ -243,7 +260,6 @@ public abstract class BaseRest extends BaseRestController {
 		    WebEntityConstants.QUERY_PARAM_ALGORITHM, algorithm);
 	}
     }
-   
 
     /**
      * This method takes profile from a HTTP header if it exists or from the passed

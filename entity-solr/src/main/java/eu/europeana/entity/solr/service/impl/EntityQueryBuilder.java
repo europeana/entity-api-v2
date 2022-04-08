@@ -301,7 +301,7 @@ public class EntityQueryBuilder extends QueryBuilder {
     /**
      * @param queryString
      * @param filters
-     * @param rows
+     * @param pageSize
      * @return
      */
     public Query buildSearchQuery(String queryString, String[] filters, int pageSize) {
@@ -313,6 +313,46 @@ public class EntityQueryBuilder extends QueryBuilder {
 
 	return searchQuery;
     }
+
+    public Query buildSearchQueryForEnrichment(String text, String lang, List<EntityTypes> entityTypes, int pageSize) {
+		Query searchQuery = new QueryImpl();
+		searchQuery.setQuery(createSearchQueryForEnrichment(text, lang));
+		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
+		searchQuery.setSortCriteria(createSortForEnrichment());
+		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
+
+		return searchQuery;
+	}
+
+	/**
+	 * creates search query for enrichment
+	 * label_enrich:<text> OR label_enrich.<lang>:<text>
+	 * @param lang
+	 * @param text
+	 * @return
+	 */
+    public String createSearchQueryForEnrichment(String text, String lang) {
+		StringBuilder query = new StringBuilder(WebEntityConstants.ENRICH_LABEL_FIELD);
+    	if (lang != null) {
+			query.append(WebEntityConstants.LANG_FIELD_DELIMITER);
+			query.append(lang);
+		}
+		query.append(WebEntityConstants.FIELD_DELIMITER);
+		query.append(text);
+		return query.toString();
+	}
+
+	private String[] createFilterForEnrichment(List<EntityTypes> entityTypes) {
+		String entityFilter = buildEntityTypeCondition(entityTypes);
+		if(entityFilter != null) {
+			return toArray(WebEntityConstants.TYPE + WebEntityConstants.FIELD_DELIMITER + entityFilter);
+		}
+		return new String[0];
+	}
+
+	private String[] createSortForEnrichment(){
+    	return toArray(WebEntityConstants.DERIVED_SCORE + WebEntityConstants.SOLR_DESC);
+	}
 
     /**
      * This method splits the list of values provided as concatenated string to the
