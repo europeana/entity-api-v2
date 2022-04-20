@@ -233,6 +233,9 @@ public abstract class BaseRest extends BaseRestController {
 	 * @throws ParamValidationException
 	 */
 	protected void validateLanguage(String language) throws ParamValidationException {
+	if (StringUtils.isEmpty(language))	{
+		return;
+	}
 	if (StringUtils.contains(language, WebEntityConstants.COMMA)) {
 		throw new ParamValidationException(I18nConstants.UNSUPPORTED_MULTIPLE_LANG_VALUE,
 				CommonApiConstants.QUERY_PARAM_LANG, language);

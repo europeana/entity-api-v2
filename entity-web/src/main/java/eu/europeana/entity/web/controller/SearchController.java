@@ -248,10 +248,10 @@ public class SearchController extends BaseRest {
 			EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
 			Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(text, lang, entityTypes, rows);
 
+			// perform search
 			ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,
 					null);
 
-			// perform search
 			ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results,
 					request.getRequestURL(), request.getQueryString());
 			String jsonLd = serializeResultsPage(resPage, null);
