@@ -50,7 +50,6 @@ public interface WebEntityConstants extends WebEntityFields {
     public static final String FIELD_DELIMITER = ":";
     public static final String SOLR_AND = " AND ";
     public static final String SOLR_OR = " OR ";
-    public static final String SOLR_DESC = " desc";
 
     /**
      * Model attribute names

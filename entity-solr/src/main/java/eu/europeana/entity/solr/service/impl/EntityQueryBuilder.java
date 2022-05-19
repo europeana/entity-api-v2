@@ -318,7 +318,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 		Query searchQuery = new QueryImpl();
 		searchQuery.setQuery(createSearchQueryForEnrichment(text, lang));
 		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
-		searchQuery.setSortCriteria(createSortForEnrichment());
+		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
 
 		return searchQuery;
@@ -333,12 +333,16 @@ public class EntityQueryBuilder extends QueryBuilder {
 	 */
     public String createSearchQueryForEnrichment(String text, String lang) {
 		StringBuilder query = new StringBuilder(WebEntityConstants.ENRICH_LABEL_FIELD);
-    	if (lang != null) {
+		// Search on 'label_enrich' if no language or the value 'all' is indicated in the 'lang'
+		if (StringUtils.isEmpty(lang) || StringUtils.equals(lang, WebEntityConstants.PARAM_LANGUAGE_ALL)) {
+			query.append(WebEntityConstants.FIELD_DELIMITER);
+			query.append(text);
+		}
+		else {
+			// otherwise, in the respective label_enrich.*
 			query.append(WebEntityConstants.LANG_FIELD_DELIMITER);
 			query.append(lang);
 		}
-		query.append(WebEntityConstants.FIELD_DELIMITER);
-		query.append(text);
 		return query.toString();
 	}
 
@@ -348,10 +352,6 @@ public class EntityQueryBuilder extends QueryBuilder {
 			return toArray(WebEntityConstants.TYPE + WebEntityConstants.FIELD_DELIMITER + entityFilter);
 		}
 		return new String[0];
-	}
-
-	private String[] createSortForEnrichment(){
-    	return toArray(WebEntityConstants.DERIVED_SCORE + WebEntityConstants.SOLR_DESC);
 	}
 
     /**

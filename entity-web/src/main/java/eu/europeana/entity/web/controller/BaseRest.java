@@ -1,6 +1,8 @@
 package eu.europeana.entity.web.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -236,16 +238,17 @@ public abstract class BaseRest extends BaseRestController {
 	if (StringUtils.isEmpty(language))	{
 		return;
 	}
+	// multiple language not supported
 	if (StringUtils.contains(language, WebEntityConstants.COMMA)) {
 		throw new ParamValidationException(I18nConstants.UNSUPPORTED_MULTIPLE_LANG_VALUE,
 				CommonApiConstants.QUERY_PARAM_LANG, language);
 	}
-
-	if (!language.matches(WebEntityConstants.LANG_REGEX)) {
+	// language value can be 'all' Or ISO language only
+	if (!StringUtils.equals(language, WebEntityConstants.PARAM_LANGUAGE_ALL) &&
+	     Arrays.stream(Locale.getISOLanguages()).noneMatch(isoLang -> StringUtils.equals(language, isoLang))){
 		throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
 				CommonApiConstants.QUERY_PARAM_LANG, language);
-	}
-	// TODO validate supported ISO letters
+		}
     }
 
     /**

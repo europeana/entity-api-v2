@@ -24,8 +24,7 @@ public interface WebEntityFields {
     public static final String IS_SHOWN_BY = "isShownBy";
 
     //Enrichment field
-    public static final String ENRICH_LABEL_FIELD = "label_enrich";
-    public static final String DERIVED_SCORE = "derived_score";
+    public static final String ENRICH_LABEL_FIELD = "label";
 
     // common administrative information
     public static final String CREATED = "created";
