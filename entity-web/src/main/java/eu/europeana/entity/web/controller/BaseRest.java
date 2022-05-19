@@ -1,7 +1,6 @@
 package eu.europeana.entity.web.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,7 +73,9 @@ public abstract class BaseRest extends BaseRestController {
 
 	Logger logger = LogManager.getLogger(getClass());
 
-    Pattern pattern = null;
+	private static final Set ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
+
+	Pattern pattern = null;
 
     public BaseRest() {
 	super();
@@ -120,8 +121,7 @@ public abstract class BaseRest extends BaseRestController {
      * @return
      * @throws JsonProcessingException
      */
-    protected String searializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile)
-	    throws JsonProcessingException {
+    protected String searializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile) {
 	ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
 		ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE);
 	String profileVal = (profile == null) ? null : profile.name();
@@ -228,6 +228,27 @@ public abstract class BaseRest extends BaseRestController {
 	return fieldName;
     }
 
+	/**
+	 * Validate language parameter
+	 * @param language
+	 * @throws ParamValidationException
+	 */
+	protected void validateLanguage(String language) throws ParamValidationException {
+	if (StringUtils.isEmpty(language))	{
+		return;
+	}
+	// multiple language not supported
+	if (StringUtils.contains(language, WebEntityConstants.COMMA)) {
+		throw new ParamValidationException(I18nConstants.UNSUPPORTED_MULTIPLE_LANG_VALUE,
+				CommonApiConstants.QUERY_PARAM_LANG, language);
+	}
+	// language value can be 'all' Or ISO language only
+	if (!StringUtils.equals(language, WebEntityConstants.PARAM_LANGUAGE_ALL) && !ISO_LANGUAGES.contains(language)){
+		throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+				CommonApiConstants.QUERY_PARAM_LANG, language);
+		}
+    }
+
     /**
      * This method verifies if the provided algorithm parameter is a valid one
      * 
@@ -243,7 +264,6 @@ public abstract class BaseRest extends BaseRestController {
 		    WebEntityConstants.QUERY_PARAM_ALGORITHM, algorithm);
 	}
     }
-   
 
     /**
      * This method takes profile from a HTTP header if it exists or from the passed
