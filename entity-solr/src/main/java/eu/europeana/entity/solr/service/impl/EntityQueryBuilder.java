@@ -339,7 +339,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 			query.append(lang);
 		}
 		query.append(WebEntityConstants.FIELD_DELIMITER);
-		query.append(text);
+		query.append("\"" + text + "\"");
 		return query.toString();
 	}
 
