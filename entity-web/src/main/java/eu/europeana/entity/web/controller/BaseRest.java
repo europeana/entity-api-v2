@@ -1,9 +1,6 @@
 package eu.europeana.entity.web.controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,7 +73,9 @@ public abstract class BaseRest extends BaseRestController {
 
 	Logger logger = LogManager.getLogger(getClass());
 
-    Pattern pattern = null;
+	private static final Set ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
+
+	Pattern pattern = null;
 
     public BaseRest() {
 	super();
@@ -244,8 +243,7 @@ public abstract class BaseRest extends BaseRestController {
 				CommonApiConstants.QUERY_PARAM_LANG, language);
 	}
 	// language value can be 'all' Or ISO language only
-	if (!StringUtils.equals(language, WebEntityConstants.PARAM_LANGUAGE_ALL) &&
-	     Arrays.stream(Locale.getISOLanguages()).noneMatch(isoLang -> StringUtils.equals(language, isoLang))){
+	if (!StringUtils.equals(language, WebEntityConstants.PARAM_LANGUAGE_ALL) && !ISO_LANGUAGES.contains(language)){
 		throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
 				CommonApiConstants.QUERY_PARAM_LANG, language);
 		}
