@@ -301,7 +301,7 @@ public class EntityQueryBuilder extends QueryBuilder {
     /**
      * @param queryString
      * @param filters
-     * @param rows
+     * @param pageSize
      * @return
      */
     public Query buildSearchQuery(String queryString, String[] filters, int pageSize) {
@@ -313,6 +313,46 @@ public class EntityQueryBuilder extends QueryBuilder {
 
 	return searchQuery;
     }
+
+    public Query buildSearchQueryForEnrichment(String text, String lang, List<EntityTypes> entityTypes, int pageSize) {
+		Query searchQuery = new QueryImpl();
+		searchQuery.setQuery(createSearchQueryForEnrichment(text, lang));
+		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
+		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
+		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
+
+		return searchQuery;
+	}
+
+	/**
+	 * creates search query for enrichment
+	 * label_enrich:<text> OR label_enrich.<lang>:<text>
+	 * @param lang
+	 * @param text
+	 * @return
+	 */
+    public String createSearchQueryForEnrichment(String text, String lang) {
+		StringBuilder query = new StringBuilder(WebEntityConstants.ENRICH_LABEL_FIELD);
+		// Search on 'label_enrich' if no language or the value 'all' is indicated in the 'lang'
+		if (StringUtils.isEmpty(lang) || StringUtils.equals(lang, WebEntityConstants.PARAM_LANGUAGE_ALL)) {
+			query.append(WebEntityConstants.FIELD_DELIMITER);
+			query.append(text);
+		}
+		else {
+			// otherwise, in the respective label_enrich.*
+			query.append(WebEntityConstants.LANG_FIELD_DELIMITER);
+			query.append(lang);
+		}
+		return query.toString();
+	}
+
+	private String[] createFilterForEnrichment(List<EntityTypes> entityTypes) {
+		String entityFilter = buildEntityTypeCondition(entityTypes);
+		if(entityFilter != null) {
+			return toArray(WebEntityConstants.TYPE + WebEntityConstants.FIELD_DELIMITER + entityFilter);
+		}
+		return new String[0];
+	}
 
     /**
      * This method splits the list of values provided as concatenated string to the
