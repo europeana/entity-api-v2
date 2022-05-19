@@ -331,18 +331,15 @@ public class EntityQueryBuilder extends QueryBuilder {
 	 * @param text
 	 * @return
 	 */
-    public String createSearchQueryForEnrichment(String text, String lang) {
+	public String createSearchQueryForEnrichment(String text, String lang) {
 		StringBuilder query = new StringBuilder(WebEntityConstants.ENRICH_LABEL_FIELD);
 		// Search on 'label_enrich' if no language or the value 'all' is indicated in the 'lang'
-		if (StringUtils.isEmpty(lang) || StringUtils.equals(lang, WebEntityConstants.PARAM_LANGUAGE_ALL)) {
-			query.append(WebEntityConstants.FIELD_DELIMITER);
-			query.append(text);
-		}
-		else {
-			// otherwise, in the respective label_enrich.*
+		if (!StringUtils.isEmpty(lang) && !StringUtils.equals(lang, WebEntityConstants.PARAM_LANGUAGE_ALL)) {
 			query.append(WebEntityConstants.LANG_FIELD_DELIMITER);
 			query.append(lang);
 		}
+		query.append(WebEntityConstants.FIELD_DELIMITER);
+		query.append(text);
 		return query.toString();
 	}
 
