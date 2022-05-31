@@ -108,13 +108,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 
     @Override
     public String resolveByUri(String uri) throws HttpException {
-	String result;
-	try {
-	    result = solrEntityService.searchByCoref(uri);
-	} catch (EntityRetrievalException e) {
-	    throw new HttpException(e.getMessage(), I18nConstants.SERVER_ERROR_CANT_RESOLVE_SAME_AS_URI,
-		    new String[] { e.getMessage() }, HttpStatus.BAD_REQUEST);
-	}
+	String result = solrEntityService.searchByCoref(uri);	
 	// if not found send appropriate error message
 	if (result == null)
 	    throw new HttpException(null, I18nConstants.CANT_FIND_BY_SAME_AS_URI, new String[] { 
