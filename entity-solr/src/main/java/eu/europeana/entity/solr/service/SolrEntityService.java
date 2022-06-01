@@ -85,9 +85,8 @@ public interface SolrEntityService {
 	 * 
 	 * @param uri
 	 * @return
-	 * @throws EntityRetrievalException
 	 */
-	public String searchByCoref(String uri) throws EntityRetrievalException;
+	public String searchByCoref(String uri);
 	
 //	/**
 //	 * @param entityUrl

@@ -154,12 +154,16 @@ public class ResolveController extends BaseRest {
             String entityUri = getEntityService().resolveByUri(uri.trim());
 
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-            headers.add(HttpHeaders.LOCATION, entityUri);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-
-            ResponseEntity<String> response = new ResponseEntity<String>(headers, HttpStatus.MOVED_PERMANENTLY);
-
-            return response;
+            
+            if(entityUri.contains(",")) {
+              headers.add(HttpHeaders.LOCATION, entityUri.split(",")[0]);
+              return new ResponseEntity<String>("["+entityUri+"]", headers, HttpStatus.MULTIPLE_CHOICES);         
+            }
+            else {
+              headers.add(HttpHeaders.LOCATION, entityUri);
+              return new ResponseEntity<String>("["+entityUri+"]", headers, HttpStatus.MOVED_PERMANENTLY);                       
+            }
 
         } catch (RuntimeException e) {
             // not found ..

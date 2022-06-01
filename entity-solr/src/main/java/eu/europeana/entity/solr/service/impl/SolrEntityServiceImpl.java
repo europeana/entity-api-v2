@@ -21,6 +21,7 @@ import org.apache.solr.client.solrj.impl.BaseHttpSolrClient.RemoteSolrException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
+import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.config.EntitySolrConfig;
@@ -411,7 +413,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     }
 
     @Override
-    public String searchByCoref(String uri) throws EntityRetrievalException {
+    public String searchByCoref(String uri) {
 
 	getLogger().debug("search entity by coref uri: " + uri);
 
@@ -420,6 +422,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	 */
 	SolrQuery query = new SolrQuery();
 	query.setQuery(ConceptSolrFields.COREF + ":\"" + uri + "\"");
+	query.set(CommonParams.SORT, EntitySolrFields.DERIVED_SCORE + " " + EntityQueryBuilder.DESC);
 	query.addField(ConceptSolrFields.ID);
 
 	try {
@@ -427,17 +430,20 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    SolrDocumentList docs = rsp.getResults();
 
 	    if (docs.getNumFound() == 0)
-		return null;
+	      return null;
 
 	    if (docs.getNumFound() == 1)
-		return docs.get(0).getFieldValue(ConceptSolrFields.ID).toString();
-
+	      return "\""+docs.get(0).getFieldValue(ConceptSolrFields.ID).toString()+"\"";
 	    // TODO: can this return >1 result? should it?
-	    else if (docs.getNumFound() > 1)
-		throw new EntityRetrievalException("Too many solr entries found for coref uri: " + uri
-			+ ". Expected 0..1, but found " + docs.getNumFound());
+	    else if (docs.getNumFound() > 1) {
+	      String multipleIds = "\""+docs.get(0).getFieldValue(ConceptSolrFields.ID).toString()+"\"";
+	      for(int i=1;i<docs.getNumFound();i++) {
+	        multipleIds += "," + "\""+docs.get(i).getFieldValue(ConceptSolrFields.ID).toString()+"\"";
+	      }
+	      return multipleIds;
+	    }
 
-	} catch (RuntimeException | SolrServerException | IOException e) {
+	} catch (SolrServerException | IOException e) {
 	    throw new EntityRuntimeException("Unexpected exception occured when searching Solr entities. ", e);
 	}
 
