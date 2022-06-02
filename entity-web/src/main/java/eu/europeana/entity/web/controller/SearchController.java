@@ -216,4 +216,58 @@ public class SearchController extends BaseRest {
 	
     }
 
+	@ApiOperation(value = "Performs a text based lookup for entities to inform enrichment services on Metis. " +
+			"Suported values for type: Agent, Place, Concept, Timespan, All. Supported values for scope: europeana",
+			nickname = "enrichEntity", response = java.lang.Void.class)
+	@RequestMapping(value = { "/entity/enrich"}, method = RequestMethod.GET, produces = {
+			HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+	public ResponseEntity<String> enrichEntity(
+			@RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
+			@RequestParam(value = CommonApiConstants.QUERY_PARAM_TEXT) String text,
+			@RequestParam(value = CommonApiConstants.QUERY_PARAM_LANG, required = false) String lang,
+			@RequestParam(value = WebEntityConstants.QUERY_PARAM_TYPE, required = false) String type,
+			@RequestParam(value = CommonApiConstants.QUERY_PARAM_ROWS, defaultValue = WebEntityConstants.PARAM_DEFAULT_ROWS) int rows,
+			HttpServletRequest request)
+			throws HttpException {
+		try {
+			verifyReadAccess(request);
+
+			// validate text parameter
+			if (StringUtils.isBlank(text))
+				throw new ParamValidationException(I18nConstants.EMPTY_PARAM_MANDATORY,
+						CommonApiConstants.QUERY_PARAM_QUERY, text);
+
+			// validate language
+			validateLanguage(lang);
+
+			// validate type
+			List<EntityTypes> entityTypes = getEntityService().getEntityTypesFromString(type);
+
+			// build query
+			EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
+			Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(text, lang, entityTypes, rows);
+
+			// perform search
+			ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,
+					null);
+
+            ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, 
+                request.getQueryString());
+			String jsonLd = serializeResultsPage(resPage, null);
+
+			// build response
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);
+			headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+			ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
+
+			return response;
+		} catch (UnsupportedEntityTypeException e) {
+			throw new ParamValidationException(I18nConstants.UNSUPPORTED_ENTITY_TYPE, WebEntityConstants.ENTITY_API_RESOURCE,
+					e.getMessage());
+		} catch (JsonProcessingException e) {
+			throw new InternalServerException(e);
+		} catch (RuntimeException e) {
+			throw new InternalServerException(e);
+		}
+	}
 }
