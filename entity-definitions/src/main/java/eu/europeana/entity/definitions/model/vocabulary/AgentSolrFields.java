@@ -15,6 +15,7 @@ public interface AgentSolrFields extends ConceptSolrFields {
     public static final String PLACE_OF_BIRTH_ALL = "rdagr2_placeOfBirth" + ".*";
     public static final String PLACE_OF_DEATH_ALL = "rdagr2_placeOfDeath" + ".*";
     public static final String DATE_OF_ESTABLISHMENT = "rdagr2_dateOfEstablishment";
+    public static final String DATE_OF_TERMINATION = "rdagr2_dateOfTermination";
     public static final String GENDER = "rdagr2_gender";
     public static final String PROFESSION_OR_OCCUPATION = "rdagr2_professionOrOccupation";
     public static final String PROFESSION_OR_OCCUPATION_ALL = "rdagr2_professionOrOccupation" + ".*";
