@@ -84,15 +84,9 @@ public interface SolrEntityService {
 	 * using an alternative uri for an entity (lookup will happen within the coref property).
 	 * 
 	 * @param uri
-	 * @return
+	 * @return and empty list or a list of found entities
 	 */
-	public String searchByCoref(String uri);
+	public List<String> searchByCoref(String uri);
 	
-//	/**
-//	 * @param entityUrl
-//	 * @throws EntityServiceException
-//	 */
-//	public void delete(String entityUrl) throws EntityServiceException;
-
 
 }

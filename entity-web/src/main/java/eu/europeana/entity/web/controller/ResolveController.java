@@ -1,6 +1,7 @@
 package eu.europeana.entity.web.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -151,18 +152,18 @@ public class ResolveController extends BaseRest {
 
         try {
             verifyReadAccess(request);
-            String entityUri = getEntityService().resolveByUri(uri.trim());
+            List<String> entityUris = getEntityService().resolveByUri(uri.trim());
 
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+            //if empty, a http exception is thrown in the service
+            headers.add(HttpHeaders.LOCATION, entityUris.get(0));
             
-            if(entityUri.contains(",")) {
-              headers.add(HttpHeaders.LOCATION, entityUri.split(",")[0]);
-              return new ResponseEntity<String>("["+entityUri+"]", headers, HttpStatus.MULTIPLE_CHOICES);         
-            }
-            else {
-              headers.add(HttpHeaders.LOCATION, entityUri);
-              return new ResponseEntity<String>("["+entityUri+"]", headers, HttpStatus.MOVED_PERMANENTLY);                       
+            if(entityUris.size() == 1) {
+                return new ResponseEntity<String>(headers, HttpStatus.MOVED_PERMANENTLY);
+            } else {
+                String body = jsonLdSerializer.serializeToJson(entityUris);
+                return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
             }
 
         } catch (RuntimeException e) {
