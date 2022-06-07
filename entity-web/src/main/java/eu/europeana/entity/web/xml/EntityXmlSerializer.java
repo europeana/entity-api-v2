@@ -18,6 +18,7 @@ import eu.europeana.entity.solr.model.SolrConceptImpl;
 import eu.europeana.entity.solr.model.SolrOrganizationImpl;
 import eu.europeana.entity.solr.model.SolrPlaceImpl;
 import eu.europeana.entity.solr.model.SolrTimeSpanImpl;
+import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.xml.model.XmlAgentImpl;
 import eu.europeana.entity.web.xml.model.XmlAggregationImpl;
 import eu.europeana.entity.web.xml.model.XmlBaseEntityImpl;
@@ -88,11 +89,14 @@ public class EntityXmlSerializer {
 	 * @return The serialized entity in xml string format
 	 * @throws JsonProcessingException, UnsupportedEntityTypeException
 	 */
-	public String serializeXml(Entity entity) throws UnsupportedEntityTypeException {
+	public String serializeXml(Entity entity, String entityIdBaseUrl) throws UnsupportedEntityTypeException {
 		JacksonXmlModule xmlModule = new JacksonXmlModule();
 		xmlModule.setDefaultUseWrapper(true);
 		ObjectMapper objectMapper = new XmlMapper(xmlModule);
 		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		
+		//adjust the entity id
+		entity.setEntityId(EntityUtils.replaceBaseUrlInId(entity.getEntityId(), entityIdBaseUrl));
 
 		String outputHeader;
 		String output = "";

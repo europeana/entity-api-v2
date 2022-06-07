@@ -1,7 +1,7 @@
 package eu.europeana.entity.web.controller;
 
 import java.util.Date;
-
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -19,10 +19,13 @@ import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.formats.FormatTypes;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.RankedEntity;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
+import eu.europeana.entity.utils.EntityUtils;
+import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.InternalServerException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +34,9 @@ import io.swagger.annotations.ApiOperation;
 @SwaggerSelect
 @Api(tags = "Entity retrieval", description = " ")
 public class ResolveController extends BaseRest {
+  
+    @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
+    private EntityWebConfig entityWebConfig;
 
     private static final String ACCEPT = "Accept=";
     private static final String ACCEPT_HEADER_JSONLD = ACCEPT + HttpHeaders.CONTENT_TYPE_JSONLD;
@@ -112,6 +118,7 @@ public class ResolveController extends BaseRest {
         try {
             verifyReadAccess(request);
             Entity entity = getEntityService().retrieveByUrl(type, identifier);
+            
             String jsonLd = serialize(entity, outFormat);
 
             Date timestamp = ((RankedEntity) entity).getTimestamp();
@@ -157,12 +164,14 @@ public class ResolveController extends BaseRest {
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
             
             if(entityUri.contains(",")) {
-              headers.add(HttpHeaders.LOCATION, entityUri.split(",")[0]);
-              return new ResponseEntity<String>("["+entityUri+"]", headers, HttpStatus.MULTIPLE_CHOICES);         
+              String entityUriAdjusted = EntityUtils.replaceBaseUrlInId(entityUri.split(",")[0], entityWebConfig.getEntityDataEndpoint()); 
+              headers.add(HttpHeaders.LOCATION, entityUriAdjusted);
+              return new ResponseEntity<String>(entityUriAdjusted, headers, HttpStatus.MULTIPLE_CHOICES);         
             }
             else {
-              headers.add(HttpHeaders.LOCATION, entityUri);
-              return new ResponseEntity<String>("["+entityUri+"]", headers, HttpStatus.MOVED_PERMANENTLY);                       
+              String entityUriAdjusted = EntityUtils.replaceBaseUrlInId(entityUri, entityWebConfig.getEntityDataEndpoint());
+              headers.add(HttpHeaders.LOCATION, entityUriAdjusted);
+              return new ResponseEntity<String>(entityUriAdjusted, headers, HttpStatus.MOVED_PERMANENTLY);                       
             }
 
         } catch (RuntimeException e) {
