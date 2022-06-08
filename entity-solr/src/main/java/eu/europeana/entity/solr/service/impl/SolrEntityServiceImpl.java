@@ -23,7 +23,6 @@ import org.apache.solr.client.solrj.impl.BaseHttpSolrClient.RemoteSolrException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,6 @@ import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
-import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.config.EntitySolrConfig;
@@ -67,9 +65,9 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	this.entitySolrConfig = entitySolrConfig;
     }
 
-    public Entity searchById(String entityId) throws EntityRetrievalException {
-	return null;
-    }
+//    public Entity searchById(String entityId) throws EntityRetrievalException {
+//	return null;
+//    }
 
     @Override
     public Entity searchByUrl(String type, String entityId)
@@ -415,8 +413,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     }
 
     @Override
-    public List<String> searchByCoref(String uri) {
-
+    public List<String> searchByCoref(String uri) throws EntityRuntimeException {
 	getLogger().debug("search entity by coref uri: " + uri);
 
 	/**
@@ -424,7 +421,6 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	 */
 	SolrQuery query = new SolrQuery();
 	query.setQuery(ConceptSolrFields.COREF + ":\"" + uri + "\"");
-	query.set(CommonParams.SORT, EntitySolrFields.DERIVED_SCORE + " " + EntityQueryBuilder.DESC);
 	query.addField(ConceptSolrFields.ID);
 
 	try {
@@ -436,35 +432,9 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    } else {
 	        return docs.stream().map(doc -> doc.getFieldValue(ConceptSolrFields.ID).toString()).collect(Collectors.toList());
 	    }
-	} catch (SolrServerException | IOException e) {
+	} catch (RuntimeException | SolrServerException | IOException e) {
 	    throw new EntityRuntimeException("Unexpected exception occured when searching Solr entities. ", e);
 	}
     }
-
-
-//    /*
-//     * (non-Javadoc)
-//     * 
-//     * @see
-//     * eu.europeana.entity.solr.service.SolrEntityService#delete(java.lang.String)
-//     */
-//    @Override
-//    public void delete(String entityUrl) throws EntityServiceException {
-//	try {
-//	    getLogger().debug("delete concept scheme with ID: " + entityUrl);
-//	    UpdateResponse rsp = solrClient.deleteById(entityUrl);
-//	    getLogger().trace("delete response: " + rsp.toString());
-//	    solrClient.commit();
-//	} catch (SolrServerException ex) {
-//	    throw new EntityServiceException(
-//		    "Unexpected solr server exception occured when deleting concept scheme for: " + entityUrl, ex);
-//	} catch (IOException ex) {
-//	    throw new EntityServiceException(
-//		    "Unexpected IO exception occured when deleting concept scheme for: " + entityUrl, ex);
-//	} catch (Throwable th) {
-//	    throw new EntityServiceException(
-//		    "Unexpected exception occured when deleting concept scheme for: " + entityUrl, th);
-//	}
-//    }
 
 }

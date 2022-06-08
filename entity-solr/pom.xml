@@ -7,7 +7,6 @@
 		<name>Europeana Foundation + AIT</name>
 	</organization>
 	<url>http://www.europeanalabs.eu</url>
-	
 	<parent>
 		<artifactId>entity-api</artifactId>
 		<groupId>eu.europeana.entity</groupId>

@@ -25,6 +25,7 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.service.SolrEntityService;
+import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.InternalServerException;
 import eu.europeana.entity.web.exception.ParamValidationException;
 import eu.europeana.entity.web.model.view.EntityPreview;
@@ -37,23 +38,16 @@ import eu.europeana.entity.web.service.EntityService;
 @Service(AppConfigConstants.BEAN_ENTITY_SERVICE)
 public class EntityServiceImpl extends BaseEntityServiceImpl implements EntityService {
 
-    public final String BASE_URL_DATA = "http://data.europeana.eu/";
-
     @Resource(name = AppConfigConstants.ENTITY_SOLR_SERVICE)
     SolrEntityService solrEntityService;
-
+    
+    @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
+    private EntityWebConfig entityWebConfig;
+    
     @Override
     public Entity retrieveByUrl(String type, String identifier) throws HttpException {
 
-	StringBuilder stringBuilder = new StringBuilder();
-
-	stringBuilder.append(BASE_URL_DATA);
-	if (StringUtils.isNotEmpty(type))
-	    stringBuilder.append(type.toLowerCase() + "/");
-	if (StringUtils.isNotEmpty(identifier))
-	    stringBuilder.append(identifier);
-
-	String entityUri = stringBuilder.toString();
+	String entityUri = buildStoredEntityId(type, identifier);
 	Entity result;
 	try {
 	    result = solrEntityService.searchByUrl(type, entityUri);
@@ -72,6 +66,23 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 		    HttpStatus.NOT_FOUND, null);
 
 	return result;
+    }
+
+
+    private String buildStoredEntityId(String type, String identifier) {
+        StringBuilder stringBuilder = new StringBuilder();
+        //TODO: replace by relative path search
+        stringBuilder.append(entityWebConfig.getEntityIdBaseUrl());
+        if(!entityWebConfig.getEntityIdBaseUrl().endsWith(WebEntityConstants.SLASH)) {
+            stringBuilder.append(WebEntityConstants.SLASH);
+        }
+        if (StringUtils.isNotEmpty(type))
+            stringBuilder.append(type.toLowerCase()).append(WebEntityConstants.SLASH);
+        if (StringUtils.isNotEmpty(identifier))
+            stringBuilder.append(identifier);
+
+        String entityUri = stringBuilder.toString();
+        return entityUri;
     }
 
 
@@ -160,8 +171,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
     }
 
     // TODO: consider usage of a helper class for helper methods
-    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results,
-	    StringBuffer requestUrl, String reqParams) {
+    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, String reqParams) {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	ResultsPage<T> resPage = new ResultsPageImpl();
 
@@ -171,6 +181,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	resPage.setTotalInPage(results.getResults().size());
 	resPage.setTotalInCollection(results.getResultSize());
 
+	StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint() + "/search");
 	String collectionUrl = buildCollectionUrl(searchQuery, requestUrl, reqParams);
 	resPage.setCollectionUri(collectionUrl);
 
@@ -242,16 +253,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	return tmp;
     }
 
-  
-
-  
-
-   
-
-   
-
-  
-
+ 
     @Override
     public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes)
 	    throws HttpException {

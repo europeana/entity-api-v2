@@ -17,9 +17,12 @@ import eu.europeana.entity.utils.jsonld.EuropeanaEntityLd;
 import eu.europeana.entity.web.exception.FunctionalRuntimeException;
 
 public class EntityResultsPageSerializer<T extends Entity> extends ResultsPageSerializer<T> {
+  
+    String entityIdBaseUrl;
 
-	public EntityResultsPageSerializer(ResultsPage<T> resPage, String context, String type) {
+	public EntityResultsPageSerializer(ResultsPage<T> resPage, String context, String type, String entityIdBaseUrl) {
 		super(resPage, context, type);
+		this.entityIdBaseUrl = entityIdBaseUrl;
 		setPropOrderComparator(new EntityJsonComparator());	
 	}
 
@@ -44,7 +47,7 @@ public class EntityResultsPageSerializer<T extends Entity> extends ResultsPageSe
 		EuropeanaEntityLd entityLd;
 		//transform annotation object to json-ld
 		try {
-			entityLd = new EuropeanaEntityLd(entity);
+			entityLd = new EuropeanaEntityLd(entity, entityIdBaseUrl);
 		} catch (UnsupportedEntityTypeException e) {
 			throw new FunctionalRuntimeException("Cannot serialize entity of type: "+entity.getType(), e);
 		}

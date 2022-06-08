@@ -18,6 +18,7 @@ import eu.europeana.entity.definitions.model.ResourcePreview;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityFields;
+import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.utils.jsonld.EntityJsonComparator;
 import eu.europeana.entity.web.model.view.AgentPreview;
 import eu.europeana.entity.web.model.view.EntityPreview;
@@ -33,6 +34,7 @@ public class SuggestionSetSerializer extends JsonLd {
     }
 
     ResultSet<? extends EntityPreview> entitySet;
+    String entityIdBaseUrl;
 
     public ResultSet<? extends EntityPreview> getEntitySet() {
 	return entitySet;
@@ -45,8 +47,9 @@ public class SuggestionSetSerializer extends JsonLd {
     /**
      * @param conceptSet
      */
-    public SuggestionSetSerializer(ResultSet<? extends EntityPreview> entitySet) {
+    public SuggestionSetSerializer(ResultSet<? extends EntityPreview> entitySet, String entityIdBaseUrl) {
 	super();
+	this.entityIdBaseUrl = entityIdBaseUrl;
 	setPropOrderComparator(new EntityJsonComparator());
 	registerContainerProperty(WebEntityConstants.IS_PART_OF);
 	registerContainerProperty(WebEntityConstants.ITEMS);
@@ -134,7 +137,9 @@ public class SuggestionSetSerializer extends JsonLd {
 	JsonLdPropertyValue entityPreviewPropValue = new JsonLdPropertyValue();
 
 	// id
-	entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.ID, entityPreview.getEntityId()));
+	String entityIdAdjusted = EntityUtils.replaceBaseUrlInId(entityPreview.getEntityId(), entityIdBaseUrl);
+	entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.ID, entityIdAdjusted));
+	
 	JsonLdProperty prefLabelProp = buildMapOfStringsProperty(WebEntityConstants.PREF_LABEL,
 		entityPreview.getPreferredLabel(), "");
 	if (prefLabelProp != null) {
@@ -204,7 +209,6 @@ public class SuggestionSetSerializer extends JsonLd {
 		break;
 	    }
 
-	    entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.ID, entityPreview.getEntityId()));
 	}
 
 	return entityPreviewPropValue;
