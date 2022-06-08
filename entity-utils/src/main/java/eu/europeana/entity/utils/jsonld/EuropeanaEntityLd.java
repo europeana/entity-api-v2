@@ -201,11 +201,18 @@ public class EuropeanaEntityLd extends JsonLd {
 
 	putStringArrayProperty(WebEntityFields.DATE_OF_DEATH, entity.getDateOfDeath(), jsonLdResource);
 	putStringArrayProperty(WebEntityFields.DATE_OF_BIRTH, entity.getDateOfBirth(), jsonLdResource);
+	if (!StringUtils.isEmpty(entity.getDateOfEstablishment())) {
+            ldResource.putProperty(WebEntityFields.DATE_OF_ESTABLISHMENT, entity.getDateOfEstablishment());
+        }
+	if (!StringUtils.isEmpty(entity.getDateOfTermination())) {
+            ldResource.putProperty(WebEntityFields.DATE_OF_TERMINATION, entity.getDateOfTermination());
+        }
+	
 	putStringArrayProperty(WebEntityFields.BEGIN, entity.getBegin(), jsonLdResource);
 	putStringArrayProperty(WebEntityFields.END, entity.getEnd(), jsonLdResource);
+	
 
 	putMapOfReferencesProperty(WebEntityFields.PLACE_OF_BIRTH, entity.getPlaceOfBirth(), "", jsonLdResource);
-
 	putMapOfReferencesProperty(WebEntityFields.PLACE_OF_DEATH, entity.getPlaceOfDeath(), "", jsonLdResource);
 
     }
