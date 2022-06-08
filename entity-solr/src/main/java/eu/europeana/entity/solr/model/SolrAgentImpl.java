@@ -181,11 +181,28 @@ public class SolrAgentImpl extends BaseAgent implements Agent {
 	}
 
 	@Override
-	@Field(AgentSolrFields.DATE_OF_ESTABLISHMENT)
+//	@Field(AgentSolrFields.DATE_OF_ESTABLISHMENT)
 	public void setDateOfEstablishment(String dateOfEstablishment) {
 		super.setDateOfEstablishment(dateOfEstablishment);
 	}
 
+	@Field(AgentSolrFields.DATE_OF_ESTABLISHMENT)
+        public void setDateOfEstablishmentArray(String[] dateOfEstablishmentArray) {
+	    //EA-3041 date of establishment is single value, ensured though the entity management, mapping needs to be updated when the schema will be updated
+	    if(dateOfEstablishmentArray != null && dateOfEstablishmentArray.length > 0) {
+                super.setDateOfEstablishment(dateOfEstablishmentArray[0]);
+	    }
+        }
+	
+	
+	@Field(AgentSolrFields.DATE_OF_TERMINATION)
+        public void setDateOfTerminationArray(String[] dateOfTerminationArray) {
+            //EA-3041 date of establishment is single value, ensured though the entity management, mapping needs to be updated when the schema will be updated
+            if(dateOfTerminationArray != null && dateOfTerminationArray.length > 0) {
+                super.setDateOfTermination(dateOfTerminationArray[0]);
+            }
+        }
+	
 	@Override
 	public void setGender(String gender) {
 		super.setGender(gender);

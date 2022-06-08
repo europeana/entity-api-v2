@@ -1,6 +1,8 @@
 package eu.europeana.entity.web.controller;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -158,20 +160,20 @@ public class ResolveController extends BaseRest {
 
         try {
             verifyReadAccess(request);
-            String entityUri = getEntityService().resolveByUri(uri.trim());
+            List<String> entityUris = getEntityService().resolveByUri(uri.trim());
 
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+            //if empty, a http exception is thrown in the service
+            String preferedEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
+            headers.add(HttpHeaders.LOCATION, preferedEntity);
             
-            if(entityUri.contains(",")) {
-              String entityUriAdjusted = EntityUtils.replaceBaseUrlInId(entityUri.split(",")[0], entityWebConfig.getEntityDataEndpoint()); 
-              headers.add(HttpHeaders.LOCATION, entityUriAdjusted);
-              return new ResponseEntity<String>(entityUriAdjusted, headers, HttpStatus.MULTIPLE_CHOICES);         
-            }
-            else {
-              String entityUriAdjusted = EntityUtils.replaceBaseUrlInId(entityUri, entityWebConfig.getEntityDataEndpoint());
-              headers.add(HttpHeaders.LOCATION, entityUriAdjusted);
-              return new ResponseEntity<String>(entityUriAdjusted, headers, HttpStatus.MOVED_PERMANENTLY);                       
+            if(entityUris.size() == 1) {
+                return new ResponseEntity<String>(headers, HttpStatus.MOVED_PERMANENTLY);
+            } else {
+                List<String> updatedUris = EntityUtils.updateBaseUrlInIds(entityUris, entityWebConfig.getEntityDataEndpoint());
+                String body = jsonLdSerializer.serializeToJson(updatedUris);
+                return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
             }
 
         } catch (RuntimeException e) {

@@ -1,39 +1,47 @@
 package eu.europeana.entity.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 
 public class EntityUtils {
 
-	public static String createWikimediaResourceString(String wikimediaCommonsId) {
-		assert wikimediaCommonsId.contains("Special:FilePath/");
-		return wikimediaCommonsId.replace("Special:FilePath/", "File:");
-	}
-	
-	public static String toGeoUri(String latLon){
-		return WebEntityConstants.PROTOCOL_GEO + latLon;
-	}
-	
-	public static int ordinalIndexOf(String str, String substr, int n) {
-	    int pos = -1;
-	    do {
-	        pos = str.indexOf(substr, pos + 1);
-	    } while (n-- > 1 && pos != -1);
-	    return pos;
-	}
-	
-	public static String replaceBaseUrlInId (String id, String replaceWith) {
-	  if(replaceWith==null) {
-	    return id;
-	  }
-	  else {
-	    int indexOfNthSlash = ordinalIndexOf(id, "/", 3);
-	    if(indexOfNthSlash==-1) {
-	      return id;
-	    }
-	    else {
-	      return id.replace(id.substring(0, indexOfNthSlash + 1), replaceWith);
-	    }
-	  }
-	}
+    public static String createWikimediaResourceString(String wikimediaCommonsId) {
+        assert wikimediaCommonsId.contains("Special:FilePath/");
+        return wikimediaCommonsId.replace("Special:FilePath/", "File:");
+    }
+
+    public static String toGeoUri(String latLon) {
+        return WebEntityConstants.PROTOCOL_GEO + latLon;
+    }
+
+    public static String replaceBaseUrlInId(String id, String dataEndpoint) {
+        if (dataEndpoint == null || id.startsWith(dataEndpoint)) {
+            return id;
+        }
+
+        int slashCountForEndOfDomain = 3;
+        int pathStartPos = StringUtils.ordinalIndexOf(id, "/", slashCountForEndOfDomain);
+
+        if (pathStartPos > 0) {
+            return dataEndpoint + id.substring(pathStartPos);
+        } 
+        //should not happen
+        return id;
+    }
     
+    public static List<String> updateBaseUrlInIds(List<String> entityUris, String dataEndPoint) {
+        if(entityUris == null || entityUris.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> updatedUris = new ArrayList<>(entityUris.size());
+        for(String id : entityUris) {
+            updatedUris.add(EntityUtils.replaceBaseUrlInId(id, dataEndPoint));   
+        }
+        return updatedUris;
+    }
 }

@@ -109,10 +109,10 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
     }
 
     @Override
-    public String resolveByUri(String uri) throws HttpException {
-	String result = solrEntityService.searchByCoref(uri);	
+    public List<String> resolveByUri(String uri) throws HttpException {
+	List<String> result = solrEntityService.searchByCoref(uri);	
 	// if not found send appropriate error message
-	if (result == null)
+	if (result.isEmpty())
 	    throw new HttpException(null, I18nConstants.CANT_FIND_BY_SAME_AS_URI, new String[] { 
 		    WebEntityConstants.ENTITY_API_RESOURCE, uri },
 		    HttpStatus.NOT_FOUND);
@@ -244,16 +244,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	return tmp;
     }
 
-  
-
-  
-
-   
-
-   
-
-  
-
+ 
     @Override
     public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes)
 	    throws HttpException {

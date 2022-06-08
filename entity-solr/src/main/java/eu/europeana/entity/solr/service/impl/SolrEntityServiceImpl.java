@@ -3,12 +3,14 @@ package eu.europeana.entity.solr.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -411,8 +413,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     }
 
     @Override
-    public String searchByCoref(String uri) throws EntityRetrievalException {
-
+    public List<String> searchByCoref(String uri) throws EntityRuntimeException {
 	getLogger().debug("search entity by coref uri: " + uri);
 
 	/**
@@ -426,48 +427,14 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    QueryResponse rsp = solrClient.query(query);
 	    SolrDocumentList docs = rsp.getResults();
 
-	    if (docs.getNumFound() == 0)
-		return null;
-
-	    if (docs.getNumFound() == 1)
-		return docs.get(0).getFieldValue(ConceptSolrFields.ID).toString();
-
-	    // TODO: can this return >1 result? should it?
-	    else if (docs.getNumFound() > 1)
-		throw new EntityRetrievalException("Too many solr entries found for coref uri: " + uri
-			+ ". Expected 0..1, but found " + docs.getNumFound());
-
+	    if (docs.isEmpty()) {
+	      return Collections.emptyList();
+	    } else {
+	        return docs.stream().map(doc -> doc.getFieldValue(ConceptSolrFields.ID).toString()).collect(Collectors.toList());
+	    }
 	} catch (RuntimeException | SolrServerException | IOException e) {
 	    throw new EntityRuntimeException("Unexpected exception occured when searching Solr entities. ", e);
 	}
-
-	return null;
     }
-
-
-//    /*
-//     * (non-Javadoc)
-//     * 
-//     * @see
-//     * eu.europeana.entity.solr.service.SolrEntityService#delete(java.lang.String)
-//     */
-//    @Override
-//    public void delete(String entityUrl) throws EntityServiceException {
-//	try {
-//	    getLogger().debug("delete concept scheme with ID: " + entityUrl);
-//	    UpdateResponse rsp = solrClient.deleteById(entityUrl);
-//	    getLogger().trace("delete response: " + rsp.toString());
-//	    solrClient.commit();
-//	} catch (SolrServerException ex) {
-//	    throw new EntityServiceException(
-//		    "Unexpected solr server exception occured when deleting concept scheme for: " + entityUrl, ex);
-//	} catch (IOException ex) {
-//	    throw new EntityServiceException(
-//		    "Unexpected IO exception occured when deleting concept scheme for: " + entityUrl, ex);
-//	} catch (Throwable th) {
-//	    throw new EntityServiceException(
-//		    "Unexpected exception occured when deleting concept scheme for: " + entityUrl, th);
-//	}
-//    }
 
 }
