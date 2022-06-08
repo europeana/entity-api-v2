@@ -9,7 +9,6 @@ import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
-import eu.europeana.entity.solr.exception.EntityServiceException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.web.model.view.EntityPreview;
 
@@ -25,7 +24,7 @@ public interface SolrEntityService {
 	 * @return
 	 * @throws EntityRetrievalException 
 	 */
-	public Entity searchById(String entityId) throws EntityRetrievalException;
+//	public Entity searchById(String entityId) throws EntityRetrievalException;
 
 	/**
 	 * This method retrieves available Entities by searching the given entity URI.

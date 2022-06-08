@@ -25,7 +25,11 @@ public class EntityUtils {
         }
 
         int slashCountForEndOfDomain = 3;
-        int pathStartPos = StringUtils.ordinalIndexOf(id, "/", slashCountForEndOfDomain);
+        int pathStartPos = StringUtils.ordinalIndexOf(id, WebEntityConstants.SLASH, slashCountForEndOfDomain);
+        if(dataEndpoint.endsWith(WebEntityConstants.SLASH)) {
+            //avoid double slash
+            pathStartPos++;
+        }
 
         if (pathStartPos > 0) {
             return dataEndpoint + id.substring(pathStartPos);
@@ -40,7 +44,7 @@ public class EntityUtils {
         }
         List<String> updatedUris = new ArrayList<>(entityUris.size());
         for(String id : entityUris) {
-            updatedUris.add(EntityUtils.replaceBaseUrlInId(id, dataEndPoint));   
+            updatedUris.add(replaceBaseUrlInId(id, dataEndPoint));   
         }
         return updatedUris;
     }

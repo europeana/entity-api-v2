@@ -28,5 +28,9 @@ entity.solr.facetLimit=750
 entity.solr.url=
 entity.solr.zookeeper.url=
 entity.solr.collection=entity-test
-entity.api.endpoint=
-entity.data.endpoint=
+
+# ==== configured endpoints
+entity.api.endpoint=http://localhost:8080/entity-web/entity
+entity.data.endpoint=http://data.europeana.eu
+# optional
+#entity.id.baseurl:http://data.europeana.eu

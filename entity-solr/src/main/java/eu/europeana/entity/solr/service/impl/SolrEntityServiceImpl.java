@@ -65,9 +65,9 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	this.entitySolrConfig = entitySolrConfig;
     }
 
-    public Entity searchById(String entityId) throws EntityRetrievalException {
-	return null;
-    }
+//    public Entity searchById(String entityId) throws EntityRetrievalException {
+//	return null;
+//    }
 
     @Override
     public Entity searchByUrl(String type, String entityId)

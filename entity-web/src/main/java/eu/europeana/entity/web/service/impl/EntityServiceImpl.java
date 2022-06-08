@@ -47,15 +47,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
     @Override
     public Entity retrieveByUrl(String type, String identifier) throws HttpException {
 
-	StringBuilder stringBuilder = new StringBuilder();
-
-	stringBuilder.append(entityWebConfig.getEntityDataEndpoint());
-	if (StringUtils.isNotEmpty(type))
-	    stringBuilder.append(type.toLowerCase() + "/");
-	if (StringUtils.isNotEmpty(identifier))
-	    stringBuilder.append(identifier);
-
-	String entityUri = stringBuilder.toString();
+	String entityUri = buildStoredEntityId(type, identifier);
 	Entity result;
 	try {
 	    result = solrEntityService.searchByUrl(type, entityUri);
@@ -74,6 +66,23 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 		    HttpStatus.NOT_FOUND, null);
 
 	return result;
+    }
+
+
+    private String buildStoredEntityId(String type, String identifier) {
+        StringBuilder stringBuilder = new StringBuilder();
+        //TODO: replace by relative path search
+        stringBuilder.append(entityWebConfig.getEntityIdBaseUrl());
+        if(!entityWebConfig.getEntityIdBaseUrl().endsWith(WebEntityConstants.SLASH)) {
+            stringBuilder.append(WebEntityConstants.SLASH);
+        }
+        if (StringUtils.isNotEmpty(type))
+            stringBuilder.append(type.toLowerCase()).append(WebEntityConstants.SLASH);
+        if (StringUtils.isNotEmpty(identifier))
+            stringBuilder.append(identifier);
+
+        String entityUri = stringBuilder.toString();
+        return entityUri;
     }
 
 
