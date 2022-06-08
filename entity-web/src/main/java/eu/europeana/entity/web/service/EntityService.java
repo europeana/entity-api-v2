@@ -55,10 +55,10 @@ public interface EntityService {
 	 * using an alternative uri for an entity (lookup will happen within the owl:sameAs properties).
 	 * 
 	 * @param uri
-	 * @return
+	 * @return a list of found entities or an exception if no entity is found
 	 * @throws HttpException
 	 */
-	String resolveByUri(String uri) throws HttpException;
+	List<String> resolveByUri(String uri) throws HttpException;
 	
 	
 	/**

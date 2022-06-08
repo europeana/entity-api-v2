@@ -1,9 +1,8 @@
 package eu.europeana.entity.web.controller;
 
 import java.util.Date;
-import javax.annotation.Resource;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,18 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.formats.FormatTypes;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.RankedEntity;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
-import eu.europeana.entity.utils.EntityUtils;
-import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.InternalServerException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,9 +29,6 @@ import io.swagger.annotations.ApiOperation;
 @SwaggerSelect
 @Api(tags = "Entity retrieval", description = " ")
 public class ResolveController extends BaseRest {
-  
-    @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
-    private EntityWebConfig entityWebConfig;
 
     private static final String ACCEPT = "Accept=";
     private static final String ACCEPT_HEADER_JSONLD = ACCEPT + HttpHeaders.CONTENT_TYPE_JSONLD;
@@ -158,20 +150,18 @@ public class ResolveController extends BaseRest {
 
         try {
             verifyReadAccess(request);
-            String entityUri = getEntityService().resolveByUri(uri.trim());
+            List<String> entityUris = getEntityService().resolveByUri(uri.trim());
 
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
+            //if empty, a http exception is thrown in the service
+            headers.add(HttpHeaders.LOCATION, entityUris.get(0));
             
-            if(entityUri.contains(",")) {
-              String entityUriAdjusted = EntityUtils.replaceBaseUrlInId(entityUri.split(",")[0], entityWebConfig.getEntityDataEndpoint()); 
-              headers.add(HttpHeaders.LOCATION, entityUriAdjusted);
-              return new ResponseEntity<String>(entityUriAdjusted, headers, HttpStatus.MULTIPLE_CHOICES);         
-            }
-            else {
-              String entityUriAdjusted = EntityUtils.replaceBaseUrlInId(entityUri, entityWebConfig.getEntityDataEndpoint());
-              headers.add(HttpHeaders.LOCATION, entityUriAdjusted);
-              return new ResponseEntity<String>(entityUriAdjusted, headers, HttpStatus.MOVED_PERMANENTLY);                       
+            if(entityUris.size() == 1) {
+                return new ResponseEntity<String>(headers, HttpStatus.MOVED_PERMANENTLY);
+            } else {
+                String body = jsonLdSerializer.serializeToJson(entityUris);
+                return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
             }
 
         } catch (RuntimeException e) {
