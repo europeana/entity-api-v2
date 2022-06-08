@@ -112,22 +112,6 @@ public abstract class BaseRest extends BaseRestController {
         return webConfig;
     }
 
-    /**
-     * This method returns the json-ld serialization for the given results page,
-     * according to the specifications of the provided search profile
-     * 
-     * @param resPage
-     * @param profile
-     * @return
-     * @throws JsonProcessingException
-     */
-    protected String searializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile) {
-	ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
-		ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE);
-	String profileVal = (profile == null) ? null : profile.name();
-	return serializer.serialize(profileVal);
-    }
-
 	protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
 		return jsonLdSerializer.serializeToJson(metricData);
 	}
@@ -307,10 +291,10 @@ public abstract class BaseRest extends BaseRestController {
      * @return
      * @throws JsonProcessingException
      */
-    protected String serializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile)
+    protected String serializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile, String entityIdBaseUrl)
 	    throws JsonProcessingException {
 	ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
-		ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE);
+		ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE, entityIdBaseUrl);
 	String profileVal = (profile == null) ? null : profile.name();
 	return serializer.serialize(profileVal);
     }
@@ -386,12 +370,12 @@ public abstract class BaseRest extends BaseRestController {
 	String responseBody = null;
 
 	if (FormatTypes.jsonld.equals(format)) {
-	    EuropeanaEntityLd entityLd = new EuropeanaEntityLd(entity);
+	    EuropeanaEntityLd entityLd = new EuropeanaEntityLd(entity, webConfig.getEntityDataEndpoint());
 	    return entityLd.toString(4);
 	} else if (FormatTypes.schema.equals(format)) {
 	    responseBody = (new EntitySchemaOrgSerializer()).serializeEntity(entity);
 	} else if (FormatTypes.xml.equals(format)) {
-	    responseBody = entityXmlSerializer.serializeXml(entity);
+	    responseBody = entityXmlSerializer.serializeXml(entity, webConfig.getEntityDataEndpoint());
 	}
 	return responseBody;
     }

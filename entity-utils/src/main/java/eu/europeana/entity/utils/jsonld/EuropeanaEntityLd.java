@@ -25,9 +25,11 @@ import eu.europeana.entity.utils.EntityUtils;
 public class EuropeanaEntityLd extends JsonLd {
 
     JsonLdResource ldResource = new JsonLdResource();
+    String entityIdBaseUrl;
 
-    public EuropeanaEntityLd(Entity entity) throws UnsupportedEntityTypeException {
+    public EuropeanaEntityLd(Entity entity, String entityIdBaseUrl) throws UnsupportedEntityTypeException {
 	super();
+	this.entityIdBaseUrl = entityIdBaseUrl;
 	setPropOrderComparator(new EntityJsonComparator());
 	registerContainerProperty(WebEntityConstants.BIOGRAPHICAL_INFORMATION);
 	registerContainerProperty(WebEntityConstants.PLACE_OF_BIRTH);
@@ -46,7 +48,7 @@ public class EuropeanaEntityLd extends JsonLd {
 	ldResource.putProperty(WebEntityFields.CONTEXT, WebEntityFields.ENTITY_CONTEXT);
 
 	// common EntityProperties
-	ldResource.putProperty(WebEntityFields.ID, entity.getEntityId());
+	ldResource.putProperty(WebEntityFields.ID, EntityUtils.replaceBaseUrlInId(entity.getEntityId(), entityIdBaseUrl));
 	ldResource.putProperty(WebEntityFields.TYPE, entity.getType());
 	putStringArrayProperty(WebEntityFields.IDENTIFIER, entity.getIdentifier(), ldResource);
 	putStringArrayProperty(WebEntityFields.SAME_AS, entity.getSameAs(), ldResource);
@@ -199,11 +201,18 @@ public class EuropeanaEntityLd extends JsonLd {
 
 	putStringArrayProperty(WebEntityFields.DATE_OF_DEATH, entity.getDateOfDeath(), jsonLdResource);
 	putStringArrayProperty(WebEntityFields.DATE_OF_BIRTH, entity.getDateOfBirth(), jsonLdResource);
+	if (!StringUtils.isEmpty(entity.getDateOfEstablishment())) {
+            ldResource.putProperty(WebEntityFields.DATE_OF_ESTABLISHMENT, entity.getDateOfEstablishment());
+        }
+	if (!StringUtils.isEmpty(entity.getDateOfTermination())) {
+            ldResource.putProperty(WebEntityFields.DATE_OF_TERMINATION, entity.getDateOfTermination());
+        }
+	
 	putStringArrayProperty(WebEntityFields.BEGIN, entity.getBegin(), jsonLdResource);
 	putStringArrayProperty(WebEntityFields.END, entity.getEnd(), jsonLdResource);
+	
 
 	putMapOfReferencesProperty(WebEntityFields.PLACE_OF_BIRTH, entity.getPlaceOfBirth(), "", jsonLdResource);
-
 	putMapOfReferencesProperty(WebEntityFields.PLACE_OF_DEATH, entity.getPlaceOfDeath(), "", jsonLdResource);
 
     }

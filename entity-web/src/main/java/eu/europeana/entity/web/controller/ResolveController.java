@@ -3,6 +3,7 @@ package eu.europeana.entity.web.controller;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,13 @@ import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.formats.FormatTypes;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.RankedEntity;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
+import eu.europeana.entity.utils.EntityUtils;
+import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.InternalServerException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,6 +36,9 @@ import io.swagger.annotations.ApiOperation;
 @SwaggerSelect
 @Api(tags = "Entity retrieval", description = " ")
 public class ResolveController extends BaseRest {
+  
+    @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
+    private EntityWebConfig entityWebConfig;
 
     private static final String ACCEPT = "Accept=";
     private static final String ACCEPT_HEADER_JSONLD = ACCEPT + HttpHeaders.CONTENT_TYPE_JSONLD;
@@ -113,6 +120,7 @@ public class ResolveController extends BaseRest {
         try {
             verifyReadAccess(request);
             Entity entity = getEntityService().retrieveByUrl(type, identifier);
+            
             String jsonLd = serialize(entity, outFormat);
 
             Date timestamp = ((RankedEntity) entity).getTimestamp();
@@ -157,12 +165,14 @@ public class ResolveController extends BaseRest {
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
             //if empty, a http exception is thrown in the service
-            headers.add(HttpHeaders.LOCATION, entityUris.get(0));
+            String preferedEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
+            headers.add(HttpHeaders.LOCATION, preferedEntity);
             
             if(entityUris.size() == 1) {
                 return new ResponseEntity<String>(headers, HttpStatus.MOVED_PERMANENTLY);
             } else {
-                String body = jsonLdSerializer.serializeToJson(entityUris);
+                List<String> updatedUris = EntityUtils.updateBaseUrlInIds(entityUris, entityWebConfig.getEntityDataEndpoint());
+                String body = jsonLdSerializer.serializeToJson(updatedUris);
                 return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
             }
 

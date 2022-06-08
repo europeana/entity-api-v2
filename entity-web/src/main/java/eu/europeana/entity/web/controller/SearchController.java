@@ -1,7 +1,7 @@
 package eu.europeana.entity.web.controller;
 
 import java.util.List;
-
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +24,7 @@ import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.entity.app.I18nConstants;
+import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
@@ -33,6 +34,7 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import eu.europeana.entity.solr.service.impl.EntityQueryBuilder;
+import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.InternalServerException;
 import eu.europeana.entity.web.exception.ParamValidationException;
 import eu.europeana.entity.web.jsonld.SuggestionSetSerializer;
@@ -44,6 +46,9 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Discovery API")
 @SwaggerSelect
 public class SearchController extends BaseRest {
+  
+    @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
+    private EntityWebConfig entityWebConfig;
 
     @ApiOperation(value = "Suggest entities for the given text query. Suported values for type: Agent, Place, Concept, Timespan, All. Supported values for scope: europeana", nickname = "getSuggestion", response = java.lang.Void.class)
     @RequestMapping(value = { "/entity/suggest", "/entity/suggest.jsonld" }, method = RequestMethod.GET, produces = {
@@ -86,7 +91,7 @@ public class SearchController extends BaseRest {
 		    scope, null, rows, suggestType);
 
 	    // serialize results
-	    SuggestionSetSerializer serializer = new SuggestionSetSerializer(results);
+	    SuggestionSetSerializer serializer = new SuggestionSetSerializer(results, entityWebConfig.getEntityDataEndpoint());
 	    String jsonLd = serializer.serialize();
 
 	    // build response
@@ -180,9 +185,8 @@ public class SearchController extends BaseRest {
 	    ResultSet<? extends Entity> results = getEntityService().search(searchQuery, preferredLanguages, entityTypes,
 		    scope);
 
-	    ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results,
-		    request.getRequestURL(), request.getQueryString());
-	    String jsonLd = serializeResultsPage(resPage, searchProfile);
+	    ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, request.getQueryString());
+	    String jsonLd = serializeResultsPage(resPage, searchProfile, entityWebConfig.getEntityDataEndpoint());
 
 	    // build response
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
@@ -252,9 +256,9 @@ public class SearchController extends BaseRest {
 			ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,
 					null);
 
-			ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results,
-					request.getRequestURL(), request.getQueryString());
-			String jsonLd = serializeResultsPage(resPage, null);
+            ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, 
+                request.getQueryString());
+			String jsonLd = serializeResultsPage(resPage, null, entityWebConfig.getEntityDataEndpoint());
 
 			// build response
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);

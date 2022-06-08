@@ -28,7 +28,9 @@ import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.service.impl.SolrEntityServiceImpl;
 import eu.europeana.entity.web.model.view.EntityPreview;
 
-@SpringBootTest(classes = {EntitySolrConfig.class, SolrEntityServiceImpl.class})
+@SpringBootTest(classes = {
+    EntitySolrConfig.class, 
+    SolrEntityServiceImpl.class})
 //@ContextConfiguration({ "/entity-solr-context.xml" })
 public class SolrEntityServiceTest {
 
