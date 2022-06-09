@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>entity-api</artifactId>
 		<groupId>eu.europeana.entity</groupId>
-		<version>2.0</version>
+		<version>2.1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>entity-common</artifactId>
@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>eu.europeana.entity</groupId>
 			<artifactId>entity-definitions</artifactId>
-			<version>2.0</version>		
+			<version>2.1.0-SNAPSHOT</version>		
 		</dependency>
 		
 		<dependency>
