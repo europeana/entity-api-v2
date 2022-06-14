@@ -4,7 +4,7 @@
 
 	<artifactId>entity-web</artifactId>
 	<name>Europeana Entity Collection - WEB API </name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<description>The implementation of the "Entity Collection" service</description>
 
 	<parent>
@@ -202,8 +202,29 @@
 			<scope>provided</scope>
 			<version>${version.servletApi}</version>
 		</dependency>
-
-		
 	</dependencies>
+	
+	<build>
+		<!-- set fixed name for easy deployment -->
+		<finalName>${project.artifactId}</finalName>
+	
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${version.springBoot}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>executable</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>	
 
 </project>
