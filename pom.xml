@@ -147,26 +147,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
-		<!-- plugins -->
-		<plugins>
-			<!-- repackage as executable jar - pring boot -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${version.springBoot}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-						<configuration>
-							<classifier>executable</classifier>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-
 	</build>
 </project>
