@@ -83,7 +83,7 @@
 		<version.morphia>2.1.4</version.morphia>
 		<version.servletApi>2.5</version.servletApi>
 		<!-- <mock-webserver.version>4.9.0</mock-webserver.version> -->
-		<version.springBoot>2.5.4</version.springBoot>
+		<version.springBoot>2.5.7</version.springBoot>
 		<version.spring>5.3.9</version.spring>
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.apacheSolr>7.7.2</version.apacheSolr>
