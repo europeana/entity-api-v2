@@ -164,7 +164,12 @@ public class ResolveController extends BaseRest {
 
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-            //if empty, a http exception is thrown in the service
+
+            //if empty, return 404 Not Found with appropriate error message
+            if (entityUris.isEmpty()) {
+                return new ResponseEntity<>("No entity found for sameAs/exactMatch URI : " + uri, headers, HttpStatus.NOT_FOUND);
+            }
+
             String preferedEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
             headers.add(HttpHeaders.LOCATION, preferedEntity);
             
