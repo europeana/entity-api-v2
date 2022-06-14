@@ -4,7 +4,7 @@
 
 	<artifactId>entity-web</artifactId>
 	<name>Europeana Entity Collection - WEB API </name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<description>The implementation of the "Entity Collection" service</description>
 
 	<parent>
