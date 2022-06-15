@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import eu.europeana.api.commons.web.model.ErrorApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -152,7 +153,8 @@ public class ResolveController extends BaseRest {
     }
 
     @ApiOperation(value = "Performs a lookup for the entity in all 4 datasets", nickname = "resolveEntity", response = java.lang.Void.class)
-    @RequestMapping(value = { "/entity/resolve" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "/entity/resolve" }, method = RequestMethod.GET,
+            produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     public ResponseEntity<String> resolveEntity(
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @RequestParam(value = WebEntityConstants.QUERY_PARAM_URI) String uri, HttpServletRequest request)
@@ -165,9 +167,11 @@ public class ResolveController extends BaseRest {
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
 
-            //if empty, return 404 Not Found with appropriate error message
+            //if empty, return 404 Not Found with appropriate error response
             if (entityUris.isEmpty()) {
-                return new ResponseEntity<>("No entity found for sameAs/exactMatch URI : " + uri, headers, HttpStatus.NOT_FOUND);
+                ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "No entity found for sameAs/exactMatch URI : " + uri);
+                String body = jsonLdSerializer.serializeToJson(errorResponse);
+                return new ResponseEntity<>(body, headers, HttpStatus.NOT_FOUND);
             }
 
             String preferedEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
