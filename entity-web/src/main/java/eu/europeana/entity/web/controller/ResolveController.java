@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import eu.europeana.entity.web.model.vocabulary.EntityApiErrorResponse;
+import eu.europeana.api.commons.web.model.ErrorApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -169,9 +169,7 @@ public class ResolveController extends BaseRest {
 
             //if empty, return 404 Not Found with appropriate error response
             if (entityUris.isEmpty()) {
-                EntityApiErrorResponse errorResponse = new EntityApiErrorResponse(wskey, request.getRequestURI(), false,
-                        "No entity found for sameAs/exactMatch URI : " + uri);
-
+                ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "No entity found for sameAs/exactMatch URI : " + uri);
                 String body = jsonLdSerializer.serializeToJson(errorResponse);
                 return new ResponseEntity<>(body, headers, HttpStatus.NOT_FOUND);
             }
