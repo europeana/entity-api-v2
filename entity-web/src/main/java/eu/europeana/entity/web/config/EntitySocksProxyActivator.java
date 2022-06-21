@@ -56,10 +56,10 @@ public final class EntitySocksProxyActivator{
      */
     private static boolean isValidConfiguration(SocksProxyConfig config) {
         boolean result = false;
-        if (StringUtils.isEmpty(config.getHost())) {
-            LOG.info("No socks proxy configured");
-        } else if (!config.isSocksEnabled()) {
+        if (!config.isSocksEnabled()) {
             LOG.info("Socks proxy disabled");
+        } else if (StringUtils.isEmpty(config.getHost())) {
+            LOG.info("No socks proxy configured");
         } else {
             LOG.info("Setting up socks proxy at {}", config.getHost());
             result = true;
