@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>entity-web</artifactId>
 	<name>Europeana Entity Collection - WEB API </name>
-	<packaging>war</packaging>
-	<description>The implementation of the &quot;Entity Collection&quot; service</description>
+	<packaging>jar</packaging>
+	<description>The implementation of the "Entity Collection" service</description>
 
 	<parent>
 		<artifactId>entity-api</artifactId>
 		<groupId>eu.europeana.entity</groupId>
-		<version>${version.entityApi}</version>
+		<version>2.1.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -20,23 +19,26 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
+			<!-- needed to enforce the version to 2.17  --> 
 			<version>${version.log4j2}</version>	
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
+			<!-- needed to enforce the version to 2.17  -->
 			<version>${version.log4j2}</version>
 		</dependency>
  		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
+			<!-- needed to enforce the version to 2.17  -->
 			<version>${version.log4j2}</version>
 		</dependency>
  		
  		<dependency>
 			<groupId>eu.europeana.entity</groupId>
 			<artifactId>entity-utils</artifactId>
-			<version>${version.entityApi}</version>
+			<version>2.1.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -47,13 +49,13 @@
  		<dependency>
 			<groupId>eu.europeana.entity</groupId>
 			<artifactId>entity-stats</artifactId>
-			<version>${version.entityApi}</version>
+			<version>2.1.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.entity</groupId>
 			<artifactId>entity-solr</artifactId>
-			<version>${version.entityApi}</version>
+			<version>2.1.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -118,14 +120,6 @@
 			</exclusions>
 		</dependency>
 		
-		<!-- 
-		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-net</artifactId>
-			<version>${version.commonsApi}</version>
-		</dependency>
-		 -->
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
@@ -136,36 +130,31 @@
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 			<exclusions>
+				<!-- use log4j2 instead -->
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
-			<exclusions>
-				<!-- 
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-slf4j-impl</artifactId>
-				</exclusion>
-				 -->
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-jul</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
@@ -177,14 +166,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-		
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${version.swagger}</version>
-		</dependency>
-		
+				
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -220,8 +202,29 @@
 			<scope>provided</scope>
 			<version>${version.servletApi}</version>
 		</dependency>
-
-		
 	</dependencies>
+	
+	<build>
+		<!-- set fixed name for easy deployment -->
+		<finalName>${project.artifactId}</finalName>
+	
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${version.springBoot}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>executable</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>	
 
 </project>
