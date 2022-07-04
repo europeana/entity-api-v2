@@ -4,6 +4,7 @@
 **.classpath
 **.log
 **/target/
+**/log4j2.xml
 
 #properties files
 **/entity-solr.properties
