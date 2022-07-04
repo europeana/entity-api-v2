@@ -1,6 +1,7 @@
 package eu.europeana.entity.solr.config;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
@@ -70,9 +71,10 @@ public class EntitySolrConfig {
     }
 
     private SolrClient initSolrCloudClient() {
+        
         String[] solrZookeeperUrls = solrZookeeperUrl.trim().split(",");
-        CloudSolrClient.Builder builder = new CloudSolrClient.Builder(Arrays.asList(solrZookeeperUrls));
-        builder.withConnectionTimeout(solrTimeout); 
+        CloudSolrClient.Builder builder = new CloudSolrClient.Builder(Arrays.asList(solrZookeeperUrls),  Optional.empty())
+                .withConnectionTimeout(solrTimeout); 
         
         CloudSolrClient client =  builder.build();
         client.setDefaultCollection(solrCollection);
