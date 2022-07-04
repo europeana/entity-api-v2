@@ -48,4 +48,21 @@ public class EntityUtils {
         }
         return updatedUris;
     }
+    
+    public static String validateUriAndRemoveQuotes(String uri) {
+        boolean startsWithDoubleQuotes = uri.startsWith("\"");
+        boolean endsWithDoubleQuotes = uri.endsWith("\"");
+        
+        if(startsWithDoubleQuotes && endsWithDoubleQuotes) {
+          if(UriValidator.isUri(uri.substring(1, uri.length()-1))) {
+            return uri.substring(1, uri.length()-1);
+          }
+        }
+        if(!startsWithDoubleQuotes && !endsWithDoubleQuotes) {
+          if(UriValidator.isUri(uri)) {
+            return uri;
+          }
+        }
+        return null;
+    }
 }
