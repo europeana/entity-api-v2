@@ -49,20 +49,22 @@ public class EntityUtils {
         return updatedUris;
     }
     
-    public static String validateUriAndRemoveQuotes(String uri) {
-        boolean startsWithDoubleQuotes = uri.startsWith("\"");
-        boolean endsWithDoubleQuotes = uri.endsWith("\"");
-        
-        if(startsWithDoubleQuotes && endsWithDoubleQuotes) {
-          if(UriValidator.isUri(uri.substring(1, uri.length()-1))) {
-            return uri.substring(1, uri.length()-1);
-          }
-        }
-        if(!startsWithDoubleQuotes && !endsWithDoubleQuotes) {
-          if(UriValidator.isUri(uri)) {
-            return uri;
-          }
-        }
+    /**
+     * This method converts a uri string to a valid URI, by removing all leading and trailing spaces,
+     * removing a leading or trailing double quote, and validating it to conform to the URI syntax.
+     * In case that a uri does not conform to the URI syntax, null is returned. 
+     * @param uri
+     * @return
+     */
+    public static String convertToValidUri(String uri) {
+      uri = uri.trim();
+      uri = StringUtils.removeStart(uri, "\"");
+      uri = StringUtils.removeEnd(uri, "\"");
+      if(UriValidator.isUri(uri)) {
+        return uri;
+      }
+      else {
         return null;
+      }      
     }
 }
