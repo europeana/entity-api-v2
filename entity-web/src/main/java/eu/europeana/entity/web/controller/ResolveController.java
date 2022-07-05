@@ -162,14 +162,23 @@ public class ResolveController extends BaseRest {
 
         try {
             verifyReadAccess(request);
-            List<String> entityUris = getEntityService().resolveByUri(uri.trim());
-
+            
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-
+            
+            //validate the uri
+            String validatedUri = EntityUtils.convertToValidUri(uri);
+            if (validatedUri==null) {
+                ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "Invalid uri parameter.");
+                String body = jsonLdSerializer.serializeToJson(errorResponse);
+                return new ResponseEntity<>(body, headers, HttpStatus.BAD_REQUEST);
+            }
+            
+            List<String> entityUris = getEntityService().resolveByUri(validatedUri);
+            
             //if empty, return 404 Not Found with appropriate error response
             if (entityUris.isEmpty()) {
-                ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "No entity found for sameAs/exactMatch URI : " + uri);
+                ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "No entity found for sameAs/exactMatch URI : " + validatedUri);
                 String body = jsonLdSerializer.serializeToJson(errorResponse);
                 return new ResponseEntity<>(body, headers, HttpStatus.NOT_FOUND);
             }
