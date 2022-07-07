@@ -243,7 +243,7 @@ public class SearchController extends BaseRest {
 						CommonApiConstants.QUERY_PARAM_QUERY, text);
 
 			// escape the quotes
-			String validatedText = StringUtils.replace(text, "\"", "\\\"");
+			String validatedText = escapeQuotesAndBackslash(text);
 
 			// validate language
 			validateLanguage(lang);

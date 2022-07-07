@@ -191,6 +191,11 @@ public abstract class BaseRest extends BaseRestController {
     return query;
 	}
 
+	public String escapeQuotesAndBackslash(String text) {
+		String escapedText = StringUtils.replace(text, "\"", "\\\"");
+		return StringUtils.replace(escapedText, "\\", "\\\\");
+	}
+
     private String removeSolrFieldNames(String text) {
 	if (!text.contains(WebEntityConstants.FIELD_DELIMITER)) {
 	    return text;
