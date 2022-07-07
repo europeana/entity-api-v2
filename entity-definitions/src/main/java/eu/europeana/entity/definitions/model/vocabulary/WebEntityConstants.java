@@ -35,6 +35,8 @@ public interface WebEntityConstants extends WebEntityFields {
     public static final String LANG_FIELD_DELIMITER = ".";
     public static final String COMMA = ",";
     public static final String LANG_REGEX = "[a-zA-Z]+";
+    public static final String QUOTES = "\"";
+    public static final String BACKSLASH = "\\";
 
     public static final String PARAM_PROFILE_FACETS = "facets";
 

@@ -242,6 +242,9 @@ public class SearchController extends BaseRest {
 				throw new ParamValidationException(I18nConstants.EMPTY_PARAM_MANDATORY,
 						CommonApiConstants.QUERY_PARAM_QUERY, text);
 
+			// escape the quotes
+			String validatedText = escapeQuotesAndBackslash(text);
+
 			// validate language
 			validateLanguage(lang);
 
@@ -250,7 +253,7 @@ public class SearchController extends BaseRest {
 
 			// build query
 			EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
-			Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(text, lang, entityTypes, rows);
+			Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(validatedText, lang, entityTypes, rows);
 
 			// perform search
 			ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,

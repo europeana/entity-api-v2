@@ -179,12 +179,28 @@ public abstract class BaseRest extends BaseRestController {
 	}
 		
 	//remove punctuation
-	Matcher matcher = pattern.matcher(query);	
-	if(matcher.find()) {
-	    query = matcher.replaceAll(" ");
-	}
+	query = removePunctuations(query);
 	return query;
     }
+
+    public String removePunctuations(String query) {
+    Matcher matcher = pattern.matcher(query);
+    if(matcher.find()) {
+    	query = matcher.replaceAll(" ");
+    }
+    return query;
+	}
+
+	public String escapeQuotesAndBackslash(String text) {
+    // first replace backslash to avoid conflict with string containing both " and /
+    if (text.contains(WebEntityConstants.BACKSLASH)) {
+    	text = StringUtils.replace(text, WebEntityConstants.BACKSLASH, "\\\\");
+    }
+	if (text.contains(WebEntityConstants.QUOTES)) {
+		text = StringUtils.replace(text, WebEntityConstants.QUOTES, "\\\"");
+	}
+	return  text;
+	}
 
     private String removeSolrFieldNames(String text) {
 	if (!text.contains(WebEntityConstants.FIELD_DELIMITER)) {
@@ -232,6 +248,7 @@ public abstract class BaseRest extends BaseRestController {
 				CommonApiConstants.QUERY_PARAM_LANG, language);
 		}
     }
+
 
     /**
      * This method verifies if the provided algorithm parameter is a valid one
