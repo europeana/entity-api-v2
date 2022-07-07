@@ -242,8 +242,8 @@ public class SearchController extends BaseRest {
 				throw new ParamValidationException(I18nConstants.EMPTY_PARAM_MANDATORY,
 						CommonApiConstants.QUERY_PARAM_QUERY, text);
 
-			// clean and normalise the text
-			String validatedText = StringUtils.normalizeSpace(removePunctuations(text));
+			// escape the quotes
+			String validatedText = StringUtils.replace(text, "\"", "\\\"");
 
 			// validate language
 			validateLanguage(lang);
