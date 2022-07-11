@@ -3,7 +3,6 @@ package eu.europeana.entity.web.controller;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import eu.europeana.api.common.config.swagger.SwaggerSelect;
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
@@ -34,6 +31,7 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import eu.europeana.entity.solr.service.impl.EntityQueryBuilder;
+import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.InternalServerException;
 import eu.europeana.entity.web.exception.ParamValidationException;
@@ -243,7 +241,7 @@ public class SearchController extends BaseRest {
 						CommonApiConstants.QUERY_PARAM_QUERY, text);
 
 			// escape the quotes
-			String validatedText = escapeQuotesAndBackslash(text);
+			String validatedText = EntityUtils.escapeBackslashAndQuotes(text, WebEntityConstants.BACKSLASH, WebEntityConstants.QUOTES);
 
 			// validate language
 			validateLanguage(lang);

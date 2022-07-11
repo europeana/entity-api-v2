@@ -51,15 +51,16 @@ public class EntityUtils {
     
     /**
      * This method converts a uri string to a valid URI, by removing all leading and trailing spaces,
-     * removing a leading or trailing double quote, and validating it to conform to the URI syntax.
-     * In case that a uri does not conform to the URI syntax, null is returned. 
+     * removing a leading or trailing double quote, escaping the double quote in the middle of the uri,
+     * and validating the uri to conform to the URI syntax.
      * @param uri
      * @return
      */
-    public static String convertToValidUri(String uri) {
+    public static String convertToValidUri(String uri, String quotes) {
       uri = uri.trim();
       uri = StringUtils.removeStart(uri, "\"");
       uri = StringUtils.removeEnd(uri, "\"");
+      uri = escapeQuotes(uri, quotes);
       if(UriValidator.isUri(uri)) {
         return uri;
       }
@@ -67,4 +68,26 @@ public class EntityUtils {
         return null;
       }      
     }
+    
+    public static String escapeBackslashAndQuotes(String text, String backslash, String quotes) {
+      //first replace backslash to avoid conflict with string containing both " and /
+      text = escapeBackslash(text, backslash);
+      text = escapeQuotes(text, quotes);
+      return  text;
+    }
+    
+    public static String escapeBackslash (String text, String backslash) {
+      if (text.contains(backslash)) {
+        text = StringUtils.replace(text, backslash, "\\\\");
+      }
+      return text;
+    }
+    
+    public static String escapeQuotes (String text, String quotes) {
+      if (text.contains(quotes)) {
+        text = StringUtils.replace(text, quotes, "\\\"");
+      }
+      return text;
+    }
+
 }

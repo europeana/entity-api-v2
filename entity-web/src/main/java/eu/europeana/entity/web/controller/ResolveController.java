@@ -167,7 +167,7 @@ public class ResolveController extends BaseRest {
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
             
             //validate the uri
-            String validatedUri = EntityUtils.convertToValidUri(uri);
+            String validatedUri = EntityUtils.convertToValidUri(uri, WebEntityConstants.QUOTES);
             if (validatedUri==null) {
                 ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "Invalid uri parameter.");
                 String body = jsonLdSerializer.serializeToJson(errorResponse);
