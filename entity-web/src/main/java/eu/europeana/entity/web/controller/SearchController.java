@@ -241,7 +241,7 @@ public class SearchController extends BaseRest {
 						CommonApiConstants.QUERY_PARAM_QUERY, text);
 
 			// escape the quotes
-			String validatedText = EntityUtils.escapeBackslashAndQuotes(text, WebEntityConstants.BACKSLASH, WebEntityConstants.QUOTES);
+			String validatedText = EntityUtils.escapeBackslashAndQuotes(text, WebEntityConstants.BACKSLASH, WebEntityConstants.QUOTE);
 
 			// validate language
 			validateLanguage(lang);

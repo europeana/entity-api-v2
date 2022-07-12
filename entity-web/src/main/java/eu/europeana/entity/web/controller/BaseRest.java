@@ -1,7 +1,9 @@
 package eu.europeana.entity.web.controller;
 
-import java.util.*;
-import java.util.regex.Matcher;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
@@ -36,6 +38,7 @@ import eu.europeana.entity.definitions.model.vocabulary.LdProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.SuggestAlgorithmTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.stats.service.UsageStatsService;
+import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.utils.jsonld.EuropeanaEntityLd;
 import eu.europeana.entity.web.config.BuildInfo;
 import eu.europeana.entity.web.config.EntityWebConfig;
@@ -55,66 +58,67 @@ public abstract class BaseRest extends BaseRestController {
 
     @Resource(name = AppConfigConstants.BEAN_ENTITY_SERVICE)
     private EntityService entityService;
-     
+
     @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
     EntityWebConfig webConfig;
 
     @Resource(name = AppConfigConstants.BEAN_BUILD_INFO)
     BuildInfo buildInfo;
-    
+
     @Resource(name = AppConfigConstants.BEAN_XML_SERIALIZER)
     EntityXmlSerializer entityXmlSerializer;
 
-	@Resource(name = AppConfigConstants.BEAN_EM_JSONLD_SERIALIZER)
-	JsonLdSerializer jsonLdSerializer;
+    @Resource(name = AppConfigConstants.BEAN_EM_JSONLD_SERIALIZER)
+    JsonLdSerializer jsonLdSerializer;
 
-	@Resource(name = AppConfigConstants.BEAN_USAGE_SERVICE)
-	private UsageStatsService usageStatsService ;
+    @Resource(name = AppConfigConstants.BEAN_USAGE_SERVICE)
+    private UsageStatsService usageStatsService;
 
-	Logger logger = LogManager.getLogger(getClass());
+    Logger logger = LogManager.getLogger(getClass());
 
-	private static final Set ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
+    private static final Set ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
 
-	Pattern pattern = null;
+    Pattern pattern = null;
 
     public BaseRest() {
-	super();
-	//String regexPattern = "[^A-Za-z0-9]"
-	String regexPattern = "\\p{Punct}";
-	pattern = Pattern.compile(regexPattern);
+        super();
+        // String regexPattern = "[^A-Za-z0-9]"
+        String regexPattern = "\\p{Punct}";
+        pattern = Pattern.compile(regexPattern);
     }
 
     protected EntityService getEntityService() {
-	return entityService;
+        return entityService;
     }
 
     public void setEntityService(EntityService entityService) {
-	this.entityService = entityService;
+        this.entityService = entityService;
     }
 
-	public void setUsageStatsService(UsageStatsService usageStatsService) {
-		this.usageStatsService = usageStatsService;
-	}
+    public void setUsageStatsService(UsageStatsService usageStatsService) {
+        this.usageStatsService = usageStatsService;
+    }
 
-	public UsageStatsService getUsageStatsService() {
-		return usageStatsService;
-	}
+    public UsageStatsService getUsageStatsService() {
+        return usageStatsService;
+    }
 
-	public Logger getLogger() {
-	return logger;
+    public Logger getLogger() {
+        return logger;
     }
 
     public String getApiVersion() {
-	return buildInfo.getAppVersion();
+        return buildInfo.getAppVersion();
     }
 
     protected EntityWebConfig getConfig() {
         return webConfig;
     }
 
-	protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
-		return jsonLdSerializer.serializeToJson(metricData);
-	}
+    protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
+        return jsonLdSerializer.serializeToJson(metricData);
+    }
+
     /**
      * This method verifies if the provided scope parameter is a valid one
      * 
@@ -123,14 +127,14 @@ public abstract class BaseRest extends BaseRestController {
      * @throws ParamValidationException
      */
     protected String validateScopeParam(String scope) throws ParamValidationException {
-	if (StringUtils.isBlank(scope))
-	    return null;
+        if (StringUtils.isBlank(scope))
+            return null;
 
-	if (!WebEntityConstants.PARAM_SCOPE_EUROPEANA.equalsIgnoreCase(scope))
-	    throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_SCOPE,
-		    scope);
+        if (!WebEntityConstants.PARAM_SCOPE_EUROPEANA.equalsIgnoreCase(scope))
+            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_SCOPE,
+                    scope);
 
-	return WebEntityConstants.PARAM_SCOPE_EUROPEANA;
+        return WebEntityConstants.PARAM_SCOPE_EUROPEANA;
     }
 
     /**
@@ -142,16 +146,16 @@ public abstract class BaseRest extends BaseRestController {
      */
     protected FormatTypes getFormatType(String extension) throws ParamValidationException {
 
-	// default format, when none provided
-	if (extension == null)
-	    return FormatTypes.jsonld;
+        // default format, when none provided
+        if (extension == null)
+            return FormatTypes.jsonld;
 
-	try {
-	    return FormatTypes.getByExtention(extension);
-	} catch (UnsupportedFormatTypeException e) {
-	    throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_FORMAT,
-		    extension, HttpStatus.NOT_FOUND, null);
-	}
+        try {
+            return FormatTypes.getByExtention(extension);
+        } catch (UnsupportedFormatTypeException e) {
+            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_FORMAT,
+                    extension, HttpStatus.NOT_FOUND, null);
+        }
     }
 
     /**
@@ -164,80 +168,39 @@ public abstract class BaseRest extends BaseRestController {
      * @throws ParamValidationException
      */
     protected String preProcessQuery(String text) throws ParamValidationException {
-	if (text == null) {
-	    return null;
-	}
-	// remove solr field names
-	String query = removeSolrFieldNames(text);
-	//remove AND OR
-	if(query.contains(WebEntityConstants.SOLR_AND)) {
-	    query = query.replaceAll(WebEntityConstants.SOLR_AND, " ");
-	}
+        if (text == null) {
+            return null;
+        }
+        // remove solr field names
+        String query = EntityUtils.removeSolrFieldNames(text);
+        query = EntityUtils.removeSolrAndOr(query);
 
-	if(query.contains(WebEntityConstants.SOLR_OR)) {
-	    query = query.replaceAll(WebEntityConstants.SOLR_OR, " ");
-	}
-		
-	//remove punctuation
-	query = removePunctuations(query);
-	return query;
+        // remove punctuation
+        query = EntityUtils.removePunctuations(query, pattern);
+        return query;
     }
 
-    public String removePunctuations(String query) {
-    Matcher matcher = pattern.matcher(query);
-    if(matcher.find()) {
-    	query = matcher.replaceAll(" ");
+    /**
+     * Validate language parameter
+     * 
+     * @param language
+     * @throws ParamValidationException
+     */
+    protected void validateLanguage(String language) throws ParamValidationException {
+        if (StringUtils.isEmpty(language)) {
+            return;
+        }
+        // multiple language not supported
+        if (StringUtils.contains(language, WebEntityConstants.COMMA)) {
+            throw new ParamValidationException(I18nConstants.UNSUPPORTED_MULTIPLE_LANG_VALUE,
+                    CommonApiConstants.QUERY_PARAM_LANG, language);
+        }
+        // language value can be 'all' Or ISO language only
+        if (!StringUtils.equals(language, WebEntityConstants.PARAM_LANGUAGE_ALL) && !ISO_LANGUAGES.contains(language)) {
+            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, CommonApiConstants.QUERY_PARAM_LANG,
+                    language);
+        }
     }
-    return query;
-	}
-
-    private String removeSolrFieldNames(String text) {
-	if (!text.contains(WebEntityConstants.FIELD_DELIMITER)) {
-	    return text;
-	}
-	String query = text;
-	String solrField;
-	while (query.contains(WebEntityConstants.FIELD_DELIMITER)) {
-	    solrField = extractSolrFieldName(query);
-	    query = StringUtils.replaceOnce(query, solrField, " ");
-	}
-	return query;
-    }
-
-    protected String extractSolrFieldName(String query) {
-	int end = query.indexOf(WebEntityConstants.FIELD_DELIMITER);
-	//include delimiter
-	String fieldName = query.substring(0, end+1);
-	int start_space = StringUtils.lastIndexOf(fieldName, " ");
-	int start_bracket = StringUtils.lastIndexOf(fieldName, "(");
-	int start = Math.max(start_space, start_bracket);
-	// if none start from beginning
-	start = Math.max(0, start);
-	fieldName = fieldName.substring(start);
-	return fieldName;
-    }
-
-	/**
-	 * Validate language parameter
-	 * @param language
-	 * @throws ParamValidationException
-	 */
-	protected void validateLanguage(String language) throws ParamValidationException {
-	if (StringUtils.isEmpty(language))	{
-		return;
-	}
-	// multiple language not supported
-	if (StringUtils.contains(language, WebEntityConstants.COMMA)) {
-		throw new ParamValidationException(I18nConstants.UNSUPPORTED_MULTIPLE_LANG_VALUE,
-				CommonApiConstants.QUERY_PARAM_LANG, language);
-	}
-	// language value can be 'all' Or ISO language only
-	if (!StringUtils.equals(language, WebEntityConstants.PARAM_LANGUAGE_ALL) && !ISO_LANGUAGES.contains(language)){
-		throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
-				CommonApiConstants.QUERY_PARAM_LANG, language);
-		}
-    }
-
 
     /**
      * This method verifies if the provided algorithm parameter is a valid one
@@ -247,12 +210,12 @@ public abstract class BaseRest extends BaseRestController {
      * @throws ParamValidationException
      */
     protected SuggestAlgorithmTypes validateAlgorithmParam(String algorithm) throws ParamValidationException {
-	try {
-	    return SuggestAlgorithmTypes.getByName(algorithm);
-	} catch (Exception e) {
-	    throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
-		    WebEntityConstants.QUERY_PARAM_ALGORITHM, algorithm);
-	}
+        try {
+            return SuggestAlgorithmTypes.getByName(algorithm);
+        } catch (Exception e) {
+            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+                    WebEntityConstants.QUERY_PARAM_ALGORITHM, algorithm);
+        }
     }
 
     /**
@@ -267,25 +230,25 @@ public abstract class BaseRest extends BaseRestController {
      */
     public LdProfiles getProfile(String paramProfile, HttpServletRequest request) throws HttpException {
 
-	LdProfiles profile = null;
-	String preferHeader = request.getHeader(HttpHeaders.PREFER);
-	if (preferHeader != null) {
-	    // identify profile by prefer header
-	    profile = getProfile(preferHeader);
-	    getLogger().debug("Profile identified by prefer header: " + profile.name());
-	} else {
-	    if (paramProfile == null)
-		return LdProfiles.MINIMAL;
-	    // get profile from param
-	    try {
-		profile = LdProfiles.getByName(paramProfile);
-	    } catch (InvalidProfileException e) {
-		throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
-			new String[] { CommonApiConstants.QUERY_PARAM_PROFILE, paramProfile }, HttpStatus.BAD_REQUEST,
-			e);
-	    }
-	}
-	return profile;
+        LdProfiles profile = null;
+        String preferHeader = request.getHeader(HttpHeaders.PREFER);
+        if (preferHeader != null) {
+            // identify profile by prefer header
+            profile = getProfile(preferHeader);
+            getLogger().debug("Profile identified by prefer header: " + profile.name());
+        } else {
+            if (paramProfile == null)
+                return LdProfiles.MINIMAL;
+            // get profile from param
+            try {
+                profile = LdProfiles.getByName(paramProfile);
+            } catch (InvalidProfileException e) {
+                throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
+                        new String[] { CommonApiConstants.QUERY_PARAM_PROFILE, paramProfile }, HttpStatus.BAD_REQUEST,
+                        e);
+            }
+        }
+        return profile;
     }
 
     /**
@@ -297,12 +260,12 @@ public abstract class BaseRest extends BaseRestController {
      * @return
      * @throws JsonProcessingException
      */
-    protected String serializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile, String entityIdBaseUrl)
-	    throws JsonProcessingException {
-	ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
-		ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE, entityIdBaseUrl);
-	String profileVal = (profile == null) ? null : profile.name();
-	return serializer.serialize(profileVal);
+    protected String serializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile,
+            String entityIdBaseUrl) throws JsonProcessingException {
+        ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
+                ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE, entityIdBaseUrl);
+        String profileVal = (profile == null) ? null : profile.name();
+        return serializer.serialize(profileVal);
     }
 
     /**
@@ -315,28 +278,28 @@ public abstract class BaseRest extends BaseRestController {
      */
     // TODO have generic implementation in API-Commons
     LdProfiles getProfile(String preferHeader) throws HttpException {
-	LdProfiles ldProfile = null;
-	String ldPreferHeaderStr = null;
-	String INCLUDE = "include";
+        LdProfiles ldProfile = null;
+        String ldPreferHeaderStr = null;
+        String INCLUDE = "include";
 
-	if (StringUtils.isNotEmpty(preferHeader)) {
-	    // log header for debuging
-	    getLogger().debug("'Prefer' header value: " + preferHeader);
+        if (StringUtils.isNotEmpty(preferHeader)) {
+            // log header for debuging
+            getLogger().debug("'Prefer' header value: " + preferHeader);
 
-	    try {
-		Map<String, String> preferHeaderMap = parsePreferHeader(preferHeader);
-		ldPreferHeaderStr = preferHeaderMap.get(INCLUDE).replace("\"", "");
-		ldProfile = LdProfiles.getByHeaderValue(ldPreferHeaderStr.trim());
-	    } catch (InvalidProfileException e) {
-		throw new HttpException(I18nConstants.INVALID_HEADER_VALUE, I18nConstants.INVALID_HEADER_VALUE,
-			new String[] { HttpHeaders.PREFER, preferHeader }, HttpStatus.BAD_REQUEST, null);
-	    } catch (Throwable th) {
-		throw new HttpException(I18nConstants.INVALID_HEADER_FORMAT, I18nConstants.INVALID_HEADER_FORMAT,
-			new String[] { HttpHeaders.PREFER, preferHeader }, HttpStatus.BAD_REQUEST, null);
-	    }
-	}
+            try {
+                Map<String, String> preferHeaderMap = parsePreferHeader(preferHeader);
+                ldPreferHeaderStr = preferHeaderMap.get(INCLUDE).replace("\"", "");
+                ldProfile = LdProfiles.getByHeaderValue(ldPreferHeaderStr.trim());
+            } catch (InvalidProfileException e) {
+                throw new HttpException(I18nConstants.INVALID_HEADER_VALUE, I18nConstants.INVALID_HEADER_VALUE,
+                        new String[] { HttpHeaders.PREFER, preferHeader }, HttpStatus.BAD_REQUEST, null);
+            } catch (Throwable th) {
+                throw new HttpException(I18nConstants.INVALID_HEADER_FORMAT, I18nConstants.INVALID_HEADER_FORMAT,
+                        new String[] { HttpHeaders.PREFER, preferHeader }, HttpStatus.BAD_REQUEST, null);
+            }
+        }
 
-	return ldProfile;
+        return ldProfile;
     }
 
     /**
@@ -347,19 +310,19 @@ public abstract class BaseRest extends BaseRestController {
      */
     // TODO: move this method to API-Commons
     public Map<String, String> parsePreferHeader(String preferHeader) {
-	String[] headerParts = null;
-	String[] contentParts = null;
-	int KEY_POS = 0;
-	int VALUE_POS = 1;
+        String[] headerParts = null;
+        String[] contentParts = null;
+        int KEY_POS = 0;
+        int VALUE_POS = 1;
 
-	Map<String, String> resMap = new HashMap<String, String>();
+        Map<String, String> resMap = new HashMap<String, String>();
 
-	headerParts = preferHeader.split(";");
-	for (String headerPart : headerParts) {
-	    contentParts = headerPart.split("=");
-	    resMap.put(contentParts[KEY_POS], contentParts[VALUE_POS]);
-	}
-	return resMap;
+        headerParts = preferHeader.split(";");
+        for (String headerPart : headerParts) {
+            contentParts = headerPart.split("=");
+            resMap.put(contentParts[KEY_POS], contentParts[VALUE_POS]);
+        }
+        return resMap;
     }
 
     /**
@@ -373,17 +336,17 @@ public abstract class BaseRest extends BaseRestController {
      */
     protected String serialize(Entity entity, FormatTypes format) throws UnsupportedEntityTypeException, HttpException {
 
-	String responseBody = null;
+        String responseBody = null;
 
-	if (FormatTypes.jsonld.equals(format)) {
-	    EuropeanaEntityLd entityLd = new EuropeanaEntityLd(entity, webConfig.getEntityDataEndpoint());
-	    return entityLd.toString(4);
-	} else if (FormatTypes.schema.equals(format)) {
-	    responseBody = (new EntitySchemaOrgSerializer()).serializeEntity(entity);
-	} else if (FormatTypes.xml.equals(format)) {
-	    responseBody = entityXmlSerializer.serializeXml(entity, webConfig.getEntityDataEndpoint());
-	}
-	return responseBody;
+        if (FormatTypes.jsonld.equals(format)) {
+            EuropeanaEntityLd entityLd = new EuropeanaEntityLd(entity, webConfig.getEntityDataEndpoint());
+            return entityLd.toString(4);
+        } else if (FormatTypes.schema.equals(format)) {
+            responseBody = (new EntitySchemaOrgSerializer()).serializeEntity(entity);
+        } else if (FormatTypes.xml.equals(format)) {
+            responseBody = entityXmlSerializer.serializeXml(entity, webConfig.getEntityDataEndpoint());
+        }
+        return responseBody;
     }
 
     @Override
