@@ -77,7 +77,7 @@ public class SolrEntityServiceTest {
 		Agent entity = (Agent) rs.getResults().get(0);
 		assertEquals(3, entity.getPrefLabel().size());
                 assertEquals(2, entity.getAltLabel().size());
-                log.info("found results:" + rs.getResultSize());
+                log.debug("found results:" + rs.getResultSize());
 		log.debug(rs.getResults().get(0));
 	}
 
@@ -102,7 +102,7 @@ public class SolrEntityServiceTest {
 		
 		assertNotNull(resSuggestByLabel.getResults());
 		assertTrue(resSuggestByLabel.getResultSize() >= 1);
-		log.info("found results:" + resSuggestByLabel.getResultSize());
+		log.debug("found results:" + resSuggestByLabel.getResultSize());
 		log.debug(resSuggestByLabel.getResults().get(0));
 		
 //		assertTrue(resSuggestByLabel.toString().equals(RES_SUGGEST_BY_LABEL));
