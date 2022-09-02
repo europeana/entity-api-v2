@@ -103,10 +103,6 @@ public abstract class BaseRest extends BaseRestController {
         return usageStatsService;
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
-
     public String getApiVersion() {
         return buildInfo.getAppVersion();
     }
@@ -235,7 +231,7 @@ public abstract class BaseRest extends BaseRestController {
         if (preferHeader != null) {
             // identify profile by prefer header
             profile = getProfile(preferHeader);
-            getLogger().debug("Profile identified by prefer header: " + profile.name());
+            logger.debug("Profile identified by prefer header: {}", profile.name());
         } else {
             if (paramProfile == null)
                 return LdProfiles.MINIMAL;
@@ -284,7 +280,7 @@ public abstract class BaseRest extends BaseRestController {
 
         if (StringUtils.isNotEmpty(preferHeader)) {
             // log header for debuging
-            getLogger().debug("'Prefer' header value: " + preferHeader);
+            logger.debug("'Prefer' header value: {} ", preferHeader);
 
             try {
                 Map<String, String> preferHeaderMap = parsePreferHeader(preferHeader);

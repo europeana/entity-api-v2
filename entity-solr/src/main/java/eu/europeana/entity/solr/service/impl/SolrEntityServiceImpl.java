@@ -55,7 +55,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 
     SuggestionUtils suggestionHelper = null;
 
-    private final Logger log = LogManager.getLogger(getClass());
+    private final Logger LOG = LogManager.getLogger(getClass());
 
     public void setSolrServer(SolrClient solrClient) {
 	this.solrClient = solrClient;
@@ -73,8 +73,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     public Entity searchByUrl(String type, String entityId)
 	    throws EntityRetrievalException, UnsupportedEntityTypeException {
 
-	getLogger().debug("search entity (type:" + type + " ) by id: " + entityId);
-
+	LOG.debug("search entity (type: {} ) by id: {}", type,  entityId);
 	EntityTypes entityType = EntityTypes.getByInternalType(type);
 
 	/**
@@ -83,7 +82,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	SolrQuery query = new SolrQuery();
 	query.setQuery(ConceptSolrFields.ID + ":\"" + entityId + "\"");
 
-	getLogger().trace("query: " + query);
+	LOG.trace("Solr query: {}", query);
 
 	List<? extends Entity> beans = null;
 
@@ -121,11 +120,11 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 		entityTypes, scope);
 
 	try {
-	    getLogger().debug("invoke suggest handler: " + SolrEntityService.HANDLER_SELECT);
-	    getLogger().debug("search query: " + query);
+	    LOG.debug("invoke suggest handler: {}", SolrEntityService.HANDLER_SELECT);
+	    LOG.debug("search query: {} ", query);
 	    QueryResponse rsp = solrClient.query(query);
 	    res = buildResultSet(rsp, outLanguage);
-	    getLogger().debug("search obj res size: " + res.getResultSize());
+	    LOG.debug("search obj res size: {} ", res.getResultSize());
 	} catch (RemoteSolrException e) {
 	    RuntimeException ex = handleRemoteSolrException(searchQuery, e);
 	    throw ex;
@@ -156,11 +155,6 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	}
 	return ex;
     }
-
-    public Logger getLogger() {
-	return log;
-    }
-   
 
     /*
      * (non-Javadoc)
@@ -195,12 +189,12 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    SolrQuery solrQuery) throws EntitySuggestionException {
 	ResultSet<? extends EntityPreview> res = null;
 	try {
-	    getLogger().debug("invoke select handler: " + SolrEntityService.HANDLER_SELECT);
-	    getLogger().debug("suggest text: " + text);
+	    LOG.debug("invoke select handler: {} ", SolrEntityService.HANDLER_SELECT);
+	    LOG.debug("suggest text: {} ", text);
 	    QueryResponse rsp = solrClient.query(solrQuery);
 
 	    res = buildSuggestionSet(text, rsp, requestedLanguages, rows);
-	    getLogger().debug("search obj res size: " + res.getResultSize());
+	    LOG.debug("search obj res size: {}", res.getResultSize());
 	} catch (RuntimeException | SolrServerException | IOException e) {
 	    throw new EntitySuggestionException(
 		    "Unexpected exception occured when searching entities: " + solrQuery.toString(), e);
@@ -414,7 +408,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 
     @Override
     public List<String> searchByCoref(String uri) throws EntityRuntimeException {
-	getLogger().debug("search entity by coref uri: " + uri);
+	LOG.debug("search entity by coref uri: {} ", uri);
 
 	/**
 	 * Construct a SolrQuery
