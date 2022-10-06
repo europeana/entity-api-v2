@@ -1,5 +1,7 @@
 package eu.europeana.entity.stats.service;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +39,7 @@ public class UsageStatsService {
     SolrEntityService solrEntityService;
 
     private static final Logger LOG = LogManager.getLogger(UsageStatsService.class);
+    private static  final DecimalFormat df = new DecimalFormat("#.####");
     private static final List<String> languages = new ArrayList<>(Arrays.asList("en" , "de", "fr", "fi", "it", "es", "sv", "nl", "pl", "pt", "bg",
             "cs", "da", "hu", "ro", "el", "lt", "sk", "et", "hr", "lv", "sl", "ga", "mt"));
 
@@ -160,8 +163,9 @@ public class UsageStatsService {
      */
     private static float getPercentage(float count, float totalCount) throws UsageStatsException {
       try {
+          df.setRoundingMode(RoundingMode.CEILING);
           if (totalCount > 0) {
-              return (count / totalCount) * 100;
+             return Float.parseFloat(df.format(((count / totalCount) * 100)));
           }
         } catch (Exception e) {
             throw new UsageStatsException("Error calculating the percentage values." +e.getMessage());
