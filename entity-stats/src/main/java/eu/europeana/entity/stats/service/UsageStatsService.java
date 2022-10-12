@@ -1,5 +1,7 @@
 package eu.europeana.entity.stats.service;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.math3.util.Precision;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -161,7 +164,7 @@ public class UsageStatsService {
     private static float getPercentage(float count, float totalCount) throws UsageStatsException {
       try {
           if (totalCount > 0) {
-              return (count / totalCount) * 100;
+             return Precision.round((count / totalCount) * 100, 4);
           }
         } catch (Exception e) {
             throw new UsageStatsException("Error calculating the percentage values." +e.getMessage());
