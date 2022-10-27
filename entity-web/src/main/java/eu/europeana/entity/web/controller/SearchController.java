@@ -60,9 +60,7 @@ public class SearchController extends BaseRest {
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_ROWS, defaultValue = WebEntityConstants.PARAM_DEFAULT_ROWS) int rows,
 	    @RequestParam(value = WebEntityConstants.ALGORITHM, required = false, defaultValue = WebEntityConstants.SUGGEST_MONOLINGUAL) String algorithm,
 	    HttpServletRequest request)
-	    throws HttpException {
-
-	try {
+	    throws Exception {
 	    // Check client access (a valid “wskey” must be provided)
 	    verifyReadAccess(request);
 
@@ -101,10 +99,6 @@ public class SearchController extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 	    return response;
-
-	}  catch (Exception e) {
-	    throw new InternalServerException(e);
-	}
     }
 
     
@@ -197,7 +191,7 @@ public class SearchController extends BaseRest {
 		    e.getMessage());
 	} catch (EntityRetrievalException e) {
 	    throw new InternalServerException(e.getMessage(), e);
-	} catch (JsonProcessingException | RuntimeException e) {
+	} catch (JsonProcessingException e) {
 	    throw new InternalServerException(e);
 	}
     }
@@ -253,7 +247,7 @@ public class SearchController extends BaseRest {
 		} catch (UnsupportedEntityTypeException e) {
 			throw new ParamValidationException(I18nConstants.UNSUPPORTED_ENTITY_TYPE, WebEntityConstants.ENTITY_API_RESOURCE,
 					e.getMessage());
-		} catch (JsonProcessingException | RuntimeException e) {
+		} catch (JsonProcessingException e) {
 			throw new InternalServerException(e);
 		}
 	}

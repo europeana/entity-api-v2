@@ -6,7 +6,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import eu.europeana.api.commons.error.EuropeanaApiException;
 import eu.europeana.api.commons.web.model.ErrorApiResponse;
+import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +60,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws Exception {
         return createResponse(type, identifier, FormatTypes.jsonld, null, request);
     }
 
@@ -70,7 +72,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws Exception {
         return createResponse(type, identifier, FormatTypes.schema, null, request);
     }
 
@@ -83,7 +85,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws Exception {
         return createResponse(type, identifier, FormatTypes.xml, HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML, request);
     }
 
@@ -96,7 +98,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws Exception {
         return createResponse(type, identifier, FormatTypes.jsonld, null, request);
 
     }
@@ -111,14 +113,13 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws Exception {
         return createResponse(type, identifier, FormatTypes.xml, null, request);
 
     }
 
     private ResponseEntity<String> createResponse(String type, String identifier, FormatTypes outFormat,
-            String contentType, HttpServletRequest request) throws HttpException {
-        try {
+            String contentType, HttpServletRequest request) throws HttpException, UnsupportedEntityTypeException {
             verifyReadAccess(request);
             Entity entity = getEntityService().retrieveByUrl(type, identifier);
             
@@ -140,9 +141,6 @@ public class ResolveController extends BaseRest {
 
             ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
             return response;
-        } catch (Exception e) {
-            throw new InternalServerException(e);
-        }
     }
 
     @ApiOperation(value = "Performs a lookup for the entity in all 4 datasets", nickname = "resolveEntity", response = java.lang.Void.class)
@@ -151,9 +149,7 @@ public class ResolveController extends BaseRest {
     public ResponseEntity<String> resolveEntity(
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @RequestParam(value = WebEntityConstants.QUERY_PARAM_URI) String uri, HttpServletRequest request)
-            throws HttpException {
-
-        try {
+            throws HttpException, EuropeanaApiException {
             verifyReadAccess(request);
             
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
@@ -186,10 +182,6 @@ public class ResolveController extends BaseRest {
                 String body = jsonLdSerializer.serializeToJson(updatedUris);
                 return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
             }
-
-        } catch (Exception e) {
-            throw new InternalServerException(e);
-        }
 
     }
 
