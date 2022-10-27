@@ -102,14 +102,7 @@ public class SearchController extends BaseRest {
 
 	    return response;
 
-	} catch (HttpException e) {
-	    // avoid wrapping http exception
-	    throw e;
-	} catch (RuntimeException e) {
-	    // not found ..
-	    // System.out.println(e);
-	    throw new InternalServerException(e);
-	} catch (Exception e) {
+	}  catch (Exception e) {
 	    throw new InternalServerException(e);
 	}
     }
@@ -204,19 +197,9 @@ public class SearchController extends BaseRest {
 		    e.getMessage());
 	} catch (EntityRetrievalException e) {
 	    throw new InternalServerException(e.getMessage(), e);
-	} catch (HttpException e) {
-	    // avoid wrapping http exception
-	    throw e;
-	} catch (JsonProcessingException e) {
-	    // not found ..
-	    // System.out.println(e);
-	    throw new InternalServerException(e);
-	} catch (RuntimeException e) {
-	    // not found ..
-	    // System.out.println(e);
+	} catch (JsonProcessingException | RuntimeException e) {
 	    throw new InternalServerException(e);
 	}
-	
     }
 
 	@ApiOperation(value = "Performs a text based lookup for entities to inform enrichment services on Metis. " +
@@ -270,9 +253,7 @@ public class SearchController extends BaseRest {
 		} catch (UnsupportedEntityTypeException e) {
 			throw new ParamValidationException(I18nConstants.UNSUPPORTED_ENTITY_TYPE, WebEntityConstants.ENTITY_API_RESOURCE,
 					e.getMessage());
-		} catch (JsonProcessingException e) {
-			throw new InternalServerException(e);
-		} catch (RuntimeException e) {
+		} catch (JsonProcessingException | RuntimeException e) {
 			throw new InternalServerException(e);
 		}
 	}

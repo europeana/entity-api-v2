@@ -138,15 +138,8 @@ public class ResolveController extends BaseRest {
             if (contentType != null && !contentType.isEmpty())
                 headers.add(HttpHeaders.CONTENT_TYPE, contentType);
 
-//        	System.out.println(jsonLd);
             ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
             return response;
-        } catch (RuntimeException e) {
-            // not found ..
-            throw new InternalServerException(e);
-        } catch (HttpException e) {
-            // avoid wrapping http exception
-            throw e;
         } catch (Exception e) {
             throw new InternalServerException(e);
         }
@@ -194,12 +187,6 @@ public class ResolveController extends BaseRest {
                 return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
             }
 
-        } catch (RuntimeException e) {
-            // not found ..
-            throw new InternalServerException(e);
-        } catch (HttpException e) {
-            // avoid wrapping http exception
-            throw e;
         } catch (Exception e) {
             throw new InternalServerException(e);
         }
