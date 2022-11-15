@@ -1,5 +1,7 @@
 package eu.europeana.entity.stats.vocabulary;
 
+import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
+
 /**
  * Usage Statistics Fields Constants
  *
@@ -12,7 +14,7 @@ public class UsageStatsFields {
 
     // query constants
     public static final String FACET = "type";
-    public static final String QUERY_SKOS_PREF_LABEL = "skos_prefLabel";
+    public static final String QUERY_SKOS_PREF_LABEL_PREFIX =  EntitySolrFields.PREF_LABEL_PREFIX  + ".";
     public static final String QUERY_ALL = "*";
 
     // Metric Constants

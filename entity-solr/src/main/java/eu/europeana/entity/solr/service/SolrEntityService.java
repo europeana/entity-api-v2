@@ -15,7 +15,6 @@ import eu.europeana.entity.web.model.view.EntityPreview;
 public interface SolrEntityService {
 
 	public static final String HANDLER_SELECT = "/select";
-	public static final String HANDLER_SUGGEST = "/suggestEntity";
 	
 	/**
 	 * This method retrieves available Entities by searching the given id.
