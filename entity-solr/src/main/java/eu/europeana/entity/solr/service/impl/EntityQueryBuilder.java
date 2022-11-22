@@ -35,26 +35,17 @@ public class EntityQueryBuilder extends QueryBuilder {
 
     public SolrQuery toSolrQuery(Query searchQuery, String searchHandler, List<EntityTypes> entityTypes, String scope) {
 	SolrQuery solrQuery = super.toSolrQuery(searchQuery, searchHandler);
-	addQueryFilterParam(solrQuery, entityTypes, scope, false);
+	addFiltersToSearchQuery(solrQuery, entityTypes, scope);
 	//with solr 7 default param is not available in index configurations anymore
 	solrQuery.set(PARAM_QUERY_OPERATOR, SimpleParams.AND_OPERATOR);
 	return solrQuery;
-    }
-
-    private void addQueryFilterParam(SolrQuery query, List<EntityTypes> entityTypes, String scope, boolean suggest) {
-
-	if (SolrEntityService.HANDLER_SUGGEST.equals(query.getRequestHandler()))
-	    addFiltersToSuggestQuery(query, entityTypes, scope);
-	else if (SolrEntityService.HANDLER_SELECT.equals(query.getRequestHandler()))
-	    addFiltersToSearchQuery(query, entityTypes, scope, suggest);
     }
 
     private boolean hasScopeEuropeana(String scope) {
 	return WebEntityConstants.PARAM_SCOPE_EUROPEANA.equalsIgnoreCase(scope);
     }
 
-    private void addFiltersToSearchQuery(SolrQuery query, List<EntityTypes> entityTypes, String scope,
-	    boolean suggest) {
+    private void addFiltersToSearchQuery(SolrQuery query, List<EntityTypes> entityTypes, String scope) {
 
 	if (hasScopeEuropeana(scope))
 	    query.addFilterQuery("suggest_filters:" + SuggestionFields.FILTER_EUROPEANA);
@@ -62,30 +53,6 @@ public class EntityQueryBuilder extends QueryBuilder {
 	String typeCondition = buildEntityTypeCondition(entityTypes);
 	if (typeCondition != null)
 	    query.addFilterQuery("suggest_filters:" + typeCondition);
-    }
-
-    private void addFiltersToSuggestQuery(SolrQuery query, List<EntityTypes> entityTypes, String scope) {
-
-	// build entityType filter
-	String entityTypeFilter = buildEntityTypeCondition(entityTypes);
-
-	// build scopeFilter
-	String scopeFilter = hasScopeEuropeana(scope) ? SuggestionFields.FILTER_EUROPEANA : null;
-
-	// add filters to query
-	String filter = null;
-
-	if (entityTypeFilter != null && scopeFilter != null) {
-	    // combine filters
-	    filter = entityTypeFilter + AND + scopeFilter;
-	} else if (entityTypeFilter != null) {
-	    filter = entityTypeFilter;
-	} else if (scopeFilter != null) {
-	    filter = scopeFilter;
-	}
-
-	if (filter != null)
-	    query.add("suggest.cfq", filter);
     }
 
     /**
@@ -108,7 +75,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	return buildSuggestQuery(entityTypes, scope, rows, snippets, query, highlightFields);
     }
 
-    public SolrQuery buildSuggesForLanguageQuery(String text, List<EntityTypes> entityTypes, String scope, int rows,
+    public SolrQuery buildSuggestForLanguageQuery(String text, List<EntityTypes> entityTypes, String scope, int rows,
 	    int snippets, List<String> languages) {
 
 	List<String> searchFields = generateLanguageSpecificFields(OrganizationSolrFields.LABEL, languages);
@@ -147,7 +114,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	    String query, String highlightFields) {
 	SolrQuery solrQuery = new SolrQuery(query);
 	solrQuery.setRequestHandler(SolrEntityService.HANDLER_SELECT);
-	addQueryFilterParam(solrQuery, entityTypes, scope, true);
+	addFiltersToSearchQuery(solrQuery, entityTypes, scope);
 
 	String[] fields;
 
@@ -383,14 +350,5 @@ public class EntityQueryBuilder extends QueryBuilder {
 
 	return fieldList.toArray(new String[fieldList.size()]);
     }
-
-    public Query buildEntitiesInSchemeQuery(String conceptSchemeId) {
-	String inSchemeQuery = EntitySolrFields.IN_SCHEME + ":\"" + conceptSchemeId + "\"";
-	Query existingQuery = buildSearchQuery(inSchemeQuery, null, 0);
-	// TODO: update logic for buildSearchQuery to handle internal and external max
-	// page sizes
-	int INTERNAL_MAX_PAGE_SIZE = 1000;
-	existingQuery.setPageSize(INTERNAL_MAX_PAGE_SIZE);
-	return existingQuery;
-    }
+   
 }

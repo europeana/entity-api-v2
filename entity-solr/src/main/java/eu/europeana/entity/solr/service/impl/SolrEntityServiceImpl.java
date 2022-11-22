@@ -179,7 +179,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     public ResultSet<? extends EntityPreview> suggestByLanguage(String text, String[] requestedLanguages,
 	    List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException {
 
-	SolrQuery solrQuery = new EntityQueryBuilder().buildSuggesForLanguageQuery(text, entityTypes, scope, rows,
+	SolrQuery solrQuery = new EntityQueryBuilder().buildSuggestForLanguageQuery(text, entityTypes, scope, rows,
 	        entitySolrConfig.getSuggesterSnippets(), Arrays.asList(requestedLanguages));
 
 	return fetchSuggestions(text, requestedLanguages, rows, solrQuery);
@@ -201,38 +201,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	}
 	return res;
     }
-
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected <T extends EntityPreview> ResultSet<T> buildSuggestionSet(QueryResponse rsp, String[] requestedLanguages,
-	    int rows) throws EntitySuggestionException {
-
-	ResultSet<T> resultSet = new ResultSet<>();
-	// resultSet.setLanguage(language);
-
-	Map<String, Object> suggest = (Map<String, Object>) rsp.getResponse().get(SuggestionFields.SUGGEST);
-
-	SimpleOrderedMap<?> suggestionsMap = (SimpleOrderedMap) suggest.get(SuggestionFields.PREFIX_SUGGEST_ENTITY);
-
-	List<SimpleOrderedMap<?>> suggestions = null;
-
-	String searchedTerm = "";
-
-	if ((SimpleOrderedMap) suggestionsMap.getVal(0) != null) {
-	    suggestions = (List<SimpleOrderedMap<?>>) ((SimpleOrderedMap) suggestionsMap.getVal(0))
-		    .get(SuggestionFields.SUGGESTIONS);
-
-	    searchedTerm = suggestionsMap.getName(0);
-	}
-
-	List<T> beans = extractBeans(searchedTerm, suggestions, rows, requestedLanguages);
-
-	resultSet.setResults(beans);
-	resultSet.setResultSize(beans.size());
-
-	return resultSet;
-    }
-
+    
    
     /**
      * This method builds a preview for an entity object for use case

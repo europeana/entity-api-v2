@@ -119,7 +119,7 @@ public abstract class BaseEntityService{
 			language = key;
 			//TODO: remove if, the language maps should not contain filenames anymore 
 			if(key.indexOf('.') > 0) {
-				parts = StringUtils.split(key, '.');//might have problems with skos_prefLabel.
+				parts = StringUtils.split(key, '.');
 				language = parts[parts.length-1];//last part
 			}
 			
