@@ -48,7 +48,7 @@ public class SearchController extends BaseRest {
     @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
     private EntityWebConfig entityWebConfig;
 
-    @ApiOperation(value = "Suggest entities for the given text query. Suported values for type: Agent, Place, Concept, Timespan, All. Supported values for scope: europeana", nickname = "getSuggestion", response = java.lang.Void.class)
+    @ApiOperation(value = "Suggest entities for the given text query. Suported values for type: Agent, Place, Concept, Timespan, All. Supported values for scope: europeana. Supported values for algorithm: monolingual (default), suggestByLabel", nickname = "getSuggestion", response = java.lang.Void.class)
     @RequestMapping(value = { "/entity/suggest", "/entity/suggest.jsonld" }, method = RequestMethod.GET, produces = {
 	    HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
     public ResponseEntity<String> getSuggestion(

@@ -38,9 +38,6 @@ public class SuggestionUtils {
 	private final Logger log = LogManager.getLogger(getClass());
 
 	protected static ObjectMapper objectMapper = new ObjectMapper();
-//	.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-//			.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//	protected static final JsonFactory jsonFactory = new JsonFactory();
 
 	/**
 	 * This method parses a payload employing preferred languages and highlighted terms.

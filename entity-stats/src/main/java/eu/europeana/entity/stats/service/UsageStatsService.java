@@ -80,8 +80,7 @@ public class UsageStatsService {
      */
     private EntitiesPerLanguage getEntityPerLangValues(String lang, EntityStats entityTotal) throws UsageStatsException {
         EntitiesPerLanguage entityPerLanguage = new EntitiesPerLanguage();
-        StringBuilder query = new StringBuilder(UsageStatsFields.QUERY_SKOS_PREF_LABEL);
-        query.append(".").append(lang).append(":*");
+        StringBuilder query = new StringBuilder(UsageStatsFields.QUERY_SKOS_PREF_LABEL_PREFIX).append(lang).append(":*");
         // get facet results
         EntityStats entityStatsForLang = getFacetsResults(buildSearchQuery(query.toString(), UsageStatsFields.FACET));
         if (entityStatsForLang != null) {

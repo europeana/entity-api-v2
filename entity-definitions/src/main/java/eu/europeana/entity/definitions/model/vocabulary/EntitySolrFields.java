@@ -10,8 +10,8 @@ public interface EntitySolrFields {
     public static final String TYPE = "type";
     public static final String DEPICTION = "foaf_depiction";
 
-    public static final String PREF_LABEL = "skos_prefLabel";
-    public static final String PREF_LABEL_ALL = PREF_LABEL + ".*";
+    public static final String PREF_LABEL_PREFIX = "skos_prefLabel";
+    public static final String PREF_LABEL_ALL = PREF_LABEL_PREFIX + ".*";
     public static final String SAME_AS = "owl_sameAs";
     public static final String COREF = "coref";
 
