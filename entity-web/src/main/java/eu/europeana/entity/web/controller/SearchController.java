@@ -134,8 +134,8 @@ public class SearchController extends BaseRest {
 		    + Query.DEFAULT_PAGE_SIZE) int pageSize,
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PROFILE, required = false) String profile,
 	    HttpServletRequest request) throws HttpException {
-
-	try {
+        
+        try {
 	    // Check client access (a valid “wskey” must be provided)
 //	    String apikey = extractApiKey();
 	    verifyReadAccess(request);
@@ -183,7 +183,9 @@ public class SearchController extends BaseRest {
 	    ResultSet<? extends Entity> results = getEntityService().search(searchQuery, preferredLanguages, entityTypes,
 		    scope);
 
-	    ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, request.getQueryString());
+	    String pathInfo = request.getPathInfo();
+            
+	    ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, request);
 	    String jsonLd = serializeResultsPage(resPage, searchProfile, entityWebConfig.getEntityDataEndpoint());
 
 	    // build response
@@ -258,7 +260,7 @@ public class SearchController extends BaseRest {
 					null);
 
             ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, 
-                request.getQueryString());
+                request);
 			String jsonLd = serializeResultsPage(resPage, null, entityWebConfig.getEntityDataEndpoint());
 
 			// build response

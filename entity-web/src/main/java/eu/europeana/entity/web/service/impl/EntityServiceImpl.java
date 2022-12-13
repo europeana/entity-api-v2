@@ -1,9 +1,12 @@
 package eu.europeana.entity.web.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -165,7 +168,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
     }
 
     // TODO: consider usage of a helper class for helper methods
-    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, String reqParams) {
+    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, HttpServletRequest request) {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	ResultsPage<T> resPage = new ResultsPageImpl();
 
@@ -175,8 +178,14 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	resPage.setTotalInPage(results.getResults().size());
 	resPage.setTotalInCollection(results.getResultSize());
 
-	StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint() + "/search");
-	String collectionUrl = buildCollectionUrl(searchQuery, requestUrl, reqParams);
+	//String endpoint = entityWebConfig.getEntityApiEndpoint();
+	String servicePath = request.getServletPath().replace("/entity", "");
+	
+	StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint());
+	requestUrl.append(servicePath);
+	
+	//StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint() + "/search");
+	String collectionUrl = buildCollectionUrl(searchQuery, requestUrl, request.getQueryString());
 	resPage.setCollectionUri(collectionUrl);
 
 	int currentPage = searchQuery.getPageNr();

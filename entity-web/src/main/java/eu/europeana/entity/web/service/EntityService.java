@@ -2,6 +2,8 @@ package eu.europeana.entity.web.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.api.commons.definitions.search.result.ResultsPage;
@@ -65,11 +67,10 @@ public interface EntityService {
 	 * This method build the results page object for the search results retrieved with the given search query.
 	 * @param searchQuery
 	 * @param results
-	 * @param requestUrl
-	 * @param reqParams
+	 * @param request
 	 * @return
 	 */
-	public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, String reqParams);
+	public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, HttpServletRequest request);
 	
 	/**
 	 * @param entityTypes
