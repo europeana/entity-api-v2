@@ -178,14 +178,17 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	resPage.setTotalInPage(results.getResults().size());
 	resPage.setTotalInCollection(results.getResultSize());
 
-	//String endpoint = entityWebConfig.getEntityApiEndpoint();
-	String servicePath = request.getServletPath().replace("/entity", "");
-	
-	StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint());
-	requestUrl.append(servicePath);
+	String serviceBasePath = "/entity";{
+	if(entityWebConfig.getEntityApiEndpoint().endsWith("/"))
+	    //in case that / is present in the endpoint configuration 
+	    serviceBasePath += "/";
+	}
+        String servicePath = request.getServletPath().replace(serviceBasePath, "");
+	StringBuffer methodFullUri = new StringBuffer(entityWebConfig.getEntityApiEndpoint());
+	methodFullUri.append(servicePath);
 	
 	//StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint() + "/search");
-	String collectionUrl = buildCollectionUrl(searchQuery, requestUrl, request.getQueryString());
+	String collectionUrl = buildCollectionUrl(searchQuery, methodFullUri, request.getQueryString());
 	resPage.setCollectionUri(collectionUrl);
 
 	int currentPage = searchQuery.getPageNr();
