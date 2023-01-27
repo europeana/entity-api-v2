@@ -49,7 +49,7 @@ public class UsageStatsController extends BaseRest {
     private ResponseEntity<String> getEntitiesStats() throws UsageStatsException, EntityApiRuntimeException {
         EntityMetric metric = new EntityMetric();
         metric.setType(UsageStatsFields.OVERALL_TOTAL_TYPE);
-        getUsageStatsService().getStatsForLang(metric);
+        getUsageStatsService().getStats(metric);
         metric.setTimestamp(new Date());
         return new ResponseEntity<>(serializeMetricView(metric), HttpStatus.OK);
     }
