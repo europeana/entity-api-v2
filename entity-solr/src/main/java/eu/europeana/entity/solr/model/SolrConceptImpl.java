@@ -81,7 +81,7 @@ public class SolrConceptImpl extends BaseConcept implements Concept{
 	@Field(ConceptSolrFields.PREF_LABEL_ALL)
 	public void setPrefLabel(Map<String, String> prefLabel) {
 		Map<String, String> normalizedPrefLabel = SolrUtils.normalizeStringMap(
-				ConceptSolrFields.PREF_LABEL, prefLabel);
+				ConceptSolrFields.PREF_LABEL_PREFIX, prefLabel);
 		super.setPrefLabel(normalizedPrefLabel);
 	}
 	

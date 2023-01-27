@@ -4,17 +4,13 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityFields;
 
 public interface SuggestionFields {
 
-	public static final String SUGGEST = "suggest";
-	public static final String SUGGESTIONS = "suggestions";
-	public static final String SUFFIX_EXACT = "_exact";
-	public static final String SUFFIX_FUZZY = "_fuzzy";
-	public static final String PREFIX_SUGGEST_ENTITY = "suggestEntity";
-	
 	public static final String FILTER_EUROPEANA = "europeana";
 	
 	public static final String TERM = "term";
 	public static final String PAYLOAD = "payload";
 
+	//test 2
+	
 	//TODO: update to correct values from specs
 	public static final String TIME_SPAN_START = "begin";
 	public static final String TIME_SPAN_END = "end";

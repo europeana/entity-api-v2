@@ -38,13 +38,6 @@ public class SuggestionUtils {
 	private final Logger log = LogManager.getLogger(getClass());
 
 	protected static ObjectMapper objectMapper = new ObjectMapper();
-//	.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-//			.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//	protected static final JsonFactory jsonFactory = new JsonFactory();
-
-	public Logger getLog() {
-		return log;
-	}
 
 	/**
 	 * This method parses a payload employing preferred languages and highlighted terms.
@@ -110,9 +103,9 @@ public class SuggestionUtils {
 		//Fallback no pref label matched
 		if (prefLabel.isEmpty()) {
 			//no prefLabel was matched, the suggestion was based on the acronym
-			log.debug("Fallback, return all languages, no preferredLabel matched for entity: " + preview.getEntityId() 
-				+ ", using searched terms: " + StringUtils.join(highlightTerms, ", ") 
-				+ ", and languages: " + StringUtils.join(preferredLanguages, ','));
+			log.debug("Fallback, return all languages, no preferredLabel matched for entity: {}" +
+				", using searched terms: {}, and languages: {} " ,
+					preview.getEntityId(), StringUtils.join(highlightTerms, ", ") ,StringUtils.join(preferredLanguages, ','));
 			
 			//#EA-1368 include all languages
 			preferredLanguages.add(WebEntityConstants.PARAM_LANGUAGE_ALL);
