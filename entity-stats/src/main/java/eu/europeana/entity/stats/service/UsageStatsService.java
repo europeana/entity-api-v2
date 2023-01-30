@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -46,41 +47,58 @@ public class UsageStatsService {
      * @param metric
      */
     public void getStats(EntityMetric metric) throws UsageStatsException {
+
+        Query perTypeQuery = buildSearchQuery(UsageStatsFields.QUERY_ALL, UsageStatsFields.FACET);
         // 1) for total entities per type : query=*&profile=facets&facet=type&pageSize=0
         EntityStats entityPerType = new EntityStats();
-        getFacetsResults(buildSearchQuery(UsageStatsFields.QUERY_ALL, UsageStatsFields.FACET), entityPerType);
+        getFacetsResults(perTypeQuery, entityPerType, null);
         // this will only happen if there is no data in DB
         if (!entityPerType.entitiesAvailable()) {
             throw new UsageStatsException(" Entities per type are not present. No stats will be generated");
         }
         metric.setEntitiesPerType(entityPerType);
 
-        // 2) get entities per language
-        List<EntitiesPerLanguage> entitiesPerLanguageList = new ArrayList<>();
+        // 2) get entities per language and also for inEuropeanaPerLang as well
+        List<EntitiesPerLanguage> entitiesPerLanguage = new ArrayList<>();
+        List<EntitiesPerLanguage> inEuropeanaPerLanguage = new ArrayList<>();
         for (String lang : languages) {
-            EntitiesPerLanguage entitiesPerLanguage = getEntityPerLangValues(lang);
-            if (!entitiesPerLanguage.entitiesAvailable()) {
+            EntitiesPerLanguage perLangValues = getEntityPerLangValues(lang, null);
+            EntitiesPerLanguage inEuropeanaLangValues = getEntityPerLangValues(lang, WebEntityConstants.PARAM_SCOPE_EUROPEANA);
+
+            // LOG is values are not available for the language
+            if (!perLangValues.entitiesAvailable()) {
                 LOG.error("Entities for lang {} are not available ", lang);
-            } else {
-                entitiesPerLanguageList.add(entitiesPerLanguage);
             }
+            if (!inEuropeanaLangValues.entitiesAvailable()) {
+                LOG.error("In Europeana entities for lang {} are not available ", lang);
+            }
+            entitiesPerLanguage.add(perLangValues);
+            inEuropeanaPerLanguage.add(inEuropeanaLangValues);
         }
-        metric.setEntitiesPerLanguages(entitiesPerLanguageList);
+        metric.setEntitiesPerLanguages(entitiesPerLanguage);
+        metric.setInEuropeanaPerLanguage(inEuropeanaPerLanguage);
+
+        // 3) getInEuropeanaPerType : query=*&scope=europeana (via API) OR query=*&qf=suggest_filters:europeana (when using Solr directly)
+        EntityStats inEuropeanaPerType = new EntityStats();
+        getFacetsResults(perTypeQuery, inEuropeanaPerType, WebEntityConstants.PARAM_SCOPE_EUROPEANA);
+        metric.setInEuropeanaPerType(inEuropeanaPerType);
     }
+
 
     /**
      * Retrieves Entity stats for the given lang
-     * query=skos_prefLabel.<lang>:*&profile=facets&facet=type&pageSize=0
+     * query=skos_prefLabel.<lang>:*&profile=facets&facet=type&pageSize=0&scope=<scope>
      *
      * @param lang
+     * @param scope
      * @return
      * @throws UsageStatsException
      */
-    private EntitiesPerLanguage getEntityPerLangValues(String lang)  {
+    private EntitiesPerLanguage getEntityPerLangValues(String lang, String scope)  {
         EntitiesPerLanguage entityPerLanguage = new EntitiesPerLanguage(lang);
         StringBuilder query = new StringBuilder(UsageStatsFields.QUERY_SKOS_PREF_LABEL_PREFIX).append(lang).append(":*");
         // get facet results
-        getFacetsResults(buildSearchQuery(query.toString(), UsageStatsFields.FACET), entityPerLanguage);
+        getFacetsResults(buildSearchQuery(query.toString(), UsageStatsFields.FACET), entityPerLanguage, scope);
         return entityPerLanguage;
     }
 
@@ -96,8 +114,8 @@ public class UsageStatsService {
      * @param searchQuery
      * @return
      */
-    private <T extends EntityStats> void getFacetsResults(Query searchQuery, T entityStats) {
-        List<FacetFieldView> facets = solrEntityService.search(searchQuery, null,null, null ).getFacetFields();
+    private <T extends EntityStats> void getFacetsResults(Query searchQuery, T entityStats, String scope) {
+        List<FacetFieldView> facets = solrEntityService.search(searchQuery, null,null, scope).getFacetFields();
         if (!facets.isEmpty()) {
             // fetch the first facet result view
             Map<String, Long> map = facets.get(0).getValueCountMap();
