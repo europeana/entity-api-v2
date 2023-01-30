@@ -1,5 +1,10 @@
 # Send only unzipped war directory to Docker
 **
-!/entity-web/target/
+!/entity-web/target/entity-web
+
+# Any type of properties file should not be uploaded to Docker hub
+
 *.user.properties
 *.properties
+**/entity-solr.properties
+**/entity.properties
