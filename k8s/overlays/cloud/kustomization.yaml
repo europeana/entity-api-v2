@@ -1,8 +1,11 @@
 resources:
   - ../../base
   - service.yaml
-  - ingress.properties.yaml
-  - hpa.properties.yaml
+  - ingress.yaml
+  - hpa.yaml
 
 patchesStrategicMerge:
-  - deployment_patch.properties.yaml
+  - deployment_patch.yaml
+
+commonLabels:
+  app: entity-api-v2
