@@ -3,10 +3,8 @@ kind: Deployment
 metadata:
   name: entity-api-v2-deployment
 spec:
-  selector:
-    matchLabels:
-      app: entity-api-v2
-template:
+  # selector.matchLabels is provided via Kustomize
+  template:
     spec:
       containers:
         - name: entity-api-v2
@@ -16,20 +14,20 @@ template:
           livenessProbe:
             httpGet:
               port: 8080
-              path: /info
+              path: /actuator/info
             initialDelaySeconds: 30
             periodSeconds: 30
           readinessProbe:
             httpGet:
               port: 8080
-              path: /info
+              path: /actuator/info
             initialDelaySeconds: 30
             periodSeconds: 30
-        volumeMounts:
-          - name: secret
-            mountPath: "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/entity.properties"
-            readOnly: true
-            subPath: entity.properties
+          volumeMounts:
+            - name: secret
+              mountPath: "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/entity.properties"
+              readOnly: true
+              subPath: entity.properties
       volumes:
         - name: secret
           secret:
