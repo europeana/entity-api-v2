@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: entity-api-v2-service
 spec:
-  selector:
-    app: entity-api-v2
+  # selector provided via kustomize
   ports:
     - name: http
-      port: 8080
+      port: 80
+      targetPort: 8080
