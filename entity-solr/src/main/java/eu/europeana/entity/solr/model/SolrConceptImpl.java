@@ -60,7 +60,7 @@ public class SolrConceptImpl extends BaseConcept implements Concept{
 	@Override
 	@Field(ConceptSolrFields.CLOSE_MATCH)
 	public void setCloseMatch(String[] closeMatch) {
-		setCloseMatch(closeMatch);
+		super.setCloseMatch(closeMatch);
 	}
 	
 	@Override

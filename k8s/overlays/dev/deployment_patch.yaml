@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: entity-api-v2-deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: entity-api-v2
+          # required to use local image
+          imagePullPolicy: Never
