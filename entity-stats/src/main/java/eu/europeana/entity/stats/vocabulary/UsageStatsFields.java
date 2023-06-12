@@ -13,7 +13,7 @@ public class UsageStatsFields {
     public static final String BEAN_USAGE_SERVICE = "usageConfig";
 
     // query constants
-    public static final String FACET = "type";
+    public static final String TYPE_FACET = "type";
     public static final String QUERY_SKOS_PREF_LABEL_PREFIX =  EntitySolrFields.PREF_LABEL_PREFIX  + ".";
     public static final String QUERY_ALL = "*";
 
