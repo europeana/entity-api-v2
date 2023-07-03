@@ -164,7 +164,9 @@ public class ResolveController extends BaseRest {
             throws HttpException {
 
         try {
-            verifyReadAccess(request);
+            if (isAuthEnabled()) {
+                verifyReadAccess(request);
+            }
             
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
