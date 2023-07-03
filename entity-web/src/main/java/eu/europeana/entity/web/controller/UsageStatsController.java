@@ -35,9 +35,11 @@ public class UsageStatsController extends BaseRest {
     @ApiOperation(value = "Generate Stats", nickname = "generateStats", response = java.lang.Void.class)
     @GetMapping(value = "/entity/stats", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> generateUsageStats(
-            @RequestParam(value = CommonApiConstants.PARAM_WSKEY) String wskey,
+            @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        verifyReadAccess(request);
+        if (isAuthEnabled()) {
+            verifyReadAccess(request);
+        }
         return getEntitiesStats();
     }
 

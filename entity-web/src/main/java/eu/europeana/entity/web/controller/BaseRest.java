@@ -116,6 +116,14 @@ public abstract class BaseRest extends BaseRestController {
     }
 
     /**
+     * If apikey service url is empty, disable the authentication
+     * @return
+     */
+    protected boolean isAuthEnabled() {
+        return StringUtils.isNotEmpty(webConfig.getApiKeyServiceUrl());
+    }
+
+    /**
      * This method verifies if the provided scope parameter is a valid one
      * 
      * @param scope

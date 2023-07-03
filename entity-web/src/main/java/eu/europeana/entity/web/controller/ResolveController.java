@@ -119,7 +119,10 @@ public class ResolveController extends BaseRest {
     private ResponseEntity<String> createResponse(String type, String identifier, FormatTypes outFormat,
             String contentType, HttpServletRequest request) throws HttpException {
         try {
-            verifyReadAccess(request);
+            if (isAuthEnabled()) {
+                verifyReadAccess(request);
+            }
+
             Entity entity = getEntityService().retrieveByUrl(type, identifier);
             
             String jsonLd = serialize(entity, outFormat);
