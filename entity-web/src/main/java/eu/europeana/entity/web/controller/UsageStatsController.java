@@ -37,7 +37,7 @@ public class UsageStatsController extends BaseRest {
     public ResponseEntity<String> generateUsageStats(
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        if (isAuthEnabled()) {
+        if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
             verifyReadAccess(request);
         }
         return getEntitiesStats();

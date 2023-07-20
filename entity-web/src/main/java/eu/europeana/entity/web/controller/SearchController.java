@@ -64,7 +64,7 @@ public class SearchController extends BaseRest {
 
 	try {
 	    // Check client access (a valid “wskey” must be provided)
-		if (isAuthEnabled()) {
+		if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
 			verifyReadAccess(request);
 		}
 
@@ -138,7 +138,7 @@ public class SearchController extends BaseRest {
 	    HttpServletRequest request) throws HttpException {
         
         try {
-        	if (isAuthEnabled()) {
+        	if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
 				verifyReadAccess(request);
 			}
 	    // ** Process input params
@@ -234,7 +234,7 @@ public class SearchController extends BaseRest {
 			HttpServletRequest request)
 			throws HttpException {
 		try {
-			if (isAuthEnabled()) {
+			if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
 				verifyReadAccess(request);
 			}
 

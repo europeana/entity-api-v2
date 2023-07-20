@@ -119,7 +119,7 @@ public class ResolveController extends BaseRest {
     private ResponseEntity<String> createResponse(String type, String identifier, FormatTypes outFormat,
             String contentType, HttpServletRequest request) throws HttpException {
         try {
-            if (isAuthEnabled()) {
+            if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
                 verifyReadAccess(request);
             }
 
@@ -164,7 +164,7 @@ public class ResolveController extends BaseRest {
             throws HttpException {
 
         try {
-            if (isAuthEnabled()) {
+            if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
                 verifyReadAccess(request);
             }
             
