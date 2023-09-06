@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.util.Precision;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -55,8 +56,13 @@ public class UsageStatsService {
             throw new UsageStatsException(" Entities per type are not present. No stats will be generated");
         }
         metric.setEntitiesPerType(entityPerType);
+        
+        // 2) getInEuropeanaPerType : query=*&scope=europeana (via API) OR query=*&qf=suggest_filters:europeana (when using Solr directly)
+        EntityStats inEuropeanaPerType = new EntityStats();
+        getFacetsResults(perTypeQuery, inEuropeanaPerType, WebEntityConstants.PARAM_SCOPE_EUROPEANA);
+        metric.setInEuropeanaPerType(inEuropeanaPerType);
 
-        // 2) get entities per language and also for inEuropeanaPerLang as well
+        // 3) get entities per language and also for inEuropeanaPerLang as well
         List<String> facetNames = new ArrayList<>();
         List<String> facetFields = new ArrayList<>();
         List<String> facetDomainQueries = new ArrayList<>();
@@ -68,36 +74,71 @@ public class UsageStatsService {
         
         Map<String, Map<String, Long>> perLangFacets = solrEntityService.searchWithJsonFacetApi(facetNames, facetFields, facetDomainQueries, null);
         Map<String, Map<String, Long>> perLangInEuropeanaFacets = solrEntityService.searchWithJsonFacetApi(facetNames, facetFields, facetDomainQueries, WebEntityConstants.PARAM_SCOPE_EUROPEANA);
-        metric.setEntitiesPerLanguages(getEntitiesPerLang(perLangFacets, null));
-        metric.setInEuropeanaPerLanguage(getEntitiesPerLang(perLangInEuropeanaFacets, WebEntityConstants.PARAM_SCOPE_EUROPEANA));
+        metric.setEntitiesPerLanguages(getEntitiesPerLang(perLangFacets, entityPerType, null));
+        metric.setInEuropeanaPerLanguage(getEntitiesPerLang(perLangInEuropeanaFacets, inEuropeanaPerType, WebEntityConstants.PARAM_SCOPE_EUROPEANA));
 
-        // 3) getInEuropeanaPerType : query=*&scope=europeana (via API) OR query=*&qf=suggest_filters:europeana (when using Solr directly)
-        EntityStats inEuropeanaPerType = new EntityStats();
-        getFacetsResults(perTypeQuery, inEuropeanaPerType, WebEntityConstants.PARAM_SCOPE_EUROPEANA);
-        metric.setInEuropeanaPerType(inEuropeanaPerType);
     }
 
-    private List<EntitiesPerLanguage> getEntitiesPerLang(Map<String, Map<String, Long>> perLangFacets, String scope)  {
+    private List<EntitiesPerLanguage> getEntitiesPerLang(Map<String, Map<String, Long>> perLangFacets, EntityStats entitystatsTotal, String scope) throws UsageStatsException  {
       List<EntitiesPerLanguage> entitiesPerLangList = new ArrayList<>();
       for (Map.Entry<String, Map<String, Long>> perLangFacetsEntry : perLangFacets.entrySet()) {
         EntitiesPerLanguage entitiesPerLang = new EntitiesPerLanguage(perLangFacetsEntry.getKey());
         Map<String, Long> perLangValues = perLangFacetsEntry.getValue();
         setFacetEntities(perLangValues,entitiesPerLang);   
-        // LOG is values are not available for the language
+        // LOG if values are not available for the language
         if (!entitiesPerLang.entitiesAvailable() && StringUtils.isBlank(scope)) {
             LOG.error("Entities for lang {} are not available ", perLangFacetsEntry.getKey());
         }
         if (!entitiesPerLang.entitiesAvailable() && WebEntityConstants.PARAM_SCOPE_EUROPEANA.equalsIgnoreCase(scope)) {
             LOG.error("In Europeana entities for lang {} are not available ", perLangFacetsEntry.getKey());
         }
+        calculatePercentageValues(entitiesPerLang, entitystatsTotal);
 
         entitiesPerLangList.add(entitiesPerLang);
       }
       
       return entitiesPerLangList;
     }
+    
+    /**
+    *
+    * @param entityPerLang entity values per language to be adjusted to percentages
+    * @param entitystatsTotal entity values per type
+    *
+    * @throws UsageStatsException
+    */
+   private void calculatePercentageValues(EntitiesPerLanguage entitiesPerLang, EntityStats entitystatsTotal) throws UsageStatsException {
+     entitiesPerLang.setTimespans(getPercentage(entitiesPerLang.getTimespans(), entitystatsTotal.getTimespans()));
+     entitiesPerLang.setPlaces(getPercentage(entitiesPerLang.getPlaces(), entitystatsTotal.getPlaces()));
+     entitiesPerLang.setConcepts(getPercentage(entitiesPerLang.getConcepts(), entitystatsTotal.getConcepts()));
+     entitiesPerLang.setAgents(getPercentage(entitiesPerLang.getAgents(), entitystatsTotal.getAgents()));
+     entitiesPerLang.setOrganisations(getPercentage(entitiesPerLang.getOrganisations(), entitystatsTotal.getOrganisations()));
+     entitiesPerLang.setAll(getPercentage(entitiesPerLang.getAll(), entitystatsTotal.getAll()));
+   }
 
-    private static Query buildSearchQuery(String queryString, String facet) {
+   /**
+    * Calculates percentage :
+    * example : count : 25 entities for language 'en' for type 'Agent'
+    *           totalCount : 100 entities for type 'Agent'
+    * @param count value of the entity per language and per type
+    * @param totalCount total entity value per type
+    *
+    * @return
+    * @throws UsageStatsException
+    */
+   private float getPercentage(float count, float totalCount) throws UsageStatsException {
+     try {
+       if (totalCount > 0) {
+          return Precision.round((count / totalCount) * 100, 4);
+       }
+     }
+     catch (Exception e) {
+       throw new UsageStatsException("Error calculating the percentage values." +e.getMessage());
+     }
+     return 0.0f;
+   }
+
+    private Query buildSearchQuery(String queryString, String facet) {
         EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
         return queryBuilder.buildSearchQuery(queryString, null, queryBuilder.toArray(facet), null, 0, 0,
                 SearchProfiles.facets, null);
