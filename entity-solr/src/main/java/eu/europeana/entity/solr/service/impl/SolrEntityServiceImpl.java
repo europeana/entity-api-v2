@@ -11,21 +11,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.BaseHttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.request.json.DomainMap;
+import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
+import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.json.BucketBasedJsonFacet;
+import org.apache.solr.client.solrj.response.json.BucketJsonFacet;
+import org.apache.solr.client.solrj.response.json.NestableJsonFacet;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.springframework.stereotype.Service;
-
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.entity.config.AppConfigConstants;
@@ -400,4 +403,46 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	}
     }
 
+    @Override
+    public Map<String, Map<String, Long>> searchWithJsonFacetApi(List<String> facetNames, List<String> facetFields, List<String> facetDomainQueries, String scope) {
+      Map<String, Map<String, Long>> result = new HashMap<>();
+      JsonQueryRequest request = new JsonQueryRequest()
+          .setQuery("*:*");
+      if(WebEntityConstants.PARAM_SCOPE_EUROPEANA.equalsIgnoreCase(scope)) {
+        request.withFilter("suggest_filters:" + SuggestionFields.FILTER_EUROPEANA);
+      }
+      for(int i=0;i<facetNames.size();i++) {
+        TermsFacetMap facet = new TermsFacetMap(facetFields.get(i))
+            .withDomain(new DomainMap().withQuery(facetDomainQueries.get(i)))
+            .setLimit(-1);
+        request.withFacet(facetNames.get(i), facet);
+      }
+      
+      try {
+        QueryResponse queryResponse = request.process(solrClient);
+        NestableJsonFacet jsonFacetResp = queryResponse.getJsonFacetingResponse();
+        if(jsonFacetResp==null) {
+          return result;
+        }
+        Set<String> jsonFacetRespNamesSet = jsonFacetResp.getBucketBasedFacetNames();
+        for(String jsonFacetName : jsonFacetRespNamesSet) {
+          BucketBasedJsonFacet bucketJsonFacet = jsonFacetResp.getBucketBasedFacets(jsonFacetName);
+          if(bucketJsonFacet==null) {
+            result.put(jsonFacetName, new HashMap<>());
+          }
+          else {
+            List<BucketJsonFacet> bucketJsonFacetBuckets = bucketJsonFacet.getBuckets();
+            Map<String, Long> resultFacetCount = new HashMap<>();
+            for(BucketJsonFacet bucket : bucketJsonFacetBuckets) {
+              resultFacetCount.put(bucket.getVal().toString(), bucket.getCount());
+            }
+            result.put(jsonFacetName, resultFacetCount);
+          }
+        }
+        return result;
+        
+      } catch (RuntimeException | SolrServerException | IOException e) {
+        throw new EntityRuntimeException("Unexpected exception occured when searching Solr entities with JSON facet API. ", e);
+      }
+    }
 }

@@ -1,7 +1,7 @@
 package eu.europeana.entity.solr.service;
 
 import java.util.List;
-
+import java.util.Map;
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
@@ -86,5 +86,15 @@ public interface SolrEntityService {
 	 */
 	public List<String> searchByCoref(String uri);
 	
+	/**
+	 * Search using the JSON Facet API in Solr.
+	 * 
+	 * @param facetNames
+	 * @param facetFields
+	 * @param facetDomainQueries
+	 * @param scope
+	 * @return
+	 */
+	public Map<String, Map<String, Long>> searchWithJsonFacetApi(List<String> facetNames, List<String> facetFields, List<String> facetDomainQueries, String scope);
 
 }
