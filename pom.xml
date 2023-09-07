@@ -71,7 +71,6 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<sonar.organization>europeana</sonar.organization>
 		<version.junit>5.7.0</version.junit>
-		<!-- version.commonsApi>0.3.19-SNAPSHOT</version.commonsApi-->
 		<version.commonsApi>0.3.22-SNAPSHOT</version.commonsApi>
 		<version.corelib>2.15.4</version.corelib>
 		<version.annotationLd>1.1.8</version.annotationLd>

@@ -64,7 +64,9 @@ public class SearchController extends BaseRest {
 
 	try {
 	    // Check client access (a valid “wskey” must be provided)
-	    verifyReadAccess(request);
+		if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+			verifyReadAccess(request);
+		}
 
 	    // validate algorithm parameter
 	    SuggestAlgorithmTypes suggestType = validateAlgorithmParam(algorithm);
@@ -136,10 +138,9 @@ public class SearchController extends BaseRest {
 	    HttpServletRequest request) throws HttpException {
         
         try {
-	    // Check client access (a valid “wskey” must be provided)
-//	    String apikey = extractApiKey();
-	    verifyReadAccess(request);
-
+        	if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+				verifyReadAccess(request);
+			}
 	    // ** Process input params
 	    if (StringUtils.isBlank(queryString))
 		throw new ParamValidationException(I18nConstants.EMPTY_PARAM_MANDATORY,
@@ -233,7 +234,9 @@ public class SearchController extends BaseRest {
 			HttpServletRequest request)
 			throws HttpException {
 		try {
-			verifyReadAccess(request);
+			if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+				verifyReadAccess(request);
+			}
 
 			// validate text parameter
 			if (StringUtils.isBlank(text))
