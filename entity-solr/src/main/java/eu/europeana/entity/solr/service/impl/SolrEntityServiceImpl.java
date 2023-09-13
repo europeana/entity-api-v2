@@ -34,7 +34,6 @@ import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
-import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.config.EntitySolrConfig;
@@ -46,6 +45,9 @@ import eu.europeana.entity.solr.model.factory.EntityObjectFactory;
 import eu.europeana.entity.solr.model.vocabulary.SuggestionFields;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.web.model.view.EntityPreview;
+
+import static eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields.COREF;
+import static eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields.ID;
 
 @Service(AppConfigConstants.ENTITY_SOLR_SERVICE)
 public class SolrEntityServiceImpl extends BaseEntityService implements SolrEntityService {
@@ -83,7 +85,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	 * Construct a SolrQuery
 	 */
 	SolrQuery query = new SolrQuery();
-	query.setQuery(ConceptSolrFields.ID + ":\"" + entityId + "\"");
+	query.setQuery(ID + ":\"" + entityId + "\"");
 
 	LOG.trace("Solr query: {}", query);
 
@@ -386,8 +388,8 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	 * Construct a SolrQuery
 	 */
 	SolrQuery query = new SolrQuery();
-	query.setQuery(ConceptSolrFields.COREF + ":\"" + uri + "\"");
-	query.addField(ConceptSolrFields.ID);
+	query.setQuery(COREF + ":\"" + uri + "\"");
+	query.addField(ID);
 
 	try {
 	    QueryResponse rsp = solrClient.query(query);
@@ -396,7 +398,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    if (docs.isEmpty()) {
 	      return Collections.emptyList();
 	    } else {
-	        return docs.stream().map(doc -> doc.getFieldValue(ConceptSolrFields.ID).toString()).collect(Collectors.toList());
+	        return docs.stream().map(doc -> doc.getFieldValue(ID).toString()).collect(Collectors.toList());
 	    }
 	} catch (RuntimeException | SolrServerException | IOException e) {
 	    throw new EntityRuntimeException("Unexpected exception occured when searching Solr entities. ", e);
