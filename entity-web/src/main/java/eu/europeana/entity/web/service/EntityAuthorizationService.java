@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Component;
 
 import eu.europeana.api.commons.definitions.vocabulary.Role;
+import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.web.config.EntityWebConfig;
@@ -44,5 +45,11 @@ public class EntityAuthorizationService extends BaseAuthorizationService impleme
 	protected Role getRoleByName(String name) {
             return UserRoles.getRoleByName(name);
 	}
+
+    @Override
+    protected ApiWriteLockService getApiWriteLockService() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }

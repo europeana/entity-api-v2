@@ -127,7 +127,8 @@ public class UsageStatsService {
                     entityStats.setOrganisations(entry.getValue());
                 }
             }
-            entityStats.setTotal(getTotal(entityStats));
+            //SG: TODO: fix compilation errors
+//            entityStats.setTotal(getTotal(entityStats));
             return entityStats;
         }
         return null;
@@ -142,12 +143,13 @@ public class UsageStatsService {
      * @throws UsageStatsException
      */
     private static void calculatePercentageValues(EntityStats entityPerLanguage, EntityStats entitystatsTotal, EntitiesPerLanguage entities) throws UsageStatsException {
-       entities.setTimespans(getPercentage(entityPerLanguage.getTimespans(), entitystatsTotal.getTimespans()));
-       entities.setPlaces(getPercentage(entityPerLanguage.getPlaces(), entitystatsTotal.getPlaces()));
-       entities.setConcepts(getPercentage(entityPerLanguage.getConcepts(), entitystatsTotal.getConcepts()));
-       entities.setAgents(getPercentage(entityPerLanguage.getAgents(), entitystatsTotal.getAgents()));
-       entities.setOrganisations(getPercentage(entityPerLanguage.getOrganisations(), entitystatsTotal.getOrganisations()));
-       entities.setTotal(getPercentage(entityPerLanguage.getTotal(), entitystatsTotal.getTotal()));
+        //SG: TODO: fix compilation errors
+//       entities.setTimespans(getPercentage(entityPerLanguage.getTimespans(), entitystatsTotal.getTimespans()));
+//       entities.setPlaces(getPercentage(entityPerLanguage.getPlaces(), entitystatsTotal.getPlaces()));
+//       entities.setConcepts(getPercentage(entityPerLanguage.getConcepts(), entitystatsTotal.getConcepts()));
+//       entities.setAgents(getPercentage(entityPerLanguage.getAgents(), entitystatsTotal.getAgents()));
+//       entities.setOrganisations(getPercentage(entityPerLanguage.getOrganisations(), entitystatsTotal.getOrganisations()));
+//       entities.setTotal(getPercentage(entityPerLanguage.getTotal(), entitystatsTotal.getTotal()));
     }
 
     /**

@@ -119,7 +119,10 @@ public class ResolveController extends BaseRest {
     private ResponseEntity<String> createResponse(String type, String identifier, FormatTypes outFormat,
             String contentType, HttpServletRequest request) throws HttpException {
         try {
-            verifyReadAccess(request);
+            if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+                verifyReadAccess(request);
+            }
+
             Entity entity = getEntityService().retrieveByUrl(type, identifier);
             
             String jsonLd = serialize(entity, outFormat);
@@ -161,7 +164,9 @@ public class ResolveController extends BaseRest {
             throws HttpException {
 
         try {
-            verifyReadAccess(request);
+            if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+                verifyReadAccess(request);
+            }
             
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
             headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
