@@ -15,12 +15,18 @@ spec:
             httpGet:
               port: 8080
               path: /actuator/health/liveness
+              httpHeaders:
+                - name: Accept
+                  value: application/json
             initialDelaySeconds: 40
             periodSeconds: 20
           readinessProbe:
             httpGet:
               port: 8080
               path: /actuator/health/readiness
+              httpHeaders:
+                - name: Accept
+                  value: application/json
             initialDelaySeconds: 40
             periodSeconds: 20
           volumeMounts:
