@@ -41,7 +41,7 @@ public interface Organization extends Entity {
      * @return A Map<String,List<List<String>>> for the europeanaRoles of an
      *         organization class (one per language)
      */
-    Map<String, List<String>> getEuropeanaRole();
+    List<String> getEuropeanaRole();
 
     /**
      * Set the europeanaRole for an Organization Class
@@ -49,7 +49,7 @@ public interface Organization extends Entity {
      * @param acronym A Map<String,List<List<String>>> for the europeanaRole of an
      *                organization class (one per language)
      */
-    void setEuropeanaRole(Map<String, List<String>> europeanaRole);
+    void setEuropeanaRole(List<String> europeanaRole);
 
     public String getPostalCode();
 
@@ -59,9 +59,9 @@ public interface Organization extends Entity {
 
     public void setPostBox(String postBox);
 
-    public String getCountry();
+    public List<String> getCountry();
 
-    public void setCountry(String country);
+    public void setCountry(List<String> country);
 
     public String getStreetAddress();
 
@@ -112,5 +112,9 @@ public interface Organization extends Entity {
     String getHasGeo();
 
     Address getAddress();
+    
+    List<String> getAggregatedVia();
+    
+    void setAggregatedVia(List<String> aggregatedVia);
 
 }

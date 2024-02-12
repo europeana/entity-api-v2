@@ -1,14 +1,12 @@
 package eu.europeana.entity.web.xml.model;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
 import eu.europeana.entity.definitions.model.Organization;;
 
 @JacksonXmlRootElement(localName = XmlConstants.XML_EDM_ORGANIZATION)
@@ -17,7 +15,7 @@ import eu.europeana.entity.definitions.model.Organization;;
     	XmlConstants.XML_DC_DESCRIPTION, XmlConstants.XML_FOAF_LOGO, XmlConstants.XML_EDM_EUROPEANA_ROLE, XmlConstants.XML_EDM_ORGANIZATION_DOMAIN,
     	XmlConstants.XML_EDM_GEOGRAPHIC_LEVEL, XmlConstants.XML_EDM_COUNTRY, XmlConstants.XML_FOAF_HOMEPAGE, XmlConstants.XML_FOAF_PHONE,
     	XmlConstants.XML_FOAF_MBOX, XmlConstants.XML_VCARD_HAS_ADDRESS, XmlConstants.XML_VCARD_ADDRESS, XmlConstants.XML_DC_IDENTIFIER, 
-    	XmlConstants.XML_OWL_SAME_AS, XmlConstants.XML_ORE_IS_AGGREGATED_BY})
+    	XmlConstants.XML_OWL_SAME_AS, XmlConstants.XML_EDM_AGGREGATED_VIA, XmlConstants.XML_ORE_IS_AGGREGATED_BY})
 public class XmlOrganizationImpl extends XmlBaseEntityImpl {
 
 	public XmlOrganizationImpl(Organization organization) {
@@ -45,8 +43,10 @@ public class XmlOrganizationImpl extends XmlBaseEntityImpl {
 	
 	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_EDM_EUROPEANA_ROLE)
-	public List<XmlMultilingualString> getEuropeanaRole() {
-		return RdfXmlUtils.convertToXmlMultilingualString(getOrganization().getEuropeanaRole());
+	public List<String> getEuropeanaRole() {
+      if(getOrganization().getEuropeanaRole() == null || getOrganization().getEuropeanaRole().isEmpty())
+        return null;
+      return getOrganization().getEuropeanaRole();
 	}
 	
 	@JacksonXmlElementWrapper(useWrapping=false)
@@ -61,12 +61,21 @@ public class XmlOrganizationImpl extends XmlBaseEntityImpl {
 		return RdfXmlUtils.convertMapToXmlMultilingualString(getOrganization().getGeographicLevel());
 	}
 	
+	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_EDM_COUNTRY)
-	public String getCountry() {
-	    	if(getOrganization().getCountry() == null || getOrganization().getCountry().isEmpty())
-	    	    return null;
-		return getOrganization().getCountry();
+	public List<String> getCountry() {
+	  if(getOrganization().getCountry() == null || getOrganization().getCountry().isEmpty())
+	    return null;
+	  return getOrganization().getCountry();
 	}
+	
+    @JacksonXmlElementWrapper(useWrapping=false)
+    @JacksonXmlProperty(localName = XmlConstants.XML_EDM_AGGREGATED_VIA)
+    public List<String> getAggregatedVia() {
+      if(getOrganization().getAggregatedVia() == null || getOrganization().getAggregatedVia().isEmpty())
+        return null;
+      return getOrganization().getAggregatedVia();
+    }
 	
 	@JacksonXmlProperty(localName = XmlConstants.XML_FOAF_HOMEPAGE)
 	public RdfResource getHomepage() {
@@ -78,7 +87,7 @@ public class XmlOrganizationImpl extends XmlBaseEntityImpl {
 	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_FOAF_PHONE)
 	public List<String> getPhone() {
-	    	if(getOrganization().getPhone() == null || getOrganization().getPhone().size() == 0)
+	    	if(getOrganization().getPhone() == null || getOrganization().getPhone().isEmpty())
 	    	    return null;
 		return getOrganization().getPhone();
 	}
@@ -86,7 +95,7 @@ public class XmlOrganizationImpl extends XmlBaseEntityImpl {
 	@JacksonXmlElementWrapper(useWrapping=false)
 	@JacksonXmlProperty(localName = XmlConstants.XML_FOAF_MBOX)
 	public List<String> getMbox() {
-	    	if(getOrganization().getMbox() == null || getOrganization().getMbox().size() == 0)
+	    	if(getOrganization().getMbox() == null || getOrganization().getMbox().isEmpty())
 	    	    return null;
 		return getOrganization().getMbox();
 	}

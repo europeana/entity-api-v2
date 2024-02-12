@@ -85,6 +85,7 @@ public interface WebEntityFields {
     public static final String FOAF_HOMEPAGE = "homepage";
     public static final String FOAF_PHONE = "phone";
     public static final String FOAF_MBOX = "mbox";
+    public static final String AGGREGATED_VIA = "aggregatedVia";
 
     // Address Fields
     public static final String STREET_ADDRESS = "streetAddress";
