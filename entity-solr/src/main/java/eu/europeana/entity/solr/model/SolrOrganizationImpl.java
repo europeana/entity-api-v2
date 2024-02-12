@@ -3,9 +3,7 @@ package eu.europeana.entity.solr.model;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.solr.client.solrj.beans.Field;
-
 import eu.europeana.entity.definitions.model.Organization;
 import eu.europeana.entity.definitions.model.impl.BaseOrganization;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
@@ -94,11 +92,9 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 	}
 
 	@Override
-	@Field(OrganizationSolrFields.EUROPEANA_ROLE_ALL)
-	public void setEuropeanaRole(Map<String, List<String>> europeanaRole) {
-		Map<String, List<String>> normalizedEuropeanaRole = SolrUtils.normalizeStringListMap(
-				OrganizationSolrFields.EUROPEANA_ROLE, europeanaRole);
-		super.setEuropeanaRole(normalizedEuropeanaRole);
+	@Field(OrganizationSolrFields.EUROPEANA_ROLE)
+	public void setEuropeanaRole(List<String> europeanaRole) {
+		super.setEuropeanaRole(europeanaRole);
 	}
 
 	@Override
@@ -145,9 +141,15 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 
 	@Override
 	@Field(OrganizationSolrFields.COUNTRY)
-	public void setCountry(String country) {
+	public void setCountry(List<String> country) {
 		super.setCountry(country);
 	}
+	
+    @Override
+    @Field(OrganizationSolrFields.AGGREGATED_VIA)
+    public void setAggregatedVia(List<String> aggregatedVia) {
+        super.setAggregatedVia(aggregatedVia);
+    }
 
 	@Override
 	@Field(OrganizationSolrFields.VCARD_LOCALITY)

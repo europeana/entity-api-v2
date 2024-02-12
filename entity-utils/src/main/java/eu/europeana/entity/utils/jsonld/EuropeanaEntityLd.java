@@ -1,13 +1,11 @@
 package eu.europeana.entity.utils.jsonld;
 
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-
 import eu.europeana.api.commons.definitions.utils.DateUtils;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Agent;
@@ -239,9 +237,7 @@ public class EuropeanaEntityLd extends JsonLd {
 	    putListProperty(WebEntityFields.FOAF_MBOX, entity.getMbox(), jsonLdResource);
 
 	if (entity.getEuropeanaRole() != null) {
-	    // "en" is mandatory
-	    List<String> europeanaRole = entity.getEuropeanaRole().get(WebEntityFields.LANGUAGE_EN);
-	    putListProperty(WebEntityFields.EUROPEANA_ROLE, europeanaRole, ldResource);
+	    putListProperty(WebEntityFields.EUROPEANA_ROLE, entity.getEuropeanaRole(), jsonLdResource);
 	}
 
 	if (entity.getOrganizationDomain() != null) {
@@ -256,8 +252,12 @@ public class EuropeanaEntityLd extends JsonLd {
 	    ldResource.putProperty(WebEntityFields.GEOGRAPHIC_LEVEL, geoLevel);
 	}
 
-	if (!StringUtils.isEmpty(entity.getCountry()))
-	    ldResource.putProperty(WebEntityFields.COUNTRY, entity.getCountry());
+	if (entity.getCountry() != null)
+	  putListProperty(WebEntityFields.COUNTRY, entity.getCountry(), jsonLdResource);
+	
+    if (entity.getAggregatedVia() != null) {
+      putListProperty(WebEntityFields.AGGREGATED_VIA, entity.getAggregatedVia(), jsonLdResource);
+    }
 
 	putAddressProperty(entity, ldResource);
 

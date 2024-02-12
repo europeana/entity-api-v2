@@ -2,7 +2,6 @@ package eu.europeana.entity.definitions.model.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import eu.europeana.entity.definitions.model.Address;
 import eu.europeana.entity.definitions.model.Organization;
 
@@ -20,10 +19,11 @@ public class BaseOrganization extends BaseEntity implements Organization {
     private String homepage;
     private List<String> phone;
     private List<String> mbox;
-    private Map<String, List<String>> europeanaRole;
+    private List<String> europeanaRole;
     private Map<String, List<String>> organizationDomain;
     private Map<String, String> geographicLevel;
-    private String country;
+    private List<String> country;
+    private List<String> aggregatedVia;
 
     // address fields
     private String hasAddress;
@@ -57,12 +57,12 @@ public class BaseOrganization extends BaseEntity implements Organization {
     }
 
     @Override
-    public Map<String, List<String>> getEuropeanaRole() {
+    public List<String> getEuropeanaRole() {
         return europeanaRole;
     }
 
     @Override
-    public void setEuropeanaRole(Map<String, List<String>> europeanaRole) {
+    public void setEuropeanaRole(List<String> europeanaRole) {
         this.europeanaRole = europeanaRole;
     }
 
@@ -147,12 +147,12 @@ public class BaseOrganization extends BaseEntity implements Organization {
     }
 
     @Override
-    public String getCountry() {
+    public List<String> getCountry() {
         return country;
     }
 
     @Override
-    public void setCountry(String country) {
+    public void setCountry(List<String> country) {
         this.country = country;
     }
 
@@ -239,4 +239,14 @@ public class BaseOrganization extends BaseEntity implements Organization {
         return this.address;
     }
 
+    @Override
+    public List<String> getAggregatedVia() {
+        return aggregatedVia;
+    }
+
+    @Override
+    public void setAggregatedVia(List<String> aggregatedVia) {
+        this.aggregatedVia = aggregatedVia;
+    }
+      
 }
