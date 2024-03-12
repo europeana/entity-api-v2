@@ -131,7 +131,7 @@ public class SearchController extends BaseRest {
 	    @RequestParam(value = WebEntityConstants.QUERY_PARAM_TYPE, required = false, defaultValue = WebEntityConstants.PARAM_TYPE_ALL) String type,
 	    @RequestParam(value = WebEntityConstants.QUERY_PARAM_SCOPE, required = false) String scope,
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_SORT, required = false) String sort,
-	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PAGE, required = false, defaultValue = "0") int page,
+	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PAGE, required = false, defaultValue = "1") int page,
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PAGE_SIZE, required = false, defaultValue = ""
 		    + Query.DEFAULT_PAGE_SIZE) int pageSize,
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PROFILE, required = false) String profile,
@@ -179,7 +179,7 @@ public class SearchController extends BaseRest {
 	    String[] sortCriteria = queryBuilder.toArray(sort); 
 	    
 	    // perform search
-	    Query searchQuery = queryBuilder.buildSearchQuery(queryString, qf, facets, sortCriteria, page, pageSize,
+	    Query searchQuery = queryBuilder.buildSearchQuery(queryString, qf, facets, sortCriteria, page-1, pageSize,
 		    searchProfile, retFields);
 	    ResultSet<? extends Entity> results = getEntityService().search(searchQuery, preferredLanguages, entityTypes,
 		    scope);
