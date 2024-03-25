@@ -1,8 +1,10 @@
 resources:
   - deployment.yaml
 
-commonLabels:
-  app: entity-api-v2
+labels:
+  - includeSelectors: true
+    pairs:
+      app: entity-api-v2
 
 # expects files to be in the same directory
 secretGenerator:
