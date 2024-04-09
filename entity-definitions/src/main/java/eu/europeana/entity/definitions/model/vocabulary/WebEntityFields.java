@@ -73,6 +73,8 @@ public interface WebEntityFields {
     String LATITUDE_LONGITUDE = "lat_long";
 
     String IS_NEXT_IN_SEQUENCE = "isNextInSequence";
+    String TYPE_PLACE = "Place";
+    
 
     // Organization fields
     String DESCRIPTION = "description";
@@ -85,6 +87,7 @@ public interface WebEntityFields {
     String FOAF_HOMEPAGE = "homepage";
     String FOAF_PHONE = "phone";
     String FOAF_MBOX = "mbox";
+    
 
     // Address Fields
     String STREET_ADDRESS = "streetAddress";

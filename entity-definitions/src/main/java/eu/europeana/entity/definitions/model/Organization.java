@@ -59,9 +59,9 @@ public interface Organization extends Entity {
 
     public void setPostBox(String postBox);
 
-    public String getCountry();
+    public List<String> getCountry();
 
-    public void setCountry(String country);
+    public void setCountry(List<String> country);
 
     public String getStreetAddress();
 
@@ -113,4 +113,7 @@ public interface Organization extends Entity {
 
     Address getAddress();
 
+    public Map<String, String> getCountryLabel();
+
+    public void setCountryLabel(Map<String, String> countryLabel);
 }

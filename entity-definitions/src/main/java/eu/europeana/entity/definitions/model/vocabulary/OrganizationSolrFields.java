@@ -18,8 +18,11 @@ public interface OrganizationSolrFields extends ConceptSolrFields {
     public static final String ORGANIZATION_DOMAIN_ALL = ORGANIZATION_DOMAIN + EXTENSION_ALL;
     public static final String GEOGRAPHIC_LEVEL = "geographicLevel";
     public static final String GEOGRAPHIC_LEVEL_ALL = GEOGRAPHIC_LEVEL + EXTENSION_ALL;
+    
     public static final String COUNTRY = "country";
-
+    public static final String COUNTRY_LABEL_PREFIX = "countryLabel";
+    public static final String COUNTRY_LABEL_ALL = COUNTRY_LABEL_PREFIX + ".*";
+    
     public static final String VCARD_STREET_ADDRESS = "vcard_streetAddress.1";
     public static final String VCARD_LOCALITY = "vcard_locality.1";
     public static final String VCARD_POSTAL_CODE = "vcard_postalCode.1";

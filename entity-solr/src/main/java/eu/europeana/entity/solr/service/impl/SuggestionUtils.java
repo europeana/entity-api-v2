@@ -322,8 +322,9 @@ public class SuggestionUtils {
 		
 		//only english versions are available for now, and the structure is not a language map
 		JsonNode propertyNode = payloadNode.get(WebEntityFields.COUNTRY);
-		if (propertyNode != null)
-			preview.setCountry(propertyNode.textValue());
+		if (propertyNode != null) {
+			preview.setCountry(propertyNode.get(WebEntityFields.ID).textValue());
+		}
 		
 		//only english versions are available for now, and the structure is not a language map
 		propertyNode = payloadNode.get(WebEntityFields.ORGANIZATION_DOMAIN);
