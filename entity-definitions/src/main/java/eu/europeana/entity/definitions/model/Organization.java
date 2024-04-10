@@ -38,18 +38,18 @@ public interface Organization extends Entity {
     /**
      * Retrieves the europeanaRole for an Organization Class (language,value) format
      * 
-     * @return A Map<String,List<List<String>>> for the europeanaRoles of an
-     *         organization class (one per language)
+     * @return List<String> for the europeanaRoles (Vocabulary URIs) of an
+     *         organization class
      */
-    Map<String, List<String>> getEuropeanaRole();
+    List<String> getEuropeanaRole();
 
     /**
      * Set the europeanaRole for an Organization Class
      * 
-     * @param acronym A Map<String,List<List<String>>> for the europeanaRole of an
-     *                organization class (one per language)
+     * @param europeanaRole A List<String> for the europeanaRoles (Vocabulary URIs) of an
+     *         organization class
      */
-    void setEuropeanaRole(Map<String, List<String>> europeanaRole);
+    void setEuropeanaRole(List<String> europeanaRole);
 
     public String getPostalCode();
 
@@ -66,14 +66,6 @@ public interface Organization extends Entity {
     public String getStreetAddress();
 
     public void setStreetAddress(String streetAddress);
-
-    public Map<String, String> getGeographicLevel();
-
-    public void setGeographicLevel(Map<String, String> geographicLevel);
-
-    public Map<String, List<String>> getOrganizationDomain();
-
-    public void setOrganizationDomain(Map<String, List<String>> organizationDomain);
 
     public String getHomepage();
 
@@ -112,6 +104,10 @@ public interface Organization extends Entity {
     String getHasGeo();
 
     Address getAddress();
+    
+    List<String> getAggregatedVia();
+    
+    void setAggregatedVia(List<String> aggregatedVia);
 
     public Map<String, String> getCountryLabel();
 
