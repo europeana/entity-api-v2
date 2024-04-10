@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.solr.client.solrj.beans.Field;
-
 import eu.europeana.entity.definitions.model.Agent;
 import eu.europeana.entity.definitions.model.impl.BaseAgent;
 import eu.europeana.entity.definitions.model.vocabulary.AgentSolrFields;
@@ -242,18 +240,6 @@ public class SolrAgentImpl extends BaseAgent implements Agent {
 	}
 
 	@Override
-	// @Field(SkosAgentSolrFields.EUROPEANA_DOC_COUNT)
-	public void setEuropeanaDocCount(int europeanaDocCount) {
-		super.setEuropeanaDocCount(europeanaDocCount);
-	}
-
-	@Override
-	// @Field(SkosAgentSolrFields.DERIVED_SCORE)
-	public void setDerivedScore(float derivedScore) {
-		super.setDerivedScore(derivedScore);
-	}
-
-	@Override
 	@Field(AgentSolrFields.DATE)
 	public void setDate(Date date) {
 		super.setDate(date);
@@ -270,4 +256,23 @@ public class SolrAgentImpl extends BaseAgent implements Agent {
 	public void setModified(Date modified) {
 	    	super.setModified(modified);
 	}
+	
+    @Override
+    @Field(EntitySolrFields.EUROPEANA_DOC_COUNT)
+    public void setEuropeanaDocCount(int europeanaDocCount) {
+        super.setEuropeanaDocCount(europeanaDocCount);
+    }
+
+    @Override
+    @Field(EntitySolrFields.DERIVED_SCORE)
+    public void setDerivedScore(float derivedScore) {
+        super.setDerivedScore(derivedScore);
+    }
+    
+    @Override
+    @Field(EntitySolrFields.PAGE_RANK)
+    public void setPageRank(float pageRank) {
+      super.setPageRank(pageRank);
+    }
+	
 }

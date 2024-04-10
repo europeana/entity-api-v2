@@ -126,4 +126,16 @@ public interface Entity {
 
     void setModified(Date modified);
 
+    void setDerivedScore(float derivedScore);
+
+    float getDerivedScore();
+    
+    float getPageRank();
+
+    void setPageRank(float pageRank);
+
+    void setEuropeanaDocCount(int europeanaDocCount);
+
+    int getEuropeanaDocCount();
+    
 }

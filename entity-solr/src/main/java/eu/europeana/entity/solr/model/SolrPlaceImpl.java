@@ -3,9 +3,7 @@ package eu.europeana.entity.solr.model;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.solr.client.solrj.beans.Field;
-
 import eu.europeana.entity.definitions.model.Place;
 import eu.europeana.entity.definitions.model.impl.BasePlace;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
@@ -152,4 +150,23 @@ public class SolrPlaceImpl extends BasePlace implements Place {
 	public void setIsShownByThumbnail(String isShownByThumbnail) {
 		super.setIsShownByThumbnail(isShownByThumbnail);
 	}
+	
+    @Override
+    @Field(EntitySolrFields.EUROPEANA_DOC_COUNT)
+    public void setEuropeanaDocCount(int europeanaDocCount) {
+        super.setEuropeanaDocCount(europeanaDocCount);
+    }
+
+    @Override
+    @Field(EntitySolrFields.DERIVED_SCORE)
+    public void setDerivedScore(float derivedScore) {
+        super.setDerivedScore(derivedScore);
+    }
+    
+    @Override
+    @Field(EntitySolrFields.PAGE_RANK)
+    public void setPageRank(float pageRank) {
+      super.setPageRank(pageRank);
+    }
+	
 }

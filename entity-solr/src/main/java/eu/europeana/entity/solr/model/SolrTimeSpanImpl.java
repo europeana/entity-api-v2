@@ -9,6 +9,7 @@ import org.apache.solr.client.solrj.beans.Field;
 import eu.europeana.entity.definitions.model.TimeSpan;
 import eu.europeana.entity.definitions.model.impl.BaseTimeSpan;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
+import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
 
 public class SolrTimeSpanImpl extends BaseTimeSpan implements TimeSpan {
 
@@ -132,6 +133,24 @@ public class SolrTimeSpanImpl extends BaseTimeSpan implements TimeSpan {
     @Field(ConceptSolrFields.MODIFIED)
     public void setModified(Date modified) {
 	super.setModified(modified);
+    }
+
+    @Override
+    @Field(EntitySolrFields.EUROPEANA_DOC_COUNT)
+    public void setEuropeanaDocCount(int europeanaDocCount) {
+        super.setEuropeanaDocCount(europeanaDocCount);
+    }
+
+    @Override
+    @Field(EntitySolrFields.DERIVED_SCORE)
+    public void setDerivedScore(float derivedScore) {
+        super.setDerivedScore(derivedScore);
+    }
+    
+    @Override
+    @Field(EntitySolrFields.PAGE_RANK)
+    public void setPageRank(float pageRank) {
+      super.setPageRank(pageRank);
     }
 
 }
