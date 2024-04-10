@@ -79,29 +79,10 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 		super.setType(internalType);
 	}	
 	
-	
 	@Override
-	@Field(OrganizationSolrFields.GEOGRAPHIC_LEVEL_ALL)
-	public void setGeographicLevel(Map<String, String> geographicLevel) {
-		Map<String, String> normalizedGeographicLevel = SolrUtils.normalizeStringMap(
-				OrganizationSolrFields.GEOGRAPHIC_LEVEL, geographicLevel);
-		super.setGeographicLevelStringMap(normalizedGeographicLevel);		
-	}
-
-	@Override
-	@Field(OrganizationSolrFields.ORGANIZATION_DOMAIN_ALL)
-	public void setOrganizationDomain(Map<String, List<String>> organizationDomain) {
-		Map<String, List<String>> normalizedOrganizationDomain = SolrUtils.normalizeStringListMap(
-				OrganizationSolrFields.ORGANIZATION_DOMAIN, organizationDomain);
-		super.setOrganizationDomain(normalizedOrganizationDomain);		
-	}
-
-	@Override
-	@Field(OrganizationSolrFields.EUROPEANA_ROLE_ALL)
-	public void setEuropeanaRole(Map<String, List<String>> europeanaRole) {
-		Map<String, List<String>> normalizedEuropeanaRole = SolrUtils.normalizeStringListMap(
-				OrganizationSolrFields.EUROPEANA_ROLE, europeanaRole);
-		super.setEuropeanaRole(normalizedEuropeanaRole);
+	@Field(OrganizationSolrFields.EUROPEANA_ROLE)
+	public void setEuropeanaRole(List<String> europeanaRole) {
+		super.setEuropeanaRole(europeanaRole);
 	}
 
 	@Override
@@ -151,6 +132,12 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 	public void setCountry(List<String> country) {
 		super.setCountry(country);
 	}
+	
+    @Override
+    @Field(OrganizationSolrFields.AGGREGATED_VIA)
+    public void setAggregatedVia(List<String> aggregatedVia) {
+        super.setAggregatedVia(aggregatedVia);
+    }
 
 	@Override
 	@Field(OrganizationSolrFields.VCARD_LOCALITY)

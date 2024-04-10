@@ -62,13 +62,12 @@ public final class XmlConstants {
     public static final String XML_DC_DESCRIPTION = "dc:description";
     public static final String XML_FOAF_LOGO = "foaf:logo";
     public static final String XML_EDM_EUROPEANA_ROLE = "edm:europeanaRole";
-    public static final String XML_EDM_ORGANIZATION_DOMAIN = "edm:organizationDomain";
-    public static final String XML_EDM_GEOGRAPHIC_LEVEL = "edm:geographicLevel";
     public static final String XML_EDM_COUNTRY = "edm:country";
     public static final String XML_FOAF_HOMEPAGE = "foaf:homepage";
     public static final String XML_FOAF_PHONE = "foaf:phone";
     public static final String XML_FOAF_MBOX = "foaf:mbox";
     public static final String XML_VCARD_HAS_ADDRESS = "vcard:hasAddress";
+    public static final String XML_EDM_AGGREGATED_VIA = "edm:aggregatedVia";
     
     public static final String XML_VCARD_ADDRESS = "vcard:Address";
     public static final String XML_VCARD_STREET_ADDRESS = "vcard:street-address";

@@ -253,22 +253,11 @@ public class EuropeanaEntityLd extends JsonLd {
       putListProperty(WebEntityFields.FOAF_MBOX, entity.getMbox(), jsonLdResource);
 
     if (entity.getEuropeanaRole() != null) {
-      // "en" is mandatory
-      List<String> europeanaRole = entity.getEuropeanaRole().get(WebEntityFields.LANGUAGE_EN);
-      putListProperty(WebEntityFields.EUROPEANA_ROLE, europeanaRole, ldResource);
+      putListProperty(WebEntityFields.EUROPEANA_ROLE, entity.getEuropeanaRole(), jsonLdResource);
     }
-
-    if (entity.getOrganizationDomain() != null) {
-      // "en" is mandatory
-      List<String> europeanaDomain =
-          entity.getOrganizationDomain().get(WebEntityFields.LANGUAGE_EN);
-      putListProperty(WebEntityFields.ORGANIZATION_DOMAIN, europeanaDomain, ldResource);
-    }
-
-    if (entity.getGeographicLevel() != null) {
-      // "en" is mandatory
-      String geoLevel = entity.getGeographicLevel().get(WebEntityFields.LANGUAGE_EN);
-      ldResource.putProperty(WebEntityFields.GEOGRAPHIC_LEVEL, geoLevel);
+    
+    if (entity.getAggregatedVia() != null) {
+      putListProperty(WebEntityFields.AGGREGATED_VIA, entity.getAggregatedVia(), jsonLdResource);
     }
 
     // putMapOfStringProperty(WebEntityFields.DESCRIPTION, entity.getDescription(), "", ldResource);
