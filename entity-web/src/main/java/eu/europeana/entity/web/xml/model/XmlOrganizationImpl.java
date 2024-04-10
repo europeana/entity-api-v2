@@ -62,7 +62,7 @@ public class XmlOrganizationImpl extends XmlBaseEntityImpl {
 	}
 	
 	@JacksonXmlProperty(localName = XmlConstants.XML_EDM_COUNTRY)
-	public String getCountry() {
+	public List<String> getCountry() {
 	    	if(getOrganization().getCountry() == null || getOrganization().getCountry().isEmpty())
 	    	    return null;
 		return getOrganization().getCountry();

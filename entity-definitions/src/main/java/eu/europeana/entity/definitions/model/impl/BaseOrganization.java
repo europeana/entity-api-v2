@@ -23,7 +23,8 @@ public class BaseOrganization extends BaseEntity implements Organization {
     private Map<String, List<String>> europeanaRole;
     private Map<String, List<String>> organizationDomain;
     private Map<String, String> geographicLevel;
-    private String country;
+    private List<String> country;
+    private Map<String, String> countryLabel;
 
     // address fields
     private String hasAddress;
@@ -147,13 +148,21 @@ public class BaseOrganization extends BaseEntity implements Organization {
     }
 
     @Override
-    public String getCountry() {
+    public List<String> getCountry() {
         return country;
     }
 
     @Override
-    public void setCountry(String country) {
+    public void setCountry(List<String> country) {
         this.country = country;
+    }
+    
+    public Map<String, String> getCountryLabel() {
+      return countryLabel;
+    }
+
+    public void setCountryLabel(Map<String, String> countryLabel) {
+      this.countryLabel = countryLabel;
     }
 
     @Override

@@ -21,11 +21,6 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 
 	
 //	@Override
-//	public void setDescription(Map<String, String> dcDescription) {
-//	    super.setDescription(dcDescription);
-//	}
-	
-//	@Override
 	@Field(OrganizationSolrFields.DC_DESCRIPTION_ALL)
 	public void setDescriptionsMap(Map<String, List<String>> dcDescription) {
 	    Map<String, String> normalizedDescription = SolrUtils.normalizeToStringMap(
@@ -49,6 +44,14 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 				ConceptSolrFields.PREF_LABEL_PREFIX, prefLabel);
 		super.setPrefLabel(normalizedPrefLabel);
 	}
+	
+	@Override
+    @Field(OrganizationSolrFields.COUNTRY_LABEL_ALL)
+    public void setCountryLabel(Map<String, String> countryLabel) {
+      Map<String, String> normalizedCountryLabel = SolrUtils.normalizeStringMap(
+          OrganizationSolrFields.COUNTRY_LABEL_PREFIX, countryLabel);
+      super.setCountryLabel(normalizedCountryLabel);
+    }
 
 	@Override
 	@Field(OrganizationSolrFields.ALT_LABEL_ALL)
@@ -145,7 +148,7 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 
 	@Override
 	@Field(OrganizationSolrFields.COUNTRY)
-	public void setCountry(String country) {
+	public void setCountry(List<String> country) {
 		super.setCountry(country);
 	}
 
