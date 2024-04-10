@@ -69,14 +69,15 @@ public class EntityJsonComparator implements Comparator<Object> {
 		propOrderMap.put(WebEntityConstants.DESCRIPTION, 360);
 		propOrderMap.put(WebEntityConstants.FOAF_LOGO, 370);
 		propOrderMap.put(WebEntityConstants.EUROPEANA_ROLE, 380);
-		propOrderMap.put(WebEntityConstants.ORGANIZATION_DOMAIN, 390);
-		propOrderMap.put(WebEntityConstants.GEOGRAPHIC_LEVEL, 400);
+//		propOrderMap.put(WebEntityConstants.ORGANIZATION_DOMAIN, 390);
+//		propOrderMap.put(WebEntityConstants.GEOGRAPHIC_LEVEL, 400);
 		propOrderMap.put(WebEntityConstants.COUNTRY, 410);
 		propOrderMap.put(WebEntityConstants.FOAF_HOMEPAGE, 420);
 		propOrderMap.put(WebEntityConstants.FOAF_PHONE, 430);
 		propOrderMap.put(WebEntityConstants.FOAF_MBOX, 440);
 		//Organization - relations
 		propOrderMap.put(WebEntityConstants.HAS_ADDRESS, 510);
+		propOrderMap.put(WebEntityConstants.AGGREGATED_VIA, 520);
 		
 		//Agent - relations
 		propOrderMap.put(WebEntityConstants.HAS_PART, 460);
