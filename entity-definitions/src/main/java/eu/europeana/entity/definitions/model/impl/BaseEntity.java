@@ -36,6 +36,7 @@ public class BaseEntity implements Entity, RankedEntity {
     private int wikipediaClicks;
     private int europeanaDocCount;
     private float derivedScore;
+    private float pageRank;
 
     // The time at which the Set was created by the user.
     private Date created;
@@ -152,6 +153,16 @@ public class BaseEntity implements Entity, RankedEntity {
     @Override
     public void setDerivedScore(float derivedScore) {
         this.derivedScore = derivedScore;
+    }
+    
+    @Override
+    public float getPageRank() {
+      return pageRank;
+    }
+
+    @Override
+    public void setPageRank(float pageRank) {
+      this.pageRank = pageRank;
     }
 
     public String[] getIsRelatedTo() {

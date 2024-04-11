@@ -7,7 +7,6 @@ import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-
 import eu.europeana.api.commons.definitions.utils.DateUtils;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Agent;
@@ -357,6 +356,10 @@ public class EuropeanaEntityLd extends JsonLd {
 
     oreAggregation
         .putProperty(new JsonLdProperty(WebEntityFields.AGGREGATES, entity.getEntityId()));
+    
+    oreAggregation.putProperty(new JsonLdProperty(WebEntityFields.PAGE_RANK, entity.getPageRank()));
+    oreAggregation.putProperty(new JsonLdProperty(WebEntityFields.RECORD_COUNT, entity.getEuropeanaDocCount()));
+    oreAggregation.putProperty(new JsonLdProperty(WebEntityFields.SCORE, entity.getDerivedScore()));
 
     JsonLdProperty isAggregatedBy = new JsonLdProperty(WebEntityFields.IS_AGGREGATED_BY);
     isAggregatedBy.addValue(oreAggregation);
