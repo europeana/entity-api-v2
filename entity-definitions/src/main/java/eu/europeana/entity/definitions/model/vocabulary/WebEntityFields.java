@@ -22,6 +22,9 @@ public interface WebEntityFields {
     String SOURCE = "source";
     String THUMBNAIL = "thumbnail";
     String IS_SHOWN_BY = "isShownBy";
+    String PAGE_RANK = "pageRank";
+    String RECORD_COUNT = "recordCount";
+    String SCORE = "score";
 
     //Enrichment field
     String ENRICH_LABEL_FIELD = "label_enrich";

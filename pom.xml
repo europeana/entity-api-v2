@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.europeana.entity</groupId>
@@ -19,23 +21,14 @@
 			<name>europeana-snapshots</name>
 			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
-		<!--
+
+		<!-- repo for plugins, required to resolve git-commit-id -->
 		<repository>
-			<id>repo1-cache</id>
-			<name>repo1-cache</name>
-			<url>http://artifactory.eanadev.org/artifactory/repo1-cache/</url>
+			<id>plugins-release</id>
+			<name>artifactory plugins-release</name>
+			<url>https://artifactory.eanadev.org/artifactory/plugins-release</url>
 		</repository>
--->
-		
-		<!-- 
-		<repository>
-			<id>central</id>
-			<url>http://central.maven.org/maven2/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		 -->
+
 	</repositories>
 
 
@@ -52,7 +45,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<!-- Import dependency management from Spring Boot (because we don't 
+				<!-- Import dependency management from Spring Boot (because we
+				don't 
 					use Spring-Boot as parent pom) -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -66,9 +60,19 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
+		<version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+		<!-- SG: NOTE: for newer maven compiler plugin only release version
+		should be required -->
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		
+		<!-- property to be used for add opens jvm arguments in plugins -->
+		<java.17.addopens>--add-opens java.base/java.util=ALL-UNNAMED
+			--add-opens java.base/java.lang=ALL-UNNAMED
+		</java.17.addopens>
+		
 		<sonar.organization>europeana</sonar.organization>
 		<version.junit>5.7.0</version.junit>
 		<version.commonsApi>0.3.22</version.commonsApi>
@@ -80,22 +84,23 @@
 		<version.swagger>3.0.0</version.swagger>
 		<version.morphia>2.1.4</version.morphia>
 		<version.servletApi>2.5</version.servletApi>
-		<!-- <mock-webserver.version>4.9.0</mock-webserver.version> -->
-		<version.springBoot>2.5.7</version.springBoot>
+		<version.springBoot>2.5.14</version.springBoot>
+		<!--
 		<version.spring>5.3.9</version.spring>
+		-->
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.apacheSolr>7.7.2</version.apacheSolr>
 		<version.servletJstl>1.2</version.servletJstl>
-		<!-- <version.mapstruct>1.2.0.Final</version.mapstruct> -->
-		<version.log4j2>2.17.0</version.log4j2>
+		<version.log4j2>2.17.2</version.log4j2>
 		<version.javax.annotation>1.3.2</version.javax.annotation>
-		<!-- <version.javax.validation>2.0.1.Final</version.javax.validation> <version.jaxb>2.3.3</version.jaxb> 
-			<version.saxon-he>10.5</version.saxon-he> -->
+		
+		<version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
+		<version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
 	</properties>
 
 	<build>
 		<!-- set fixed name for easy deployment -->
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 
 		<!-- configure source and output locations -->
 		<directory>target</directory>
@@ -103,7 +108,8 @@
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<!-- <testSourceDirectory>src/integration-test/java</testSourceDirectory> -->
+		<!--
+		<testSourceDirectory>src/integration-test/java</testSourceDirectory> -->
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -119,17 +125,21 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<inherited>true</inherited>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>§{version.springBoot}</version>
 					<configuration>
-						<forceJavacCompilerUse>true</forceJavacCompilerUse>
-						<release>${version.java}</release>
+						<jvmArguments>${java.17.addopens}</jvmArguments>
 					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.1</version>
+					<version>${version.maven-surfire-plugin}</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>

@@ -9,14 +9,6 @@ public interface RankedEntity {
 
     Date getTimestamp();
 
-    void setDerivedScore(float derivedScore);
-
-    float getDerivedScore();
-
-    void setEuropeanaDocCount(int europeanaDocCount);
-
-    int getEuropeanaDocCount();
-
     void setWikipediaClicks(int wikipediaClicks);
 
     int getWikipediaClicks();
