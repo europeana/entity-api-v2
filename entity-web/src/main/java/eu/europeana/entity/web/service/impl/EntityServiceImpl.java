@@ -189,17 +189,21 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	String collectionUrl = buildCollectionUrl(searchQuery, methodFullUri, request.getQueryString());
 	resPage.setCollectionUri(collectionUrl);
 
-	int currentPage = searchQuery.getPageNr();
+	/*
+	 * for entity-api pages start from 1, while to the api-commons (and solr) we send it from 0, because the api-commons is 
+	 * used from the other apis as well, so not to break the compatibility (btw solr pages start with 0)
+	 */
+	int currentPage = searchQuery.getPageNr() + 1;
 	String currentPageUrl = buildPageUrl(collectionUrl, currentPage, searchQuery.getPageSize());
 	resPage.setCurrentPageUri(currentPageUrl);
 
-	if (currentPage > 0) {
+	if (currentPage > 1) {
 	    String prevPage = buildPageUrl(collectionUrl, currentPage - 1, searchQuery.getPageSize());
 	    resPage.setPrevPageUri(prevPage);
 	}
 
 	// if current page is not the last one
-	boolean isLastPage = resPage.getTotalInCollection() <= (currentPage + 1) * searchQuery.getPageSize();
+	boolean isLastPage = resPage.getTotalInCollection() <= currentPage * searchQuery.getPageSize();
 	if (!isLastPage) {
 	    String nextPage = buildPageUrl(collectionUrl, currentPage + 1, searchQuery.getPageSize());
 	    resPage.setNextPageUri(nextPage);
