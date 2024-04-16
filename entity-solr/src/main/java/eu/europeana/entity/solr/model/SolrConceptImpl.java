@@ -172,4 +172,22 @@ public class SolrConceptImpl extends BaseConcept implements Concept{
 	public void setIsShownByThumbnail(String isShownByThumbnail) {
 		super.setIsShownByThumbnail(isShownByThumbnail);
 	}
-}
+	
+    @Override
+    @Field(EntitySolrFields.EUROPEANA_DOC_COUNT)
+    public void setEuropeanaDocCount(int europeanaDocCount) {
+        super.setEuropeanaDocCount(europeanaDocCount);
+    }
+
+    @Override
+    @Field(EntitySolrFields.DERIVED_SCORE)
+    public void setDerivedScore(float derivedScore) {
+        super.setDerivedScore(derivedScore);
+    }
+    
+    @Override
+    @Field(EntitySolrFields.PAGE_RANK)
+    public void setPageRank(float pageRank) {
+      super.setPageRank(pageRank);
+    }
+	}

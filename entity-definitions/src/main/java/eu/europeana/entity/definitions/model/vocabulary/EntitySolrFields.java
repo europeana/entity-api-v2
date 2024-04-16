@@ -18,6 +18,7 @@ public interface EntitySolrFields {
     public static final String WIKIPEDIA_CLICKS = "wikipedia_clicks";
     public static final String EUROPEANA_DOC_COUNT = "europeana_doc_count";
     public static final String DERIVED_SCORE = "derived_score";
+    public static final String PAGE_RANK = "pagerank";
 
     public static final String TIMESTAMP = "timestamp";
     public static final String CREATED = "created";

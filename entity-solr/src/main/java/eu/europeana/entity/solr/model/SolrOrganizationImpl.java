@@ -21,11 +21,6 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 
 	
 //	@Override
-//	public void setDescription(Map<String, String> dcDescription) {
-//	    super.setDescription(dcDescription);
-//	}
-	
-//	@Override
 	@Field(OrganizationSolrFields.DC_DESCRIPTION_ALL)
 	public void setDescriptionsMap(Map<String, List<String>> dcDescription) {
 	    Map<String, String> normalizedDescription = SolrUtils.normalizeToStringMap(
@@ -49,6 +44,14 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 				ConceptSolrFields.PREF_LABEL_PREFIX, prefLabel);
 		super.setPrefLabel(normalizedPrefLabel);
 	}
+	
+	@Override
+    @Field(OrganizationSolrFields.COUNTRY_LABEL_ALL)
+    public void setCountryLabel(Map<String, String> countryLabel) {
+      Map<String, String> normalizedCountryLabel = SolrUtils.normalizeStringMap(
+          OrganizationSolrFields.COUNTRY_LABEL_PREFIX, countryLabel);
+      super.setCountryLabel(normalizedCountryLabel);
+    }
 
 	@Override
 	@Field(OrganizationSolrFields.ALT_LABEL_ALL)
@@ -76,29 +79,10 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 		super.setType(internalType);
 	}	
 	
-	
 	@Override
-	@Field(OrganizationSolrFields.GEOGRAPHIC_LEVEL_ALL)
-	public void setGeographicLevel(Map<String, String> geographicLevel) {
-		Map<String, String> normalizedGeographicLevel = SolrUtils.normalizeStringMap(
-				OrganizationSolrFields.GEOGRAPHIC_LEVEL, geographicLevel);
-		super.setGeographicLevelStringMap(normalizedGeographicLevel);		
-	}
-
-	@Override
-	@Field(OrganizationSolrFields.ORGANIZATION_DOMAIN_ALL)
-	public void setOrganizationDomain(Map<String, List<String>> organizationDomain) {
-		Map<String, List<String>> normalizedOrganizationDomain = SolrUtils.normalizeStringListMap(
-				OrganizationSolrFields.ORGANIZATION_DOMAIN, organizationDomain);
-		super.setOrganizationDomain(normalizedOrganizationDomain);		
-	}
-
-	@Override
-	@Field(OrganizationSolrFields.EUROPEANA_ROLE_ALL)
-	public void setEuropeanaRole(Map<String, List<String>> europeanaRole) {
-		Map<String, List<String>> normalizedEuropeanaRole = SolrUtils.normalizeStringListMap(
-				OrganizationSolrFields.EUROPEANA_ROLE, europeanaRole);
-		super.setEuropeanaRole(normalizedEuropeanaRole);
+	@Field(OrganizationSolrFields.EUROPEANA_ROLE)
+	public void setEuropeanaRole(List<String> europeanaRole) {
+		super.setEuropeanaRole(europeanaRole);
 	}
 
 	@Override
@@ -145,9 +129,15 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 
 	@Override
 	@Field(OrganizationSolrFields.COUNTRY)
-	public void setCountry(String country) {
+	public void setCountry(List<String> country) {
 		super.setCountry(country);
 	}
+	
+    @Override
+    @Field(OrganizationSolrFields.AGGREGATED_VIA)
+    public void setAggregatedVia(List<String> aggregatedVia) {
+        super.setAggregatedVia(aggregatedVia);
+    }
 
 	@Override
 	@Field(OrganizationSolrFields.VCARD_LOCALITY)
@@ -221,4 +211,23 @@ public class SolrOrganizationImpl extends BaseOrganization implements Organizati
 	public void setIsShownByThumbnail(String isShownByThumbnail) {
 		super.setIsShownByThumbnail(isShownByThumbnail);
 	}
+	
+    @Override
+    @Field(EntitySolrFields.EUROPEANA_DOC_COUNT)
+    public void setEuropeanaDocCount(int europeanaDocCount) {
+        super.setEuropeanaDocCount(europeanaDocCount);
+    }
+
+    @Override
+    @Field(EntitySolrFields.DERIVED_SCORE)
+    public void setDerivedScore(float derivedScore) {
+        super.setDerivedScore(derivedScore);
+    }
+    
+    @Override
+    @Field(EntitySolrFields.PAGE_RANK)
+    public void setPageRank(float pageRank) {
+      super.setPageRank(pageRank);
+    }
+	
 }
