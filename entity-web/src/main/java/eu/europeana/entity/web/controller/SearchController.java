@@ -148,6 +148,8 @@ public class SearchController extends BaseRest {
 
 	    // process scope
 	    scope = validateScopeParam(scope);
+	    
+	    validatePageParam(page);
 
 	    // process type
 	    EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
@@ -179,7 +181,7 @@ public class SearchController extends BaseRest {
 	    String[] sortCriteria = queryBuilder.toArray(sort); 
 	    
 	    // perform search
-	    Query searchQuery = queryBuilder.buildSearchQuery(queryString, qf, facets, sortCriteria, page-1, pageSize,
+	    Query searchQuery = queryBuilder.buildSearchQuery(queryString, qf, facets, sortCriteria, page, pageSize,
 		    searchProfile, retFields);
 	    ResultSet<? extends Entity> results = getEntityService().search(searchQuery, preferredLanguages, entityTypes,
 		    scope);

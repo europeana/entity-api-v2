@@ -132,6 +132,13 @@ public abstract class BaseRest extends BaseRestController {
 
         return WebEntityConstants.PARAM_SCOPE_EUROPEANA;
     }
+    
+    protected void validatePageParam(int page) throws ParamValidationException {
+      if (page < 1) {
+          throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_PAGE, 
+              String.valueOf(page));
+      }
+    }
 
     /**
      * This method verifies if the provided format parameter is a valid one

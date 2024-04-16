@@ -6,14 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.HighlightParams;
 import org.apache.solr.common.params.SimpleParams;
 import org.springframework.util.MultiValueMap;
-
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.impl.QueryImpl;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
@@ -39,6 +37,11 @@ public class EntityQueryBuilder extends QueryBuilder {
 	//with solr 7 default param is not available in index configurations anymore
 	solrQuery.set(PARAM_QUERY_OPERATOR, SimpleParams.AND_OPERATOR);
 	return solrQuery;
+    }
+    
+    @Override
+    protected int computeSolrQueryStart(Query searchQuery) {
+      return (searchQuery.getPageNr() - 1) * searchQuery.getPageSize();
     }
 
     private boolean hasScopeEuropeana(String scope) {

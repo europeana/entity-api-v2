@@ -2,14 +2,11 @@ package eu.europeana.entity.web.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.api.commons.definitions.search.result.ResultsPage;
@@ -189,11 +186,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	String collectionUrl = buildCollectionUrl(searchQuery, methodFullUri, request.getQueryString());
 	resPage.setCollectionUri(collectionUrl);
 
-	/*
-	 * for entity-api pages start from 1, while to the api-commons (and solr) we send it from 0, because the api-commons is 
-	 * used from the other apis as well, so not to break the compatibility (btw solr pages start with 0)
-	 */
-	int currentPage = searchQuery.getPageNr() + 1;
+	int currentPage = searchQuery.getPageNr();
 	String currentPageUrl = buildPageUrl(collectionUrl, currentPage, searchQuery.getPageSize());
 	resPage.setCurrentPageUri(currentPageUrl);
 
