@@ -1,12 +1,12 @@
-# Send only unzipped war directory to Docker
+#Ensure no sensitive files are included in jar
 **
-!/entity-web/target/entity-web
+!/entity-web/target/entity-web-executable.jar
 
 # Any type of properties file should not be uploaded to Docker hub
 **/*.jks
-**/*.user.properties
-**/entity-solr.properties
-**/entity.properties
+#**/*.user.properties
+#**/entity-solr.properties
+#**/entity.properties
 **/*.properties
 
 !**/build.properties
