@@ -11,6 +11,6 @@ ADD https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/$ELASTIC_APM
 # Copy unzipped directory so we can mount config files in Kubernetes pod
 #COPY entity-web/target/entity-web ./ROOT/
 
-COPY ./entity-web/target/entity-web-executable.jar /opt/app/entity-web-executable.jar
+COPY entity-web/target/entity-web-executable.jar /opt/app/entity-web-executable.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "--add-opens=java.base/java.util=ALL-UNNAMED",  "--add-opens=java.base/java.lang=ALL-UNNAMED",   "-jar", "/opt/app/entity-web-executable.jar"]
