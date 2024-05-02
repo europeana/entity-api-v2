@@ -76,7 +76,7 @@ public abstract class BaseRest extends BaseRestController {
 
     Logger logger = LogManager.getLogger(getClass());
 
-    private static final Set ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
+    private static final Set<String> ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
 
     Pattern pattern = null;
 
