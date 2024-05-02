@@ -19,7 +19,6 @@ spec:
                 - name: Accept
                   value: application/json
             initialDelaySeconds: 40
-            periodSeconds: ${HEALTH_CHECK_PERIOD}
           readinessProbe:
             httpGet:
               port: 8080
@@ -28,7 +27,6 @@ spec:
                 - name: Accept
                   value: application/json
             initialDelaySeconds: 40
-            periodSeconds: ${HEALTH_CHECK_PERIOD}
           volumeMounts:
             - name: secret
               mountPath: "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/entity.properties"
