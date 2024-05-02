@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySources;
 @PropertySources({ 
   @PropertySource(value = "classpath:entity.properties", ignoreResourceNotFound = true),
   @PropertySource(value = "classpath:entity-solr.properties", ignoreResourceNotFound = true),
-  @PropertySource(value = "entity.user.properties", ignoreResourceNotFound = true),
+  @PropertySource(value = "entity.user.properties", ignoreResourceNotFound = true)
   })
 public class EntityWebConfig {
 
