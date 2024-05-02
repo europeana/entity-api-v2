@@ -3,11 +3,14 @@ package eu.europeana.entity.web.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 @Configuration
-@PropertySource(value = {"classpath:entity.properties", "entity.user.properties"},
-    ignoreResourceNotFound = true)
-
+@PropertySources({ 
+  @PropertySource(value = "classpath:entity.properties", ignoreResourceNotFound = true),
+  @PropertySource(value = "classpath:entity-solr.properties", ignoreResourceNotFound = true),
+  @PropertySource(value = "entity.user.properties", ignoreResourceNotFound = true)
+  })
 public class EntityWebConfig {
 
   @Value("${europeana.apikey.jwttoken.siganturekey:#{null}}")
