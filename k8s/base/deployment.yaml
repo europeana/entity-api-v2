@@ -19,7 +19,7 @@ spec:
                 - name: Accept
                   value: application/json
             initialDelaySeconds: 40
-            periodSeconds: 20
+            periodSeconds: ${HEALTH_CHECK_PERIOD}
           readinessProbe:
             httpGet:
               port: 8080
@@ -28,13 +28,20 @@ spec:
                 - name: Accept
                   value: application/json
             initialDelaySeconds: 40
-            periodSeconds: 20
+            periodSeconds: ${HEALTH_CHECK_PERIOD}
           volumeMounts:
             - name: secret
               mountPath: "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/entity.properties"
               readOnly: true
               subPath: entity.properties
+            - name: log4j-config
+              mountPath: "/opt/app/config/log4j2-spring.xml"
+              readOnly: true
+              subPath: log4j2-spring.xml  
       volumes:
         - name: secret
           secret:
             secretName: entity-api-v2-secret
+        - name: log4j-config
+          configMap:
+            name: log4j2-properties    
