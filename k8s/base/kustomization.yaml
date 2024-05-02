@@ -10,7 +10,7 @@ labels:
 secretGenerator:
   - name: entity-api-v2-secret
     files:
-      - entity.properties
+      - entity.user.properties
       
 #generate config mapping for log4j2.xml file
 configMapGenerator:
