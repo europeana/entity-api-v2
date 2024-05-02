@@ -2,14 +2,11 @@ package eu.europeana.entity.web.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.api.commons.definitions.search.result.ResultsPage;
@@ -193,13 +190,13 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 	String currentPageUrl = buildPageUrl(collectionUrl, currentPage, searchQuery.getPageSize());
 	resPage.setCurrentPageUri(currentPageUrl);
 
-	if (currentPage > 0) {
+	if (currentPage > 1) {
 	    String prevPage = buildPageUrl(collectionUrl, currentPage - 1, searchQuery.getPageSize());
 	    resPage.setPrevPageUri(prevPage);
 	}
 
 	// if current page is not the last one
-	boolean isLastPage = resPage.getTotalInCollection() <= (currentPage + 1) * searchQuery.getPageSize();
+	boolean isLastPage = resPage.getTotalInCollection() <= currentPage * searchQuery.getPageSize();
 	if (!isLastPage) {
 	    String nextPage = buildPageUrl(collectionUrl, currentPage + 1, searchQuery.getPageSize());
 	    resPage.setNextPageUri(nextPage);
