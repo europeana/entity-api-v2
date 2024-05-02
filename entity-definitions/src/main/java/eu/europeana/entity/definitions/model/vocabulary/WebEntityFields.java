@@ -34,7 +34,6 @@ public interface WebEntityFields {
     String MODIFIED = "modified";
     String AGGREGATION = "Aggregation";
     String IS_AGGREGATED_BY = "isAggregatedBy";
-    String AGGREGATES = "aggregates";
 
     // concept fields
     String NOTATION = "notation";

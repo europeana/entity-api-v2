@@ -353,9 +353,6 @@ public class EuropeanaEntityLd extends JsonLd {
     if (entity.getModified() != null)
       oreAggregation.putProperty(new JsonLdProperty(WebEntityFields.MODIFIED,
           DateUtils.convertDateToStr(entity.getModified())));
-
-    oreAggregation
-        .putProperty(new JsonLdProperty(WebEntityFields.AGGREGATES, entity.getEntityId()));
     
     oreAggregation.putProperty(new JsonLdProperty(WebEntityFields.PAGE_RANK, entity.getPageRank()));
     oreAggregation.putProperty(new JsonLdProperty(WebEntityFields.RECORD_COUNT, entity.getEuropeanaDocCount()));

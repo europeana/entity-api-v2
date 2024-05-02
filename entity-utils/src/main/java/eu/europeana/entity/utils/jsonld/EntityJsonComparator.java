@@ -98,7 +98,7 @@ public class EntityJsonComparator implements Comparator<Object> {
 		propOrderMap.put(WebEntityConstants.LOCALITY, 1040);
 		propOrderMap.put(WebEntityConstants.REGION, 1050);
 		propOrderMap.put(WebEntityConstants.COUNTRY_NAME, 1060);
-		
+				
 		//Page
 		propOrderMap.put(WebEntityConstants.PART_OF, 2050);
 		propOrderMap.put(WebEntityConstants.PREV, 2090);
@@ -106,6 +106,13 @@ public class EntityJsonComparator implements Comparator<Object> {
 		propOrderMap.put(WebEntityConstants.FACETS, 2110);
 		propOrderMap.put(WebEntityConstants.ITEMS, 2120);
 		
+		//aggregation
+        propOrderMap.put(WebEntityConstants.CREATED, 3000);
+        propOrderMap.put(WebEntityConstants.MODIFIED, 3010);
+        propOrderMap.put(WebEntityConstants.PAGE_RANK, 3020);
+        propOrderMap.put(WebEntityConstants.RECORD_COUNT, 3030);
+        propOrderMap.put(WebEntityConstants.SCORE, 3040);
+
 	}
 
 	@Override
