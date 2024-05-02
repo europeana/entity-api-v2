@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import eu.europeana.entity.config.AppConfigConstants;
 
 @Configuration
-@PropertySource(
-    value = {"classpath:entity-solr.properties, classpath:entity.properties, entity.user.properties"}, 
-    ignoreResourceNotFound = true)
+@PropertySources({ 
+  @PropertySource(value = "classpath:entity.properties", ignoreResourceNotFound = true),
+  @PropertySource(value = "classpath:entity-solr.properties", ignoreResourceNotFound = true),
+  @PropertySource(value = "entity.properties", ignoreResourceNotFound = true),
+  })
 public class EntitySolrConfig {
 
     @Value("${entity.suggester.snippets:10}")

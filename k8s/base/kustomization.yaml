@@ -8,7 +8,7 @@ labels:
 
 # expects files to be in the same directory
 secretGenerator:
-  - name: entity-api-v2-secret
+  - name: entity-api-props
     files:
       - entity.user.properties
       
