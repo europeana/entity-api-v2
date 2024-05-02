@@ -36,7 +36,7 @@ spec:
             - name: secret
               mountPath: "/opt/app/config/entity.user.properties"
               readOnly: true
-              subPath: entity.properties
+              subPath: entity.user.properties
             - name: log4j-config
               mountPath: "/opt/app/config/log4j2-spring.xml"
               readOnly: true
@@ -44,7 +44,7 @@ spec:
       volumes:
         - name: secret
           secret:
-            secretName: entity-api-v2-secret
+            secretName: entity-api-props
         - name: log4j-config
           configMap:
             name: log4j2-properties    
