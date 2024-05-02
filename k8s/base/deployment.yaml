@@ -9,6 +9,11 @@ spec:
       containers:
         - name: entity-api-v2
           image: europeana/entity-api-v2
+          env: 
+            - name: SPRING_CONFIG_NAME
+              value: "application,entity,entity.user"
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: "/opt/app/config/entity.user.properties"
           ports:
             - containerPort: 8080
           livenessProbe:
@@ -29,7 +34,7 @@ spec:
             initialDelaySeconds: 40
           volumeMounts:
             - name: secret
-              mountPath: "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/entity.properties"
+              mountPath: "/opt/app/config/entity.user.properties"
               readOnly: true
               subPath: entity.properties
             - name: log4j-config

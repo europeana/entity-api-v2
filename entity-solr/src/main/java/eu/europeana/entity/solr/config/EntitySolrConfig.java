@@ -2,7 +2,6 @@ package eu.europeana.entity.solr.config;
 
 import java.util.Arrays;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -12,13 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
-
 import eu.europeana.entity.config.AppConfigConstants;
 
 @Configuration
-@PropertySources({ @PropertySource(value = "classpath:entity.properties", ignoreResourceNotFound = true),
-        @PropertySource(value = "classpath:entity-solr.properties", ignoreResourceNotFound = true) })
+@PropertySource(
+    value = {"classpath:entity-solr.properties, classpath:entity.properties, entity.user.properties"}, 
+    ignoreResourceNotFound = true)
 public class EntitySolrConfig {
 
     @Value("${entity.suggester.snippets:10}")
