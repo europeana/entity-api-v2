@@ -13,6 +13,10 @@ spec:
       containers:
         - name: entity-api-v2
           imagePullPolicy: Always
+          livenessProbe:
+            periodSeconds: ${HEALTH_CHECK_PERIOD}
+          readinessProbe:
+            periodSeconds: ${HEALTH_CHECK_PERIOD}  
           env:
            - name: JAVA_TOOL_OPTIONS
              value: "-javaagent:\"/opt/app/elastic-apm-agent.jar\"
