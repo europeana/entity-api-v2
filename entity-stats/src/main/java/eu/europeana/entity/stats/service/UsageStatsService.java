@@ -1,19 +1,14 @@
 package eu.europeana.entity.stats.service;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.math3.util.Precision;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-
 import eu.europeana.api.commons.definitions.search.FacetFieldView;
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.statistics.entity.EntitiesPerLanguage;
@@ -94,7 +89,7 @@ public class UsageStatsService {
 
     private static Query buildSearchQuery(String queryString, String facet) {
         EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
-        return queryBuilder.buildSearchQuery(queryString, null, queryBuilder.toArray(facet), null, 0, 0,
+        return queryBuilder.buildSearchQuery(queryString, null, queryBuilder.toArray(facet), null, queryBuilder.getSearchQueryStart(), 0,
                 SearchProfiles.facets, null);
     }
 

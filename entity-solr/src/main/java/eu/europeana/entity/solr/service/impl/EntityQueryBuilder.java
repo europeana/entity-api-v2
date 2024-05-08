@@ -30,6 +30,7 @@ public class EntityQueryBuilder extends QueryBuilder {
     public static final String DESC = "desc";
     public static final String OR = " " + SimpleParams.OR_OPERATOR + " ";
     public static final String AND = " " + SimpleParams.AND_OPERATOR + " ";
+    private static final int DEFAULT_START_PAGE = 1;
 
     public SolrQuery toSolrQuery(Query searchQuery, String searchHandler, List<EntityTypes> entityTypes, String scope) {
 	SolrQuery solrQuery = super.toSolrQuery(searchQuery, searchHandler);
@@ -38,10 +39,10 @@ public class EntityQueryBuilder extends QueryBuilder {
 	solrQuery.set(PARAM_QUERY_OPERATOR, SimpleParams.AND_OPERATOR);
 	return solrQuery;
     }
-    
+        
     @Override
-    protected int computeSolrQueryStart(Query searchQuery) {
-      return (searchQuery.getPageNr() - 1) * searchQuery.getPageSize();
+    public int getSearchQueryStart() {
+      return DEFAULT_START_PAGE;
     }
 
     private boolean hasScopeEuropeana(String scope) {
@@ -226,7 +227,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 
 	// process pageSize
 	if (StringUtils.isEmpty(page))
-	    page = "" + Query.DEFAULT_PAGE;
+	    page = "" + getSearchQueryStart();
 
 	// process pageSize
 	if (StringUtils.isEmpty(pageSize))
@@ -290,7 +291,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
-		searchQuery.setPageNr(1);
+		searchQuery.setPageNr(getSearchQueryStart());
 		
 		return searchQuery;
 	}
