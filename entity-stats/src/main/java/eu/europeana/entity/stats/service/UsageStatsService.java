@@ -89,7 +89,7 @@ public class UsageStatsService {
 
     private static Query buildSearchQuery(String queryString, String facet) {
         EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
-        return queryBuilder.buildSearchQuery(queryString, null, queryBuilder.toArray(facet), null, queryBuilder.getSearchQueryStart(), 0,
+        return queryBuilder.buildSearchQuery(queryString, null, queryBuilder.toArray(facet), null, queryBuilder.getDefaultStarPage(), 0,
                 SearchProfiles.facets, null);
     }
 
