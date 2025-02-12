@@ -108,6 +108,7 @@ public class UsageStatsService {
         List<FacetFieldView> facets = solrEntityService.search(searchQuery, null,null, null ).getFacetFields();
         if (!facets.isEmpty()) {
             EntityStats entityStats = new EntityStats();
+            
             // fetch the first facet result view
             Map<String, Long> map = facets.get(0).getValueCountMap();
             for (Map.Entry<String, Long> entry : map.entrySet()) {
@@ -123,12 +124,13 @@ public class UsageStatsService {
                 if(entry.getKey().equals(EntityTypes.TimeSpan.getInternalType())) {
                     entityStats.setTimespans(entry.getValue());
                 }
-                if(entry.getKey().equals(EntityTypes.Organization.getInternalType())) {
-                    entityStats.setOrganisations(entry.getValue());
-                }
+                if(entry.getKey().equals(EntityTypes.Organization.getInternalType())
+                    || entry.getKey().equals(EntityTypes.Aggregator.getInternalType())) {
+                  //cumulate organizations and aggregators   
+                  entityStats.setOrganisations(entityStats.getOrganisations() + entry.getValue());
+                } 
             }
-            //SG: TODO: fix compilation errors
-//            entityStats.setTotal(getTotal(entityStats));
+            entityStats.setAll(entityStats.getOverall());
             return entityStats;
         }
         return null;

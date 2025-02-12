@@ -13,7 +13,7 @@ public interface OrganizationSolrFields extends ConceptSolrFields {
     public static final String FOAF_PHONE = "foaf_phone";
     public static final String FOAF_MBOX = "foaf_mbox";
     public static final String EUROPEANA_ROLE = "europeanaRole";
-    public static final String AGGREGATED_VIA = "edm_aggregatedVia";
+    public static final String AGGREGATED_VIA = "aggregatedVia";
     
     public static final String COUNTRY = "country";
     public static final String COUNTRY_LABEL_PREFIX = "countryLabel";

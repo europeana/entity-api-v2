@@ -47,6 +47,7 @@ public class EntityPreviewObjectFactory extends AbstractModelObjectFactory<Entit
 		
 		switch (entityType) {
 		case Organization:
+		case Aggregator: 
 			ret = OrganizationPreviewImpl.class;
 			break;
 		case Concept:

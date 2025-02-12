@@ -148,6 +148,7 @@ public class EuropeanaEntityLd extends JsonLd {
 
     switch (entityType) {
       case Organization:
+      case Aggregator:  
         putOrganizationSpecificProperties((Organization) entity, jsonLdResource);
         break;
 

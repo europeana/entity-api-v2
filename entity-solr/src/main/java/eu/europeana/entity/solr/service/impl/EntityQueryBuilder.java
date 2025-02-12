@@ -30,6 +30,8 @@ public class EntityQueryBuilder extends QueryBuilder {
     public static final String DESC = "desc";
     public static final String OR = " " + SimpleParams.OR_OPERATOR + " ";
     public static final String AND = " " + SimpleParams.AND_OPERATOR + " ";
+    public static final String SUGGEST_FILTERS = "suggest_filters";
+    
 
     public SolrQuery toSolrQuery(Query searchQuery, String searchHandler, List<EntityTypes> entityTypes, String scope) {
 	SolrQuery solrQuery = super.toSolrQuery(searchQuery, searchHandler);
@@ -41,7 +43,7 @@ public class EntityQueryBuilder extends QueryBuilder {
     
     @Override
     protected int computeSolrQueryStart(Query searchQuery) {
-      return (searchQuery.getPageNr() - 1) * searchQuery.getPageSize();
+      return Math.max(0, (searchQuery.getPageNr() - 1)) * searchQuery.getPageSize();
     }
 
     private boolean hasScopeEuropeana(String scope) {
@@ -51,11 +53,11 @@ public class EntityQueryBuilder extends QueryBuilder {
     private void addFiltersToSearchQuery(SolrQuery query, List<EntityTypes> entityTypes, String scope) {
 
 	if (hasScopeEuropeana(scope))
-	    query.addFilterQuery("suggest_filters:" + SuggestionFields.FILTER_EUROPEANA);
+	    query.addFilterQuery(SUGGEST_FILTERS + WebEntityConstants.FIELD_DELIMITER + SuggestionFields.FILTER_EUROPEANA);
 
 	String typeCondition = buildEntityTypeCondition(entityTypes);
 	if (typeCondition != null)
-	    query.addFilterQuery("suggest_filters:" + typeCondition);
+	    query.addFilterQuery(SUGGEST_FILTERS + WebEntityConstants.FIELD_DELIMITER + typeCondition);
     }
 
     /**
@@ -290,7 +292,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
-		searchQuery.setPageNr(1);
+//		searchQuery.setPageNr(1);
 		
 		return searchQuery;
 	}
@@ -317,7 +319,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	private String[] createFilterForEnrichment(List<EntityTypes> entityTypes) {
 		String entityFilter = buildEntityTypeCondition(entityTypes);
 		if(entityFilter != null) {
-			return toArray(WebEntityConstants.TYPE + WebEntityConstants.FIELD_DELIMITER + entityFilter);
+			return toArray(SUGGEST_FILTERS + WebEntityConstants.FIELD_DELIMITER + entityFilter);
 		}
 		return new String[0];
 	}

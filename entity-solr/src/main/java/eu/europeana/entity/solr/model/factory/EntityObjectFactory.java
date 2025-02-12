@@ -33,7 +33,6 @@ public class EntityObjectFactory extends AbstractModelObjectFactory<Entity, Enti
 	@Override
 	public Entity createObjectInstance(Enum<EntityTypes> modelObjectType) {
 		Entity res = super.createObjectInstance(modelObjectType);
-//		res.setInternalType(modelObjectType.name());
 		return res;
 	}
 
@@ -47,6 +46,7 @@ public class EntityObjectFactory extends AbstractModelObjectFactory<Entity, Enti
 		
 		switch (entityType) {
 		case Organization:
+		case Aggregator: 
 			ret = SolrOrganizationImpl.class;
 			break;
 		case Concept:

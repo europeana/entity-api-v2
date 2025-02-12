@@ -96,6 +96,7 @@ public abstract class BaseEntityService{
 			case TimeSpan:
 				break;//not supported yet
 			case Organization:
+			case Aggregator: 
 				 processSpecificLanguageMaps((Organization) entity, outLanguage);
 				 break;
 			case All:

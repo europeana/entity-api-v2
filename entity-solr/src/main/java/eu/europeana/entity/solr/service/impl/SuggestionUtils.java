@@ -79,7 +79,7 @@ public class SuggestionUtils {
 		JsonNode propertyNode = entityNode.get(SuggestionFields.TYPE);
 		String entityType = propertyNode.asText();
 		preview = createPreviewObjectInstance(entityType);
-		preview.setType(propertyNode.asText());
+		preview.setType(preview.getEntityType().getInternalType());
 		
 		propertyNode = entityNode.get(SuggestionFields.ID);
 		preview.setEntityId(propertyNode.asText());
@@ -248,6 +248,7 @@ public class SuggestionUtils {
 	private void setEntitySpecificProperties(EntityPreview preview, JsonNode payloadNode, List<String> preferredLanguages) {
 		switch (preview.getEntityType()) {
 		case Organization:
+		case Aggregator: 
 			putOrganizationSpecificProperties((OrganizationPreview) preview, payloadNode, preferredLanguages);
 			break;
 		case Agent:

@@ -186,6 +186,7 @@ public class SuggestionSetSerializer extends JsonLd {
 
 	    switch (entityType) {
 	    case Organization:
+	    case Aggregator:  
 		putOrganizationSpecificProperties((OrganizationPreview) entityPreview, entityPreviewPropValue);
 		break;
 
