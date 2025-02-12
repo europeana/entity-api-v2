@@ -145,13 +145,13 @@ public class UsageStatsService {
      * @throws UsageStatsException
      */
     private static void calculatePercentageValues(EntityStats entityPerLanguage, EntityStats entitystatsTotal, EntitiesPerLanguage entities) throws UsageStatsException {
-        //SG: TODO: fix compilation errors
-//       entities.setTimespans(getPercentage(entityPerLanguage.getTimespans(), entitystatsTotal.getTimespans()));
-//       entities.setPlaces(getPercentage(entityPerLanguage.getPlaces(), entitystatsTotal.getPlaces()));
-//       entities.setConcepts(getPercentage(entityPerLanguage.getConcepts(), entitystatsTotal.getConcepts()));
-//       entities.setAgents(getPercentage(entityPerLanguage.getAgents(), entitystatsTotal.getAgents()));
-//       entities.setOrganisations(getPercentage(entityPerLanguage.getOrganisations(), entitystatsTotal.getOrganisations()));
-//       entities.setTotal(getPercentage(entityPerLanguage.getTotal(), entitystatsTotal.getTotal()));
+        //SG: TODO: 
+       entities.setTimespans(getPercentage(entityPerLanguage.getTimespans(), entitystatsTotal.getTimespans()));
+       entities.setPlaces(getPercentage(entityPerLanguage.getPlaces(), entitystatsTotal.getPlaces()));
+       entities.setConcepts(getPercentage(entityPerLanguage.getConcepts(), entitystatsTotal.getConcepts()));
+       entities.setAgents(getPercentage(entityPerLanguage.getAgents(), entitystatsTotal.getAgents()));
+       entities.setOrganisations(getPercentage(entityPerLanguage.getOrganisations(), entitystatsTotal.getOrganisations()));
+       entities.setAll(getPercentage(entityPerLanguage.getOverall(), entitystatsTotal.getOverall()));
     }
 
     /**
@@ -164,18 +164,18 @@ public class UsageStatsService {
      * @return
      * @throws UsageStatsException
      */
-    private static float getPercentage(float count, float totalCount) throws UsageStatsException {
+    private static long getPercentage(float count, float totalCount) throws UsageStatsException {
       try {
           if (totalCount > 0) {
-             return Precision.round((count / totalCount) * 100, 4);
+             return (int)(count / totalCount) * 100;
           }
         } catch (Exception e) {
             throw new UsageStatsException("Error calculating the percentage values." +e.getMessage());
         }
-        return 0.0f;
+        return 0l;
     }
 
-    private float getTotal(EntityStats entitystats) {
-        return (entitystats.getAgents() + entitystats.getConcepts() + entitystats.getOrganisations() + entitystats.getPlaces() + entitystats.getTimespans());
-    }
+//    private float getTotal(EntityStats entitystats) {
+//        return (entitystats.getAgents() + entitystats.getConcepts() + entitystats.getOrganisations() + entitystats.getPlaces() + entitystats.getTimespans());
+//    }
 }
