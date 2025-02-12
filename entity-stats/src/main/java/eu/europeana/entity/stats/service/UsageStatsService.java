@@ -167,7 +167,7 @@ public class UsageStatsService {
     private static long getPercentage(float count, float totalCount) throws UsageStatsException {
       try {
           if (totalCount > 0) {
-             return (int)(count / totalCount) * 100;
+             return (int) (100 * count / totalCount) ;
           }
         } catch (Exception e) {
             throw new UsageStatsException("Error calculating the percentage values." +e.getMessage());
