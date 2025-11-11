@@ -17,8 +17,16 @@ public class EntityWebConfig {
   String jwtSignatureKey;
   @Value("${authorization.api.name:entities}")
   String authorizationApiName;
+
   @Value("${europeana.apikey.serviceurl:#{null}}")
   String apiKeyServiceUrl;
+
+  @Value("${keycloak.token.endpoint}")
+  private String tokenEndpoint;
+
+  @Value("${keycloak.token.grant.params}")
+  private String grantParams;
+
   @Value("${entity.api.endpoint:#{null}}")
   String entityApiEndpoint;
   @Value("${entity.data.endpoint:#{null}}")
@@ -51,4 +59,11 @@ public class EntityWebConfig {
     return entityDataEndpoint;
   }
 
+  public String getTokenEndpoint() {
+    return tokenEndpoint;
+  }
+
+  public String getGrantParams() {
+    return grantParams;
+  }
 }

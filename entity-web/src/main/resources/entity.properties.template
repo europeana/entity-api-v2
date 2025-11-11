@@ -7,8 +7,12 @@ entity.environment=development
 
 #string value representing the key used for JWT signature verification 
 europeana.apikey.jwttoken.siganturekey= 
-#URL of the APIKEY service
+
+## Keycloak service url to be used (internal route)
 europeana.apikey.serviceurl=
+keycloak.token.endpoint =
+keycloak.token.grant.params =
+
 
 #current API name
 authorization.api.name=
