@@ -1,4 +1,4 @@
-package eu.europeana.entity.web.controller.exception;
+package eu.europeana.entity.web.exception;
 
 import javax.annotation.Resource;
 

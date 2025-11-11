@@ -26,8 +26,7 @@ public class EntitySchemaOrgSerializer extends JsonLdSerializer {
 	 * @return The serialized entity in json-ld string format
 	 * @throws UnsupportedEntityTypeException
 	 */
-	public String serializeEntity(Entity entity) 
-		throws HttpException, UnsupportedEntityTypeException {
+	public String serializeEntity(Entity entity) {
 	    
 	        String jsonLd = "";
 	        //TODO: reimplement

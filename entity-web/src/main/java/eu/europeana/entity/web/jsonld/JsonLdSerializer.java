@@ -3,13 +3,13 @@ package eu.europeana.entity.web.jsonld;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import eu.europeana.api.commons.error.EuropeanaApiException;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.europeana.entity.config.AppConfigConstants;
-import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
 
 @Component(AppConfigConstants.BEAN_EM_JSONLD_SERIALIZER)
 public class JsonLdSerializer {
@@ -23,11 +23,11 @@ public class JsonLdSerializer {
         mapper.setDateFormat(df);
     }
 
-    public String serializeToJson(Object object) throws EntityApiRuntimeException {
+    public String serializeToJson(Object object) throws EuropeanaApiException {
         try {
             return mapper.writer().writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new EntityApiRuntimeException("Unexpected exception occurred when serializing!",e);
+            throw new EuropeanaApiException("Unexpected exception occurred when serializing!", e);
         }
     }
 }

@@ -6,18 +6,9 @@ import org.springframework.http.HttpStatus;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.entity.app.I18nConstants;
 
+public class ParamValidationException extends HttpException {
 
-public class ParamValidationException extends HttpException{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3664526076494279093L;
-	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
-	
-//	String parameterName;
-//	String parameterValue;
-	
 	
 	public ParamValidationException(String parameterName, String parameterValue){
 		this(I18nConstants.INVALID_PARAM_VALUE, parameterName, parameterValue, null);

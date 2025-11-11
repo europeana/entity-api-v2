@@ -6,7 +6,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import eu.europeana.api.commons.error.EuropeanaApiException;
 import eu.europeana.api.commons.web.model.ErrorApiResponse;
+import eu.europeana.entity.web.exception.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,6 @@ import eu.europeana.entity.definitions.model.RankedEntity;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
-import eu.europeana.entity.web.exception.InternalServerException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -58,7 +59,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws EuropeanaApiException {
         return createResponse(type, identifier, FormatTypes.jsonld, null, request);
     }
 
@@ -70,7 +71,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws EuropeanaApiException {
         return createResponse(type, identifier, FormatTypes.schema, null, request);
     }
 
@@ -83,7 +84,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws EuropeanaApiException {
         return createResponse(type, identifier, FormatTypes.xml, HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML, request);
     }
 
@@ -96,7 +97,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws EuropeanaApiException {
         return createResponse(type, identifier, FormatTypes.jsonld, null, request);
 
     }
@@ -111,13 +112,13 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws HttpException {
+            HttpServletRequest request) throws EuropeanaApiException {
         return createResponse(type, identifier, FormatTypes.xml, null, request);
 
     }
 
     private ResponseEntity<String> createResponse(String type, String identifier, FormatTypes outFormat,
-            String contentType, HttpServletRequest request) throws HttpException {
+            String contentType, HttpServletRequest request) throws EuropeanaApiException {
         try {
             if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
                 verifyReadAccess(request);
@@ -141,17 +142,12 @@ public class ResolveController extends BaseRest {
             if (contentType != null && !contentType.isEmpty())
                 headers.add(HttpHeaders.CONTENT_TYPE, contentType);
 
-//        	System.out.println(jsonLd);
             ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
             return response;
         } catch (RuntimeException e) {
-            // not found ..
-            throw new InternalServerException(e);
-        } catch (HttpException e) {
-            // avoid wrapping http exception
-            throw e;
+            throw new EuropeanaApiException(e.getMessage(), e);
         } catch (Exception e) {
-            throw new InternalServerException(e);
+            throw new EuropeanaApiException(e.getMessage(), e);
         }
     }
 
@@ -161,7 +157,7 @@ public class ResolveController extends BaseRest {
     public ResponseEntity<String> resolveEntity(
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @RequestParam(value = WebEntityConstants.QUERY_PARAM_URI) String uri, HttpServletRequest request)
-            throws HttpException {
+            throws EuropeanaApiException, HttpException {
 
         try {
             if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
@@ -183,32 +179,22 @@ public class ResolveController extends BaseRest {
             
             //if empty, return 404 Not Found with appropriate error response
             if (entityUris.isEmpty()) {
-                ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "No entity found for sameAs/exactMatch URI : " + validatedUri);
-                String body = jsonLdSerializer.serializeToJson(errorResponse);
-                return new ResponseEntity<>(body, headers, HttpStatus.NOT_FOUND);
+                throw new EntityNotFoundException("No entity found for sameAs/exactMatch URI : " + validatedUri);
             }
 
             String preferedEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
             headers.add(HttpHeaders.LOCATION, preferedEntity);
             
-            if(entityUris.size() == 1) {
+            if (entityUris.size() == 1) {
                 return new ResponseEntity<String>(headers, HttpStatus.MOVED_PERMANENTLY);
             } else {
                 List<String> updatedUris = EntityUtils.updateBaseUrlInIds(entityUris, entityWebConfig.getEntityDataEndpoint());
                 String body = jsonLdSerializer.serializeToJson(updatedUris);
                 return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
             }
-
         } catch (RuntimeException e) {
-            // not found ..
-            throw new InternalServerException(e);
-        } catch (HttpException e) {
-            // avoid wrapping http exception
-            throw e;
-        } catch (Exception e) {
-            throw new InternalServerException(e);
+            throw new EuropeanaApiException(e.getMessage(), e);
         }
-
     }
 
 }

@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import eu.europeana.api.commons.error.EuropeanaApiException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +43,6 @@ import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.utils.jsonld.EuropeanaEntityLd;
 import eu.europeana.entity.web.config.BuildInfo;
 import eu.europeana.entity.web.config.EntityWebConfig;
-import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
 import eu.europeana.entity.web.exception.ParamValidationException;
 import eu.europeana.entity.web.jsonld.EntityResultsPageSerializer;
 import eu.europeana.entity.web.jsonld.EntitySchemaOrgSerializer;
@@ -111,7 +111,7 @@ public abstract class BaseRest extends BaseRestController {
         return webConfig;
     }
 
-    protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
+    protected String serializeMetricView(EntityMetric metricData) throws EuropeanaApiException {
         return jsonLdSerializer.serializeToJson(metricData);
     }
 
@@ -228,8 +228,7 @@ public abstract class BaseRest extends BaseRestController {
      * @param paramProfile The HTTP request parameter
      * @param request      The HTTP request with headers
      * @return profile value
-     * @throws HttpException
-     * @throws ConceptSchemeProfileValidationException
+     * @throws ParamValidationException
      */
     public LdProfiles getProfile(String paramProfile, HttpServletRequest request) throws HttpException {
 
@@ -264,7 +263,7 @@ public abstract class BaseRest extends BaseRestController {
      * @throws JsonProcessingException
      */
     protected String serializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile,
-            String entityIdBaseUrl) throws JsonProcessingException {
+            String entityIdBaseUrl) {
         ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
                 ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE, entityIdBaseUrl);
         String profileVal = (profile == null) ? null : profile.name();

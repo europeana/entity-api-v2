@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import eu.europeana.api.commons.error.EuropeanaApiException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,6 @@ import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.web.config.EntityWebConfig;
-import eu.europeana.entity.web.exception.InternalServerException;
 import eu.europeana.entity.web.exception.ParamValidationException;
 import eu.europeana.entity.web.model.view.EntityPreview;
 import eu.europeana.entity.web.service.EntityService;
@@ -92,7 +93,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
     @Override
     public ResultSet<? extends EntityPreview> suggest(String text, String[] language, List<EntityTypes> entityTypes,
 	    String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm)
-	    throws InternalServerException, ParamValidationException {
+	    throws EuropeanaApiException, ParamValidationException {
 
 //	Query query = null;
 	ResultSet<? extends EntityPreview> res;
@@ -109,7 +110,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 
 	    }
 	} catch (EntitySuggestionException e) {
-	    throw new InternalServerException(e);
+	    throw new EuropeanaApiException(e.getMessage(), e);
 	}
 
 	return res;
@@ -275,29 +276,31 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
      * 
      * @param commaSepEntityTypes Comma separated entities string
      * @return Entity types string list
-     * @throws UnsupportedEntityTypeException
      * @throws ParamValidationException
      */
     @Override
-    public List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes)
-	    throws UnsupportedEntityTypeException {
+    public List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws ParamValidationException {
+    	try {
+			if (StringUtils.isBlank(commaSepEntityTypes)) {
+				return null;
+			}
 
-	if(StringUtils.isBlank(commaSepEntityTypes)) {
-	    return null;
-	}
-	    
-	String[] splittedEntityTypes = commaSepEntityTypes.split(",");
-	List<EntityTypes> entityTypes = new ArrayList<EntityTypes>();
+			String[] splittedEntityTypes = commaSepEntityTypes.split(",");
+			List<EntityTypes> entityTypes = new ArrayList<EntityTypes>();
 
-	EntityTypes entityType = null;
-	String typeAsString = null;
+			EntityTypes entityType = null;
+			String typeAsString = null;
 
-	for (int i = 0; i < splittedEntityTypes.length; i++) {
-	    typeAsString = splittedEntityTypes[i].trim();
-	    entityType = EntityTypes.getByInternalType(typeAsString);
-	    entityTypes.add(entityType);
-	}
+			for (int i = 0; i < splittedEntityTypes.length; i++) {
+				typeAsString = splittedEntityTypes[i].trim();
+				entityType = EntityTypes.getByInternalType(typeAsString);
+				entityTypes.add(entityType);
+			}
 
-	return entityTypes;
+			return entityTypes;
+		} catch(UnsupportedEntityTypeException e) {
+			throw new ParamValidationException(I18nConstants.UNSUPPORTED_ENTITY_TYPE, WebEntityConstants.ENTITY_API_RESOURCE,
+					commaSepEntityTypes);
+		}
     }
 }

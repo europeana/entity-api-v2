@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.api.commons.definitions.search.result.ResultsPage;
+import eu.europeana.api.commons.error.EuropeanaApiException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
@@ -34,7 +35,7 @@ public interface EntityService {
 	 * e.g. GET /entity/suggest?text=leonard&language=en
 	 */
 	ResultSet<? extends EntityPreview> suggest(
-			String text, String[] language, List<EntityTypes> entityTypes, String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm) throws HttpException;
+			String text, String[] language, List<EntityTypes> entityTypes, String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm) throws HttpException, EuropeanaApiException;
 
 
 	/**
@@ -91,6 +92,6 @@ public interface EntityService {
 	public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes) throws HttpException;
 
 	
-	List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws UnsupportedEntityTypeException;
+	List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws ParamValidationException;
 		
 }
