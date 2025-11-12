@@ -33,7 +33,7 @@ public class EntityAppConfig extends AppConfigConstants {
         clientDetailsService.setApiKeyServiceUrl(entityWebConfig.getApiKeyServiceUrl());
         // Set authentication handler if values are not empty
         if (StringUtils.isNotEmpty(entityWebConfig.getTokenEndpoint()) && StringUtils.isNotEmpty(entityWebConfig.getGrantParams())) {
-            AuthenticationConfig config = new AuthenticationConfig(loadProperties());
+            AuthenticationConfig config = new AuthenticationConfig(entityWebConfig.getTokenEndpoint(), entityWebConfig.getGrantParams());
             clientDetailsService.setAuthHandler(AuthenticationBuilder.newAuthentication(config));
         } else {
             LOG.error("Keycloak token endpoint and parameters NOT set !!");
@@ -55,13 +55,6 @@ public class EntityAppConfig extends AppConfigConstants {
         source.setBasename("classpath:messages");
         source.setDefaultEncoding("utf-8");
         return source;
-    }
-
-    private Properties loadProperties() {
-        Properties properties = new Properties();
-        properties.setProperty(AuthenticationConfig.CONFIG_TOKEN_ENDPOINT, entityWebConfig.getTokenEndpoint());
-        properties.setProperty(AuthenticationConfig.CONFIG_GRANT_PARAMS, entityWebConfig.getGrantParams());
-        return properties;
     }
     
 }

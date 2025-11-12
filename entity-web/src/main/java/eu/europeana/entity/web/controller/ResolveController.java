@@ -179,7 +179,7 @@ public class ResolveController extends BaseRest {
             
             //if empty, return 404 Not Found with appropriate error response
             if (entityUris.isEmpty()) {
-                throw new EntityNotFoundException("No entity found for sameAs/exactMatch URI : " + validatedUri);
+                throw new EntityNotFoundException(new String[]{WebEntityConstants.ENTITY_API_RESOURCE, validatedUri});
             }
 
             String preferedEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());

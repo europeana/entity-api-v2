@@ -1,22 +1,15 @@
 package eu.europeana.entity.web.exception;
 
-import eu.europeana.api.commons.error.EuropeanaApiException;
+import eu.europeana.api.commons.error.EuropeanaI18nApiException;
+import eu.europeana.entity.app.I18nConstants;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class EntityNotFoundException extends EuropeanaApiException {
+import java.util.List;
 
-    public EntityNotFoundException(String msg, Throwable t) {
-        super(msg, t);
-    }
+public class EntityNotFoundException extends EuropeanaI18nApiException {
 
-    public EntityNotFoundException(String msg) {
-        super(msg);
-    }
-
-    public EntityNotFoundException(String msg, String errorCode) {
-        super(msg, errorCode);
+    public EntityNotFoundException(String[] i18params) {
+        super(null, null, I18nConstants.CANT_FIND_BY_SAME_AS_URI, i18params);
     }
 
     @Override

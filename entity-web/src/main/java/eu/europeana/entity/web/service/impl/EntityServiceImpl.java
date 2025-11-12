@@ -106,8 +106,7 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 		res = solrEntityService.suggestByLanguage(text, language, entityTypes, scope, rows);
 		break;
 	    default:
-		throw new ParamValidationException(WebEntityConstants.ALGORITHM, "" + algorithm);
-
+		throw new ParamValidationException(new String[] {WebEntityConstants.ALGORITHM, "" + algorithm });
 	    }
 	} catch (EntitySuggestionException e) {
 	    throw new EuropeanaApiException(e.getMessage(), e);
@@ -299,8 +298,8 @@ public class EntityServiceImpl extends BaseEntityServiceImpl implements EntitySe
 
 			return entityTypes;
 		} catch(UnsupportedEntityTypeException e) {
-			throw new ParamValidationException(I18nConstants.UNSUPPORTED_ENTITY_TYPE, WebEntityConstants.ENTITY_API_RESOURCE,
-					commaSepEntityTypes);
+			throw new ParamValidationException(I18nConstants.UNSUPPORTED_ENTITY_TYPE,
+					new String[] {WebEntityConstants.ENTITY_API_RESOURCE,commaSepEntityTypes});
 		}
     }
 }

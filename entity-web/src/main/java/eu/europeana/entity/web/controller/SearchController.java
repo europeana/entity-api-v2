@@ -133,7 +133,7 @@ public class SearchController extends BaseRest {
 	    // ** Process input params
 	    if (StringUtils.isBlank(queryString))
 		throw new ParamValidationException(I18nConstants.EMPTY_PARAM_MANDATORY,
-			CommonApiConstants.QUERY_PARAM_QUERY, queryString);
+			new String[] {CommonApiConstants.QUERY_PARAM_QUERY, queryString});
 
 	    // process scope
 	    scope = validateScopeParam(scope);
@@ -155,7 +155,7 @@ public class SearchController extends BaseRest {
 	    SearchProfiles searchProfile = null;
 	    if (profile != null) {
 		if (!SearchProfiles.contains(profile))
-		    throw new ParamValidationException(CommonApiConstants.QUERY_PARAM_PROFILE, profile);
+		    throw new ParamValidationException(new String[] {CommonApiConstants.QUERY_PARAM_PROFILE, profile});
 		else
 		    searchProfile = SearchProfiles.valueOf(profile.toLowerCase());
 	    }
@@ -188,8 +188,8 @@ public class SearchController extends BaseRest {
 
 	    return response;
         } catch (InvalidSearchQueryException e) {
-        	throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, CommonApiConstants.QUERY_PARAM_QUERY,
-					e.getMessage());
+        	throw new ParamValidationException( e.getMessage(), I18nConstants.INVALID_PARAM_VALUE,
+					new String[] {CommonApiConstants.QUERY_PARAM_QUERY,queryString});
         } catch (RuntimeException e) {
         	throw new EuropeanaApiException(e.getMessage(), e);
 		}
@@ -215,7 +215,7 @@ public class SearchController extends BaseRest {
 
 			// validate text parameter
 			if (StringUtils.isBlank(text))
-				throw new ParamValidationException(I18nConstants.EMPTY_PARAM_MANDATORY, CommonApiConstants.QUERY_PARAM_TEXT);
+				throw new ParamValidationException(I18nConstants.EMPTY_PARAM_MANDATORY, new String[] {CommonApiConstants.QUERY_PARAM_TEXT});
 
 			// escape the quotes
 			String validatedText = EntityUtils.escapeBackslashAndQuotes(text, WebEntityConstants.BACKSLASH, WebEntityConstants.QUOTE);
