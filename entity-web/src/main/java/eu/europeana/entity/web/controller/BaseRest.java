@@ -5,22 +5,18 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import eu.europeana.api.commons.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.definitions.vocabulary.CommonLdConstants;
 import eu.europeana.api.commons.definitions.vocabulary.ContextTypes;
+import eu.europeana.api.commons.error.EuropeanaApiException;
 import eu.europeana.api.commons.service.authorization.AuthorizationService;
 import eu.europeana.api.commons.utils.ResultsPageSerializer;
 import eu.europeana.api.commons.web.controller.BaseRestController;
@@ -42,7 +38,6 @@ import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.utils.jsonld.EuropeanaEntityLd;
 import eu.europeana.entity.web.config.BuildInfo;
 import eu.europeana.entity.web.config.EntityWebConfig;
-import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
 import eu.europeana.entity.web.exception.ParamValidationException;
 import eu.europeana.entity.web.jsonld.EntityResultsPageSerializer;
 import eu.europeana.entity.web.jsonld.EntitySchemaOrgSerializer;
@@ -111,7 +106,7 @@ public abstract class BaseRest extends BaseRestController {
         return webConfig;
     }
 
-    protected String serializeMetricView(EntityMetric metricData) throws EntityApiRuntimeException {
+    protected String serializeMetricView(EntityMetric metricData) throws EuropeanaApiException {
         return jsonLdSerializer.serializeToJson(metricData);
     }
 
@@ -127,16 +122,16 @@ public abstract class BaseRest extends BaseRestController {
             return null;
 
         if (!WebEntityConstants.PARAM_SCOPE_EUROPEANA.equalsIgnoreCase(scope))
-            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_SCOPE,
-                    scope);
+            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+                    new String[] {WebEntityConstants.QUERY_PARAM_SCOPE, scope});
 
         return WebEntityConstants.PARAM_SCOPE_EUROPEANA;
     }
     
     protected void validatePageParam(int page) throws ParamValidationException {
       if (page < 1) {
-          throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_PAGE, 
-              String.valueOf(page));
+          throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+                  new String[] {WebEntityConstants.QUERY_PARAM_PAGE, String.valueOf(page)});
       }
     }
 
@@ -148,7 +143,6 @@ public abstract class BaseRest extends BaseRestController {
      * @throws ParamValidationException
      */
     protected FormatTypes getFormatType(String extension) throws ParamValidationException {
-
         // default format, when none provided
         if (extension == null)
             return FormatTypes.jsonld;
@@ -156,8 +150,8 @@ public abstract class BaseRest extends BaseRestController {
         try {
             return FormatTypes.getByExtention(extension);
         } catch (UnsupportedFormatTypeException e) {
-            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, WebEntityConstants.QUERY_PARAM_FORMAT,
-                    extension, HttpStatus.NOT_FOUND, null);
+            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+                   new String[] { WebEntityConstants.QUERY_PARAM_FORMAT, extension});
         }
     }
 
@@ -196,12 +190,12 @@ public abstract class BaseRest extends BaseRestController {
         // multiple language not supported
         if (StringUtils.contains(language, WebEntityConstants.COMMA)) {
             throw new ParamValidationException(I18nConstants.UNSUPPORTED_MULTIPLE_LANG_VALUE,
-                    CommonApiConstants.QUERY_PARAM_LANG, language);
+                    new String[]{CommonApiConstants.QUERY_PARAM_LANG, language});
         }
         // language value can be 'all' Or ISO language only
         if (!StringUtils.equals(language, WebEntityConstants.PARAM_LANGUAGE_ALL) && !ISO_LANGUAGES.contains(language)) {
-            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, CommonApiConstants.QUERY_PARAM_LANG,
-                    language);
+            throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+                    new String[] {CommonApiConstants.QUERY_PARAM_LANG, language});
         }
     }
 
@@ -217,7 +211,7 @@ public abstract class BaseRest extends BaseRestController {
             return SuggestAlgorithmTypes.getByName(algorithm);
         } catch (Exception e) {
             throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
-                    WebEntityConstants.QUERY_PARAM_ALGORITHM, algorithm);
+                    new String[] {WebEntityConstants.QUERY_PARAM_ALGORITHM, algorithm});
         }
     }
 
@@ -228,10 +222,9 @@ public abstract class BaseRest extends BaseRestController {
      * @param paramProfile The HTTP request parameter
      * @param request      The HTTP request with headers
      * @return profile value
-     * @throws HttpException
-     * @throws ConceptSchemeProfileValidationException
+     * @throws ParamValidationException
      */
-    public LdProfiles getProfile(String paramProfile, HttpServletRequest request) throws HttpException {
+    public LdProfiles getProfile(String paramProfile, HttpServletRequest request) throws EuropeanaApiException {
 
         LdProfiles profile = null;
         String preferHeader = request.getHeader(HttpHeaders.PREFER);
@@ -246,9 +239,8 @@ public abstract class BaseRest extends BaseRestController {
             try {
                 profile = LdProfiles.getByName(paramProfile);
             } catch (InvalidProfileException e) {
-                throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE, I18nConstants.INVALID_PARAM_VALUE,
-                        new String[] { CommonApiConstants.QUERY_PARAM_PROFILE, paramProfile }, HttpStatus.BAD_REQUEST,
-                        e);
+                throw new ParamValidationException(I18nConstants.INVALID_PARAM_VALUE,
+                        new String[] { CommonApiConstants.QUERY_PARAM_PROFILE, paramProfile }, e);
             }
         }
         return profile;
@@ -264,7 +256,7 @@ public abstract class BaseRest extends BaseRestController {
      * @throws JsonProcessingException
      */
     protected String serializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile,
-            String entityIdBaseUrl) throws JsonProcessingException {
+            String entityIdBaseUrl) {
         ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
                 ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE, entityIdBaseUrl);
         String profileVal = (profile == null) ? null : profile.name();
@@ -275,12 +267,11 @@ public abstract class BaseRest extends BaseRestController {
      * This method retrieves view profile if provided within the "If-Match" HTTP
      * header
      * 
-     * @param request
      * @return profile value
      * @throws HttpException
      */
     // TODO have generic implementation in API-Commons
-    LdProfiles getProfile(String preferHeader) throws HttpException {
+    LdProfiles getProfile(String preferHeader) throws EuropeanaApiException {
         LdProfiles ldProfile = null;
         String ldPreferHeaderStr = null;
         String INCLUDE = "include";
@@ -294,11 +285,11 @@ public abstract class BaseRest extends BaseRestController {
                 ldPreferHeaderStr = preferHeaderMap.get(INCLUDE).replace("\"", "");
                 ldProfile = LdProfiles.getByHeaderValue(ldPreferHeaderStr.trim());
             } catch (InvalidProfileException e) {
-                throw new HttpException(I18nConstants.INVALID_HEADER_VALUE, I18nConstants.INVALID_HEADER_VALUE,
-                        new String[] { HttpHeaders.PREFER, preferHeader }, HttpStatus.BAD_REQUEST, null);
+                throw new ParamValidationException(I18nConstants.INVALID_HEADER_VALUE,
+                        new String[] { HttpHeaders.PREFER, preferHeader });
             } catch (Throwable th) {
-                throw new HttpException(I18nConstants.INVALID_HEADER_FORMAT, I18nConstants.INVALID_HEADER_FORMAT,
-                        new String[] { HttpHeaders.PREFER, preferHeader }, HttpStatus.BAD_REQUEST, null);
+                throw new ParamValidationException(I18nConstants.INVALID_HEADER_FORMAT,
+                        new String[] { HttpHeaders.PREFER, preferHeader });
             }
         }
 

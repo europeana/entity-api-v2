@@ -22,9 +22,9 @@ public enum LdProfiles implements ProfileKeyword {
      * Identifying requested profile by Linked Data value. For user friendliness the
      * the comparison is case insensitive
      * 
-     * @param ldValue
+     * @param headerValue
      * @return
-     * @throws ConceptSchemeProfileValidationException
+     * @throws InvalidProfileException
      */
     public static LdProfiles getByHeaderValue(String headerValue) throws InvalidProfileException {
 
@@ -40,7 +40,7 @@ public enum LdProfiles implements ProfileKeyword {
      * 
      * @param name
      * @return
-     * @throws ConceptSchemeProfileValidationException
+     * @throws InvalidProfileException
      */
     public static LdProfiles getByName(String name) throws InvalidProfileException {
 

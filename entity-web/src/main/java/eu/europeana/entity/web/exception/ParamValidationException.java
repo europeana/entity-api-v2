@@ -1,40 +1,30 @@
 package eu.europeana.entity.web.exception;
 
-import org.apache.commons.lang3.StringUtils;
+import eu.europeana.api.commons.error.EuropeanaI18nApiException;
 import org.springframework.http.HttpStatus;
-
-import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.entity.app.I18nConstants;
 
+public class ParamValidationException extends EuropeanaI18nApiException {
 
-public class ParamValidationException extends HttpException{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3664526076494279093L;
-	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
-	
-//	String parameterName;
-//	String parameterValue;
-	
-	
-	public ParamValidationException(String parameterName, String parameterValue){
-		this(I18nConstants.INVALID_PARAM_VALUE, parameterName, parameterValue, null);
+
+	public ParamValidationException(String[] i18params){
+		super(null, null, I18nConstants.INVALID_PARAM_VALUE, i18params);
 	}
 	
-	public ParamValidationException(String i18nKey, String parameterName, String parameterValue){
-		this(i18nKey, parameterName, parameterValue, null);
+	public ParamValidationException(String i18nKey, String[] i18params){
+		super(null, null, i18nKey, i18params);
 	}
-	public ParamValidationException(String i18nKey, String parameterName, String parameterValue, Throwable th){
-		this(i18nKey, parameterName, parameterValue, HttpStatus.BAD_REQUEST, th);
+
+	public ParamValidationException(String message, String i18nKey, String[] i18params){
+		super(message, null, i18nKey, i18params);
 	}
-	
-	public ParamValidationException(String i18nKey, String parameterName, String parameterValue, HttpStatus status, Throwable th){
-		this(i18nKey, i18nKey, new String[]{parameterName, parameterValue}, status, th);
+	public ParamValidationException(String i18nKey, String[] i18params, Throwable th){
+		super(null, null, HttpStatus.BAD_REQUEST, i18nKey, i18params, th);
 	}
-	
-	public ParamValidationException(String message, String i18nKey, String[] i18nParams, HttpStatus status, Throwable th){
-		super(message + " " + StringUtils.join(i18nParams, ':'), i18nKey, i18nParams, status, th);
+
+	@Override
+	public HttpStatus getResponseStatus() {
+		return HttpStatus.BAD_REQUEST;
 	}
 }

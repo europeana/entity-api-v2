@@ -28,6 +28,7 @@ public interface I18nConstants extends eu.europeana.api.commons.definitions.conf
 	//500
 	static final String SERVER_ERROR_CANT_RETRIEVE_URI = "error.entity_server_cannot_retrieve_uri";
 	static final String SERVER_ERROR_CANT_RESOLVE_SAME_AS_URI = "error.entity_server_cannot_resolve_uri";
+	static final String SERVER_ERROR_CANT_SERIALIZE_OBJECT = "error.entity_server_cannot_serialize_object";
 	//replaced by generic constant
 	//static final String SERVER_ERROR_UNEXPECTED =  "error.entity_server_unexpected_error";
 	

@@ -2,6 +2,11 @@ package eu.europeana.entity.web.config;
 
 import javax.annotation.Resource;
 
+import eu.europeana.api.commons.auth.AuthenticationBuilder;
+import eu.europeana.api.commons.auth.AuthenticationConfig;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +17,12 @@ import eu.europeana.api.commons.config.i18n.I18nServiceImpl;
 import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
 import eu.europeana.entity.config.AppConfigConstants;
 
+import java.util.Properties;
+
 @Configuration
 public class EntityAppConfig extends AppConfigConstants {
+
+    private static final Logger LOG = LogManager.getLogger(EntityAppConfig.class);
 
     @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
     private EntityWebConfig entityWebConfig;
@@ -22,6 +31,13 @@ public class EntityAppConfig extends AppConfigConstants {
     public EuropeanaClientDetailsService getClientDetailsService() {
         EuropeanaClientDetailsService clientDetailsService = new EuropeanaClientDetailsService();
         clientDetailsService.setApiKeyServiceUrl(entityWebConfig.getApiKeyServiceUrl());
+        // Set authentication handler if values are not empty
+        if (StringUtils.isNotEmpty(entityWebConfig.getTokenEndpoint()) && StringUtils.isNotEmpty(entityWebConfig.getGrantParams())) {
+            AuthenticationConfig config = new AuthenticationConfig(entityWebConfig.getTokenEndpoint(), entityWebConfig.getGrantParams());
+            clientDetailsService.setAuthHandler(AuthenticationBuilder.newAuthentication(config));
+        } else {
+            LOG.error("Keycloak token endpoint and parameters NOT set !!");
+        }
         return clientDetailsService;
     }
 
@@ -40,6 +56,5 @@ public class EntityAppConfig extends AppConfigConstants {
         source.setDefaultEncoding("utf-8");
         return source;
     }
-    
     
 }

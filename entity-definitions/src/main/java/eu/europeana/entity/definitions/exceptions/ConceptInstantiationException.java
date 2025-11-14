@@ -8,10 +8,8 @@ package eu.europeana.entity.definitions.exceptions;
  */
 public class ConceptInstantiationException extends RuntimeException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -6895963160368630224L;
+
     public static final String DEFAULT_MESSAGE = "Cannot instantiate concept attribute: ";
 
     public ConceptInstantiationException(String attributeName) {

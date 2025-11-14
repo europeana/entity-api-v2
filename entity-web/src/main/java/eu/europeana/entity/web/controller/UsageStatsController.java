@@ -5,9 +5,7 @@ import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.error.EuropeanaApiException;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.entity.stats.exception.UsageStatsException;
 import eu.europeana.entity.stats.vocabulary.UsageStatsFields;
-import eu.europeana.entity.web.controller.exception.EntityApiRuntimeException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -48,7 +46,7 @@ public class UsageStatsController extends BaseRest {
      *
      * @return
      */
-    private ResponseEntity<String> getEntitiesStats() throws UsageStatsException, EntityApiRuntimeException {
+    private ResponseEntity<String> getEntitiesStats() throws EuropeanaApiException {
         EntityMetric metric = new EntityMetric();
         metric.setType(UsageStatsFields.OVERALL_TOTAL_TYPE);
         getUsageStatsService().getStatsForLang(metric);
