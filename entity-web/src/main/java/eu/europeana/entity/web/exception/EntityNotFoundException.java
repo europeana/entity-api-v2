@@ -1,10 +1,8 @@
 package eu.europeana.entity.web.exception;
 
+import org.springframework.http.HttpStatus;
 import eu.europeana.api.commons.error.EuropeanaI18nApiException;
 import eu.europeana.entity.app.I18nConstants;
-import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 public class EntityNotFoundException extends EuropeanaI18nApiException {
 

@@ -27,3 +27,5 @@ error.entity_not_accessible={0} is not accessible! {1}
 error.entity_server_cannot_retrieve_uri=Internal server error occurred when retrieving entity by URI: {0}
 error.entity_server_cannot_resolve_uri=Internal server error occurred when resolving entity by URI: {0}
 error.server_unexpected_error=An unexpected server exception occurred!
+error.entity_server_cannot_serialize_object=Internal server error occurred when serializing object: {0}
+

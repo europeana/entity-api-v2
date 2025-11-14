@@ -1,6 +1,5 @@
 package eu.europeana.entity.web.jsonld;
 
-import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.corelib.edm.utils.JsonLdSerializer;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
