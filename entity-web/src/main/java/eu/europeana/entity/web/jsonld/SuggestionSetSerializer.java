@@ -45,7 +45,6 @@ public class SuggestionSetSerializer extends JsonLd {
     }
 
     /**
-     * @param conceptSet
      */
     public SuggestionSetSerializer(ResultSet<? extends EntityPreview> entitySet, String entityIdBaseUrl) {
 	super();
@@ -61,7 +60,6 @@ public class SuggestionSetSerializer extends JsonLd {
      * key. If the key is NULL and there does not exist a resource with an empty
      * String as key the resource will be added using an empty String ("") as key.
      * 
-     * @param concept
      * @throws HttpException
      */
     public String serialize() throws HttpException {

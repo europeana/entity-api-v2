@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import eu.europeana.api.commons.error.EuropeanaApiException;
+import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.model.ErrorApiResponse;
 import eu.europeana.entity.web.exception.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -59,7 +60,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException {
+            HttpServletRequest request) throws EuropeanaApiException, HttpException {
         return createResponse(type, identifier, FormatTypes.jsonld, null, request);
     }
 
@@ -71,7 +72,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException {
+            HttpServletRequest request) throws EuropeanaApiException, HttpException {
         return createResponse(type, identifier, FormatTypes.schema, null, request);
     }
 
@@ -84,7 +85,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException {
+            HttpServletRequest request) throws EuropeanaApiException, HttpException {
         return createResponse(type, identifier, FormatTypes.xml, HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML, request);
     }
 
@@ -97,7 +98,7 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException {
+            HttpServletRequest request) throws EuropeanaApiException, HttpException {
         return createResponse(type, identifier, FormatTypes.jsonld, null, request);
 
     }
@@ -112,13 +113,13 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException {
+            HttpServletRequest request) throws EuropeanaApiException, HttpException {
         return createResponse(type, identifier, FormatTypes.xml, null, request);
 
     }
 
     private ResponseEntity<String> createResponse(String type, String identifier, FormatTypes outFormat,
-            String contentType, HttpServletRequest request) throws EuropeanaApiException {
+            String contentType, HttpServletRequest request) throws EuropeanaApiException, HttpException {
         try {
             if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
                 verifyReadAccess(request);
@@ -145,8 +146,6 @@ public class ResolveController extends BaseRest {
             ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
             return response;
         } catch (RuntimeException e) {
-            throw new EuropeanaApiException(e.getMessage(), e);
-        } catch (Exception e) {
             throw new EuropeanaApiException(e.getMessage(), e);
         }
     }

@@ -15,7 +15,6 @@ import eu.europeana.api.commons.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.definitions.vocabulary.CommonLdConstants;
-import eu.europeana.api.commons.definitions.vocabulary.ContextTypes;
 import eu.europeana.api.commons.error.EuropeanaApiException;
 import eu.europeana.api.commons.service.authorization.AuthorizationService;
 import eu.europeana.api.commons.utils.ResultsPageSerializer;
@@ -45,6 +44,9 @@ import eu.europeana.entity.web.jsonld.JsonLdSerializer;
 import eu.europeana.entity.web.service.EntityAuthorizationService;
 import eu.europeana.entity.web.service.EntityService;
 import eu.europeana.entity.web.xml.EntityXmlSerializer;
+import org.springframework.http.HttpStatus;
+
+import static eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants.ENTITY_CONTEXT;
 
 public abstract class BaseRest extends BaseRestController {
 
@@ -257,8 +259,11 @@ public abstract class BaseRest extends BaseRestController {
      */
     protected String serializeResultsPage(ResultsPage<? extends Entity> resPage, SearchProfiles profile,
             String entityIdBaseUrl) {
-        ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(resPage,
-                ContextTypes.ENTITY.getJsonValue(), CommonLdConstants.RESULT_PAGE, entityIdBaseUrl);
+        ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(
+                resPage,
+                ENTITY_CONTEXT,
+                CommonLdConstants.RESULT_PAGE,
+                entityIdBaseUrl);
         String profileVal = (profile == null) ? null : profile.name();
         return serializer.serialize(profileVal);
     }
@@ -325,22 +330,26 @@ public abstract class BaseRest extends BaseRestController {
      * @param entity The entity
      * @param format The format extension
      * @return entity in jsonLd format
-     * @throws UnsupportedEntityTypeException
+     * @throws EuropeanaApiException
      * @throws HttpException
      */
-    protected String serialize(Entity entity, FormatTypes format) throws UnsupportedEntityTypeException, HttpException {
-
+    protected String serialize(Entity entity, FormatTypes format) throws HttpException {
         String responseBody = null;
-
-        if (FormatTypes.jsonld.equals(format)) {
-            EuropeanaEntityLd entityLd = new EuropeanaEntityLd(entity, webConfig.getEntityDataEndpoint());
-            return entityLd.toString(4);
-        } else if (FormatTypes.schema.equals(format)) {
-            responseBody = (new EntitySchemaOrgSerializer()).serializeEntity(entity);
-        } else if (FormatTypes.xml.equals(format)) {
-            responseBody = entityXmlSerializer.serializeXml(entity, webConfig.getEntityDataEndpoint());
+        try {
+            if (FormatTypes.jsonld.equals(format)) {
+                EuropeanaEntityLd entityLd = new EuropeanaEntityLd(entity, webConfig.getEntityDataEndpoint());
+                return entityLd.toString(4);
+            } else if (FormatTypes.schema.equals(format)) {
+                responseBody = (new EntitySchemaOrgSerializer()).serializeEntity(entity);
+            } else if (FormatTypes.xml.equals(format)) {
+                responseBody = entityXmlSerializer.serializeXml(entity, webConfig.getEntityDataEndpoint());
+            }
+            return responseBody;
+        } catch (UnsupportedEntityTypeException e) {
+            throw new HttpException(null, I18nConstants.UNSUPPORTED_ENTITY_TYPE, new String[] {
+                    WebEntityConstants.ENTITY_API_RESOURCE, entity.getType() },
+                    HttpStatus.NOT_FOUND, null);
         }
-        return responseBody;
     }
 
     @Override
