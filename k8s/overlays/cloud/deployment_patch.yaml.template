@@ -26,6 +26,8 @@ spec:
                      -Delastic.apm.service_name=${APP_NAME}
                      -Delastic.apm.environment=${K8S_NAMESPACE}
                      -Dlogging.config=/opt/app/config/log4j2-spring.xml"
+           - name: ELASTIC_APM_VERIFY_SERVER_CERT
+             value: "{APM_VERIFY_SERVER_CERT}"
           resources:
             requests:
               memory: "${MEMORY_REQUEST}M"
