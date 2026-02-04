@@ -1,6 +1,7 @@
 package eu.europeana.entity.definitions.model.vocabulary;
 
 import eu.europeana.entity.definitions.exceptions.InvalidProfileException;
+import static eu.europeana.entity.definitions.model.vocabulary.ProfileKeyword.*;
 
 /**
  * This enumeration is intended for Linked Data profiles
@@ -8,9 +9,11 @@ import eu.europeana.entity.definitions.exceptions.InvalidProfileException;
  * @author GrafR
  *
  */
-public enum LdProfiles implements ProfileKeyword {
+public enum LdProfiles {
 
-    MINIMAL(VALUE_PREFER_MINIMAL), STANDARD(VALUE_PREFER_CONTAINEDIRIS), FULL(VALUE_PREFER_FULL);
+    MINIMAL(VALUE_PREFER_MINIMAL),
+    STANDARD(VALUE_PREFER_CONTAINEDIRIS),
+    FULL(VALUE_PREFER_FULL);
 
     private String preferHeaderValue;
 
@@ -19,15 +22,14 @@ public enum LdProfiles implements ProfileKeyword {
     }
 
     /**
-     * Identifying requested profile by Linked Data value. For user friendliness the
-     * the comparison is case insensitive
+     * Identifying requested profile by Linked Data value.
+     * For user-friendliness the comparison is case-insensitive
      * 
      * @param headerValue
      * @return
      * @throws InvalidProfileException
      */
     public static LdProfiles getByHeaderValue(String headerValue) throws InvalidProfileException {
-
         for (LdProfiles ldType : LdProfiles.values()) {
             if (headerValue.equals(ldType.getHeaderValue())) {
                 return ldType;
@@ -52,18 +54,17 @@ public enum LdProfiles implements ProfileKeyword {
         throw new InvalidProfileException(name);
     }
 
-    @Override
     public String getHeaderValue() {
+        return preferHeaderValue;
+    }
+
+    public String getPreferHeaderValue() {
         return preferHeaderValue;
     }
 
     @Override
     public String toString() {
         return getHeaderValue();
-    }
-
-    public String getPreferHeaderValue() {
-        return preferHeaderValue;
     }
 
 }

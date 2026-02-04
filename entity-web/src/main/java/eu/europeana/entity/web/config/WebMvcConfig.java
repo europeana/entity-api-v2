@@ -8,14 +8,13 @@ import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import eu.europeana.api.commons.web.http.HttpHeaders;
 
 /**
  * Setup CORS for all requests and setup default Content-type
@@ -48,7 +47,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/entity/resolve")
         .allowedOrigins("*")
         .allowedMethods("GET")
-        .exposedHeaders(HttpHeaders.LOCATION, HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+        .exposedHeaders(org.springframework.http.HttpHeaders.LOCATION, HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
         .allowCredentials(false)
         .maxAge(600L); // in seconds
         
@@ -88,7 +87,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         configurer.favorPathExtension(true);
 
         // use application/ld+json if no Content-Type is specified
-        configurer.defaultContentType(MediaType.valueOf(HttpHeaders.CONTENT_TYPE_JSONLD));
+        configurer.defaultContentType(MediaType.valueOf(
+                eu.europeana.api.commons_sb3.definitions.http.HttpHeaders.CONTENT_TYPE_JSONLD));
         
         configurer.mediaTypes(getMediaTypesMapping());
     }
@@ -125,7 +125,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
             supportedMediaTypes.add(new MediaType("application", "rdf+xml"));
             supportedMediaTypes.add(new MediaType("rdf", "xml"));
             supportedMediaTypes.add(MediaType.APPLICATION_XML);
-//            supportedMediaTypes.add(MediaType.TEXT_PLAIN);
         }
         return supportedMediaTypes;
     }

@@ -1,31 +1,26 @@
-package eu.europeana.entity.stats.service;
+package eu.europeana.entity.web.service;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.math3.util.Precision;
+import eu.europeana.api.commons_sb3.definitions.search.FacetFieldView;
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntitiesPerLanguage;
+import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
+import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityStats;
+import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
+import jakarta.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-
-import eu.europeana.api.commons.definitions.search.FacetFieldView;
-import eu.europeana.api.commons.definitions.search.Query;
-import eu.europeana.api.commons.definitions.statistics.entity.EntitiesPerLanguage;
-import eu.europeana.api.commons.definitions.statistics.entity.EntityMetric;
-import eu.europeana.api.commons.definitions.statistics.entity.EntityStats;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.solr.service.impl.EntityQueryBuilder;
-import eu.europeana.entity.stats.exception.UsageStatsException;
-import eu.europeana.entity.stats.vocabulary.UsageStatsFields;
+import eu.europeana.entity.web.exception.UsageStatsException;
 
 /**
  * Usage Statistics Service class
@@ -33,7 +28,7 @@ import eu.europeana.entity.stats.vocabulary.UsageStatsFields;
  * @author Srishti Singh (srishti.singh@europeana.eu)
  * @since 2021-09-15
  */
-@Service(UsageStatsFields.BEAN_USAGE_SERVICE)
+@Service(AppConfigConstants.BEAN_USAGE_SERVICE)
 public class UsageStatsService {
 
     @Resource(name = AppConfigConstants.ENTITY_SOLR_SERVICE)
@@ -43,6 +38,11 @@ public class UsageStatsService {
     private static final List<String> languages = new ArrayList<>(Arrays.asList("en" , "de", "fr", "fi", "it", "es", "sv", "nl", "pl", "pt", "bg",
             "cs", "da", "hu", "ro", "el", "lt", "sk", "et", "hr", "lv", "sl", "ga", "mt"));
 
+    // query constants
+    public static final String FACET = "type";
+    public static final String QUERY_SKOS_PREF_LABEL_PREFIX =  EntitySolrFields.PREF_LABEL_PREFIX  + ".";
+    public static final String QUERY_ALL = "*";
+
     /**
      *  Retrieves the metric response per language per type in percentages.
      *
@@ -50,7 +50,7 @@ public class UsageStatsService {
      */
     public void getStatsForLang(EntityMetric metric) throws UsageStatsException {
        // 1) for total entities per type : query=*&profile=facets&facet=type&pageSize=0
-       EntityStats entityTotal = getFacetsResults(buildSearchQuery(UsageStatsFields.QUERY_ALL, UsageStatsFields.FACET));
+       EntityStats entityTotal = getFacetsResults(buildSearchQuery(QUERY_ALL, FACET));
        metric.setEntitiesPerType(entityTotal);
 
        // 2) get entities per language in percentages
@@ -80,9 +80,9 @@ public class UsageStatsService {
      */
     private EntitiesPerLanguage getEntityPerLangValues(String lang, EntityStats entityTotal) throws UsageStatsException {
         EntitiesPerLanguage entityPerLanguage = new EntitiesPerLanguage();
-        StringBuilder query = new StringBuilder(UsageStatsFields.QUERY_SKOS_PREF_LABEL_PREFIX).append(lang).append(":*");
+        StringBuilder query = new StringBuilder(QUERY_SKOS_PREF_LABEL_PREFIX).append(lang).append(":*");
         // get facet results
-        EntityStats entityStatsForLang = getFacetsResults(buildSearchQuery(query.toString(), UsageStatsFields.FACET));
+        EntityStats entityStatsForLang = getFacetsResults(buildSearchQuery(query.toString(), FACET));
         if (entityStatsForLang != null) {
             // calculate percentage
             calculatePercentageValues(entityStatsForLang, entityTotal, entityPerLanguage);
@@ -175,7 +175,4 @@ public class UsageStatsService {
         return 0l;
     }
 
-//    private float getTotal(EntityStats entitystats) {
-//        return (entitystats.getAgents() + entitystats.getConcepts() + entitystats.getOrganisations() + entitystats.getPlaces() + entitystats.getTimespans());
-//    }
 }

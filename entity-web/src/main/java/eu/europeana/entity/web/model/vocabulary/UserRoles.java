@@ -1,15 +1,16 @@
 package eu.europeana.entity.web.model.vocabulary;
 
-import eu.europeana.api.commons.definitions.vocabulary.Role;
+import static eu.europeana.api.commons_sb3.definitions.oauth.Operations.*;
+import eu.europeana.api.commons_sb3.definitions.oauth.Role;
 
-public enum UserRoles implements eu.europeana.api.commons.definitions.vocabulary.Role {
+public enum UserRoles implements Role {
 
     /**
      * TODO: verify if ANYNYMOUS role is still needed 
      */
-    ANONYMOUS(new String[] { Operations.RETRIEVE }), 
-    USER(new String[] { Operations.RETRIEVE }),
-    ADMIN(new String[] { Operations.RETRIEVE, Operations.ADMIN_ALL });
+    ANONYMOUS(new String[] { RETRIEVE }),
+    USER(new String[] { RETRIEVE }),
+    ADMIN(new String[] { RETRIEVE, ADMIN_ALL });
 
     String[] operations;
 

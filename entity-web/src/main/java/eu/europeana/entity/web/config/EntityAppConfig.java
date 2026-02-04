@@ -1,23 +1,20 @@
 package eu.europeana.entity.web.config;
 
-import javax.annotation.Resource;
-
-import eu.europeana.api.commons.auth.AuthenticationBuilder;
-import eu.europeana.api.commons.auth.AuthenticationConfig;
+import eu.europeana.api.commons_sb3.auth.AuthenticationBuilder;
+import eu.europeana.api.commons_sb3.auth.AuthenticationConfig;
+import eu.europeana.api.commons_sb3.error.config.ErrorConfig;
+import eu.europeana.api.commons_sb3.error.i18n.I18nService;
+import eu.europeana.api.commons_sb3.error.i18n.I18nServiceImpl;
+import eu.europeana.api.commons_sb3.oauth2.service.impl.EuropeanaClientDetailsService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-
-import eu.europeana.api.commons.config.i18n.I18nService;
-import eu.europeana.api.commons.config.i18n.I18nServiceImpl;
-import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
 import eu.europeana.entity.config.AppConfigConstants;
-
-import java.util.Properties;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class EntityAppConfig extends AppConfigConstants {
@@ -41,20 +38,11 @@ public class EntityAppConfig extends AppConfigConstants {
         return clientDetailsService;
     }
 
-    @Bean(name = BEAN_I18N_SERVICE)
+    @Bean(name = ErrorConfig.BEAN_I18nService)
     public I18nService getI18nService() {
-        I18nServiceImpl i18Service = new I18nServiceImpl();
-        MessageSource source = getMessageSource();
-        i18Service.setMessageSource(source);
-        return i18Service;
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames(ErrorConfig.COMMON_MESSAGE_SOURCE, "classpath:messages");
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
+        return  new I18nServiceImpl(messageSource);
     }
-
-    @Bean(name = BEAN_I18N_MESAGE_SOURCE)
-    public MessageSource getMessageSource() {
-        ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
-        source.setBasename("classpath:messages");
-        source.setDefaultEncoding("utf-8");
-        return source;
-    }
-    
 }

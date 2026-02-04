@@ -14,22 +14,9 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.entity</groupId>
-			<artifactId>entity-common</artifactId>
+			<artifactId>entity-definitions</artifactId>
 			<version>2.4-SNAPSHOT</version>
 		</dependency>
-
-		<dependency>
-			<groupId>at.ac.ait.ngcms</groupId>
-			<artifactId>annotation-ld</artifactId>
-			<version>${version.annotationLd}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
 
 		<!-- moved from annotation-web -->
 		<dependency>
@@ -37,29 +24,5 @@
 			<artifactId>jettison</artifactId>
 			<version>1.1</version>
 		</dependency>
-
-		<dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>apache-jena-libs</artifactId> 
-            <type>pom</type>
-            <version>2.13.0</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>log4j</groupId>
-            		<artifactId>log4j</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.slf4j</groupId>
-            		<artifactId>slf4j-log4j12</artifactId>
-            	</exclusion>
-            </exclusions>
-		</dependency>
-													
-		<dependency>
-		    <groupId>com.io-informatics.oss</groupId>
-		    <artifactId>jackson-jsonld</artifactId>
-		    <version>0.1.1</version>
-		</dependency>		
-						
 	</dependencies>
 </project>

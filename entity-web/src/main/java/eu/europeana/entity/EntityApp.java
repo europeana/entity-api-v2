@@ -1,4 +1,4 @@
-package eu.europeana.entity.app;
+package eu.europeana.entity;
 
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -24,7 +23,7 @@ import org.springframework.context.ApplicationContext;
     // Remove these exclusions to re-enable security
     SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class,
     // DataSources are manually configured (for EM and batch DBs),
-    EmbeddedMongoAutoConfiguration.class, EmbeddedWebServerFactoryCustomizerAutoConfiguration.class,
+        EmbeddedWebServerFactoryCustomizerAutoConfiguration.class,
     MongoAutoConfiguration.class, MongoDataAutoConfiguration.class,
     MongoMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
 public class EntityApp extends SpringBootServletInitializer {

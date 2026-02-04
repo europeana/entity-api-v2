@@ -5,8 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
-
-import eu.europeana.api.commons.definitions.utils.DateUtils;
+import eu.europeana.api.commons_sb3.definitions.utils.DateUtils;
 
 public class RdfTypedElement {
 

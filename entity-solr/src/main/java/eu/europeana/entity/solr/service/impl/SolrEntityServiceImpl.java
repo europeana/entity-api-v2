@@ -12,22 +12,21 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.BaseHttpSolrClient.RemoteSolrException;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.springframework.stereotype.Service;
-
-import eu.europeana.api.commons.definitions.search.Query;
-import eu.europeana.api.commons.definitions.search.ResultSet;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
@@ -113,7 +112,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 
     @Override
     public ResultSet<? extends Entity> search(Query searchQuery, String[] outLanguage, List<EntityTypes> entityTypes,
-	    String scope) throws EntityRetrievalException {
+											  String scope) throws EntityRetrievalException {
 
 	ResultSet<? extends Entity> res = null;
 	SolrQuery query = (new EntityQueryBuilder()).toSolrQuery(searchQuery, SolrEntityService.HANDLER_SELECT,
@@ -125,7 +124,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    QueryResponse rsp = solrClient.query(query);
 	    res = buildResultSet(rsp, outLanguage);
 	    LOG.debug("search obj res size: {} ", res.getResultSize());
-	} catch (RemoteSolrException e) {
+	} catch (HttpSolrClient.RemoteSolrException e) {
 	    RuntimeException ex = handleRemoteSolrException(searchQuery, e);
 	    throw ex;
 	} catch (IOException | SolrServerException | RuntimeException e) {
@@ -135,7 +134,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	return res;
     }
 
-    private RuntimeException handleRemoteSolrException(Query searchQuery, RemoteSolrException e) {
+    private RuntimeException handleRemoteSolrException(Query searchQuery, HttpSolrClient.RemoteSolrException e) {
 	String remoteMessage = e.getMessage();
 	String UNDEFINED_FIELD = "undefined field";
 	RuntimeException ex;

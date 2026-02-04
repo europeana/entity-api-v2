@@ -1,15 +1,20 @@
 package eu.europeana.entity.web.controller;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import eu.europeana.api.commons.error.EuropeanaApiException;
-import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
-import eu.europeana.api.commons.web.model.ErrorApiResponse;
+import eu.europeana.api.commons_sb3.definitions.format.RdfFormat;
+import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
+import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
+import eu.europeana.entity.config.AppConfigConstants;
+import eu.europeana.entity.definitions.model.Entity;
+import eu.europeana.entity.definitions.model.RankedEntity;
+import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
+import eu.europeana.entity.utils.EntityUtils;
+import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.EntityNotFoundException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,179 +26,159 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.europeana.api.common.config.swagger.SwaggerSelect;
-import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
-import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.entity.config.AppConfigConstants;
-import eu.europeana.entity.definitions.formats.FormatTypes;
-import eu.europeana.entity.definitions.model.Entity;
-import eu.europeana.entity.definitions.model.RankedEntity;
-import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
-import eu.europeana.entity.utils.EntityUtils;
-import eu.europeana.entity.web.config.EntityWebConfig;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static eu.europeana.api.commons_sb3.definitions.caching.CachingHeaders.ETAG;
+import static eu.europeana.api.commons_sb3.definitions.http.HttpHeaders.*;
 
 @Controller
-@SwaggerSelect
+//@SwaggerSelect
 @Api(tags = "Entity retrieval", description = " ")
 public class ResolveController extends BaseRest {
-  
+
     @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
     private EntityWebConfig entityWebConfig;
 
     private static final String ACCEPT = "Accept=";
-    private static final String ACCEPT_HEADER_JSONLD = ACCEPT + HttpHeaders.CONTENT_TYPE_JSONLD;
+    private static final String ACCEPT_HEADER_JSONLD = ACCEPT + CONTENT_TYPE_JSONLD;
     private static final String ACCEPT_HEADER_JSON = ACCEPT + MediaType.APPLICATION_JSON_VALUE;
     private static final String ACCEPT_HEADER_APPLICATION_RDF_XML = ACCEPT
-            + HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML;
-    private static final String ACCEPT_HEADER_RDF_XML = ACCEPT + HttpHeaders.CONTENT_TYPE_RDF_XML;
+            + CONTENT_TYPE_APPLICATION_RDF_XML;
+    private static final String ACCEPT_HEADER_RDF_XML = ACCEPT + CONTENT_TYPE_RDF_XML;
     private static final String ACCEPT_HEADER_APPLICATION_XML = ACCEPT + MediaType.APPLICATION_XML_VALUE;
 
+    @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-    @RequestMapping(value = { "/entity/{type}/{identifier}.jsonld", "/entity/{type}/base/{identifier}.jsonld",
+    @RequestMapping(value = {"/entity/{type}/{identifier}.jsonld", "/entity/{type}/base/{identifier}.jsonld",
             "/entity/{type}/{identifier}.json",
-            "/entity/{type}/base/{identifier}.json" }, method = RequestMethod.GET, produces = {
-                    HttpHeaders.CONTENT_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE })
+            "/entity/{type}/base/{identifier}.json"}, method = RequestMethod.GET, produces = {
+            CONTENT_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> getJsonLdEntity(
-            @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        return createResponse(type, identifier, FormatTypes.jsonld, null, request);
+            HttpServletRequest request) throws EuropeanaApiException {
+        return createResponse(type, identifier, RdfFormat.JSONLD, null, request);
     }
 
+    @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-    @RequestMapping(value = { "/entity/{type}/{identifier}.schema.jsonld",
-            "/entity/{type}/base/{identifier}.schema.jsonld" }, method = RequestMethod.GET, produces = {
-                    HttpHeaders.CONTENT_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = {"/entity/{type}/{identifier}.schema.jsonld",
+            "/entity/{type}/base/{identifier}.schema.jsonld"}, method = RequestMethod.GET, produces = {
+            CONTENT_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> getSchemaJsonLdEntity(
-            @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        return createResponse(type, identifier, FormatTypes.schema, null, request);
+            HttpServletRequest request) throws EuropeanaApiException {
+        return createResponse(type, identifier, RdfFormat.SCHEMA, null, request);
     }
 
+    @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-    @RequestMapping(value = { "/entity/{type}/{identifier}.xml",
-            "/entity/{type}/base/{identifier}.xml" }, method = RequestMethod.GET, produces = {
-                    HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML, HttpHeaders.CONTENT_TYPE_RDF_XML,
-                    MediaType.APPLICATION_XML_VALUE })
+    @RequestMapping(value = {"/entity/{type}/{identifier}.xml",
+            "/entity/{type}/base/{identifier}.xml"}, method = RequestMethod.GET, produces = {
+            CONTENT_TYPE_APPLICATION_RDF_XML, CONTENT_TYPE_RDF_XML,
+            MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<String> getXmlEntity(
-            @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        return createResponse(type, identifier, FormatTypes.xml, HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML, request);
+            HttpServletRequest request) throws EuropeanaApiException {
+        return createResponse(type, identifier, RdfFormat.XML, CONTENT_TYPE_APPLICATION_RDF_XML, request);
     }
 
+    @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-    @RequestMapping(value = { "/entity/{type}/{identifier}",
-            "/entity/{type}/base/{identifier}" }, method = RequestMethod.GET, headers = { ACCEPT_HEADER_JSONLD,
-                    ACCEPT_HEADER_JSON }, produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8,
-                            HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+    @RequestMapping(value = {"/entity/{type}/{identifier}",
+            "/entity/{type}/base/{identifier}"}, method = RequestMethod.GET, headers = {ACCEPT_HEADER_JSONLD,
+            ACCEPT_HEADER_JSON}, produces = {CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8})
     public ResponseEntity<String> getEntity(
-            @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        return createResponse(type, identifier, FormatTypes.jsonld, null, request);
+            HttpServletRequest request) throws EuropeanaApiException {
+        return createResponse(type, identifier, RdfFormat.JSONLD, null, request);
 
     }
 
+    @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
-    @RequestMapping(value = { "/entity/{type}/{identifier}",
-            "/entity/{type}/base/{identifier}" }, method = RequestMethod.GET, headers = {
-                    ACCEPT_HEADER_APPLICATION_RDF_XML, ACCEPT_HEADER_RDF_XML,
-                    ACCEPT_HEADER_APPLICATION_XML }, produces = { HttpHeaders.CONTENT_TYPE_APPLICATION_RDF_XML,
-                            HttpHeaders.CONTENT_TYPE_RDF_XML, MediaType.APPLICATION_XML_VALUE })
+    @RequestMapping(value = {"/entity/{type}/{identifier}",
+            "/entity/{type}/base/{identifier}"}, method = RequestMethod.GET, headers = {
+            ACCEPT_HEADER_APPLICATION_RDF_XML, ACCEPT_HEADER_RDF_XML,
+            ACCEPT_HEADER_APPLICATION_XML}, produces = {CONTENT_TYPE_APPLICATION_RDF_XML,
+            CONTENT_TYPE_RDF_XML, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<String> getXmlHeaderEntity(
-            @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_TYPE) String type,
             @PathVariable(value = WebEntityConstants.PATH_PARAM_IDENTIFIER) String identifier,
-            HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        return createResponse(type, identifier, FormatTypes.xml, null, request);
+            HttpServletRequest request) throws EuropeanaApiException {
+        return createResponse(type, identifier, RdfFormat.XML, null, request);
 
     }
 
-    private ResponseEntity<String> createResponse(String type, String identifier, FormatTypes outFormat,
-            String contentType, HttpServletRequest request) throws EuropeanaApiException, HttpException {
-        try {
-            if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-                verifyReadAccess(request);
-            }
-
-            Entity entity = getEntityService().retrieveByUrl(type, identifier);
-            
-            String jsonLd = serialize(entity, outFormat);
-
-            Date timestamp = ((RankedEntity) entity).getTimestamp();
-            Date etagDate = (timestamp != null) ? timestamp : new Date();
-            String etag = generateETag(etagDate, outFormat.name(), getApiVersion());
-
-            MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-            headers.add(HttpHeaders.ETAG, "" + etag);
-            headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-            if (!outFormat.equals(FormatTypes.schema)) {
-                headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
-                headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LDP_RESOURCE);
-            }
-            if (contentType != null && !contentType.isEmpty())
-                headers.add(HttpHeaders.CONTENT_TYPE, contentType);
-
-            ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
-            return response;
-        } catch (RuntimeException e) {
-            throw new EuropeanaApiException(e.getMessage(), e);
+    @Deprecated(since = "04-02-2026")
+    private ResponseEntity<String> createResponse(String type, String identifier, RdfFormat format,
+                                                  String contentType, HttpServletRequest request) throws EuropeanaApiException {
+        if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+            verifyReadAccess(request);
         }
+
+        Entity entity = getEntityService().retrieveByUrl(type, identifier);
+        String jsonLd = serialize(entity, format);
+
+        Date timestamp = ((RankedEntity) entity).getTimestamp();
+        Date etagDate = (timestamp != null) ? timestamp : new Date();
+        String etag = generateETag(etagDate, format.name(), getApiVersion());
+
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);
+        headers.add(ETAG, "" + etag);
+        headers.add(ALLOW, ALLOW_GET);
+        if (!format.equals(RdfFormat.SCHEMA)) {
+            headers.add(HttpHeaders.VARY, ACCEPT);
+            headers.add(LINK, VALUE_LDP_RESOURCE);
+        }
+        if (contentType != null && !contentType.isEmpty())
+            headers.add(HttpHeaders.CONTENT_TYPE, contentType);
+
+        ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
+        return response;
     }
 
-    @ApiOperation(value = "Performs a lookup for the entity in all 4 datasets", nickname = "resolveEntity", response = java.lang.Void.class)
-    @RequestMapping(value = { "/entity/resolve" }, method = RequestMethod.GET,
-            produces = { HttpHeaders.CONTENT_TYPE_JSONLD_UTF8, HttpHeaders.CONTENT_TYPE_JSON_UTF8 })
+    @ApiOperation(value = "Performs a lookup for the entity in all 4 datasets", nickname = "resolveEntity")
+    @RequestMapping(value = {"/entity/resolve"}, method = RequestMethod.GET,
+            produces = {CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8})
     public ResponseEntity<String> resolveEntity(
-            @RequestParam(value = CommonApiConstants.PARAM_WSKEY, required = false) String wskey,
             @RequestParam(value = WebEntityConstants.QUERY_PARAM_URI) String uri, HttpServletRequest request)
-            throws EuropeanaApiException, HttpException {
+            throws EuropeanaApiException {
 
-        try {
-            if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-                verifyReadAccess(request);
-            }
-            
-            MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
-            headers.add(HttpHeaders.ALLOW, HttpHeaders.ALLOW_GET);
-            
-            //validate the uri
-            String validatedUri = EntityUtils.convertToValidUri(uri);
-            if (validatedUri==null) {
-                ErrorApiResponse errorResponse = new ErrorApiResponse(wskey, request.getRequestURI(), "Invalid uri parameter.");
-                String body = jsonLdSerializer.serializeToJson(errorResponse);
-                return new ResponseEntity<>(body, headers, HttpStatus.BAD_REQUEST);
-            }
-            
-            List<String> entityUris = getEntityService().resolveByUri(validatedUri);
-            
-            //if empty, return 404 Not Found with appropriate error response
-            if (entityUris.isEmpty()) {
-                throw new EntityNotFoundException(new String[]{WebEntityConstants.ENTITY_API_RESOURCE, validatedUri});
-            }
+        if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+            verifyReadAccess(request);
+        }
 
-            String preferedEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
-            headers.add(HttpHeaders.LOCATION, preferedEntity);
-            
-            if (entityUris.size() == 1) {
-                return new ResponseEntity<String>(headers, HttpStatus.MOVED_PERMANENTLY);
-            } else {
-                List<String> updatedUris = EntityUtils.updateBaseUrlInIds(entityUris, entityWebConfig.getEntityDataEndpoint());
-                String body = jsonLdSerializer.serializeToJson(updatedUris);
-                return new ResponseEntity<String>(body, headers, HttpStatus.MULTIPLE_CHOICES);                        
-            }
-        } catch (RuntimeException e) {
-            throw new EuropeanaApiException(e.getMessage(), e);
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);
+        headers.add(ALLOW, ALLOW_GET);
+
+        //validate the uri
+        String validatedUri = EntityUtils.convertToValidUri(uri);
+        if (validatedUri == null) {
+            throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_URI, "Valid uri", uri));
+        }
+
+        List<String> entityUris = getEntityService().resolveByUri(validatedUri);
+
+        //if empty, return 404 Not Found with appropriate error response
+        if (entityUris.isEmpty()) {
+            throw new EntityNotFoundException(Arrays.asList(WebEntityConstants.ENTITY_API_RESOURCE, validatedUri));
+        }
+
+        String preferredEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
+        headers.add(HttpHeaders.LOCATION, preferredEntity);
+
+        if (entityUris.size() == 1) {
+            return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        } else {
+            List<String> updatedUris = EntityUtils.updateBaseUrlInIds(entityUris, entityWebConfig.getEntityDataEndpoint());
+            String body = jsonLdSerializer.serializeToJson(updatedUris);
+            return new ResponseEntity<>(body, headers, HttpStatus.MULTIPLE_CHOICES);
         }
     }
-
 }

@@ -28,7 +28,13 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 		</dependency>
- 		
+
+		<dependency>
+			<groupId>eu.europeana.entity</groupId>
+			<artifactId>entity-definitions</artifactId>
+			<version>2.4-SNAPSHOT</version>
+
+		</dependency>
  		<dependency>
 			<groupId>eu.europeana.entity</groupId>
 			<artifactId>entity-utils</artifactId>
@@ -40,11 +46,6 @@
 				</exclusion>
 			</exclusions>
  		</dependency>
- 		<dependency>
-			<groupId>eu.europeana.entity</groupId>
-			<artifactId>entity-stats</artifactId>
-			<version>2.4-SNAPSHOT</version>
-		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.entity</groupId>
@@ -73,51 +74,22 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
 		<dependency>
-			<groupId>at.ac.ait.ngcms</groupId>
-			<artifactId>annotation-ld</artifactId>
-			<version>${version.annotationLd}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-core</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>eu.europeana.api</groupId>
+			<artifactId>commons-sb3-web</artifactId>
+			<version>${version.commons.api.sb3}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-web</artifactId>
-			<version>${version.commonsApi}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.mongodb</groupId>
-					<artifactId>mongo-java-driver</artifactId>
-				</exclusion>
-				<exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-				<exclusion>
-					<groupId>io.springfox</groupId>
-					<artifactId>springfox-swagger2</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-slf4j-impl</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>eu.europeana.api</groupId>
+			<artifactId>commons-sb3-error</artifactId>
+			<version>${version.commons.api.sb3}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-clientutils</artifactId>
-			<version>${version.commonsApi}</version>
+			<groupId>eu.europeana.api</groupId>
+			<artifactId>commons-sb3-oauth</artifactId>
+			<version>${version.commons.api.sb3}</version>
 		</dependency>
 
 		<dependency>
@@ -173,30 +145,20 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-jaxb-annotations</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>com.fasterxml.jackson.dataformat</groupId>
-		    <artifactId>jackson-dataformat-xml</artifactId>
-		</dependency>	
-
-		<!-- fixes for JDK 11 -->
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>jakarta.xml.bind</groupId>-->
+<!--			<artifactId>jakarta.xml.bind-api</artifactId>-->
+<!--			<version>4.0.4</version>-->
+<!--		</dependency>-->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
-			<version>${version.servletApi}</version>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 	</dependencies>
 	

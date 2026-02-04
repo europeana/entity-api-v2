@@ -1,9 +1,8 @@
 package eu.europeana.entity.solr.service;
 
 import java.util.List;
-
-import eu.europeana.api.commons.definitions.search.Query;
-import eu.europeana.api.commons.definitions.search.ResultSet;
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
@@ -44,7 +43,7 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException 
 	 */
 	public ResultSet<? extends Entity> search(Query searchQuery, String[] outLanguage,
-			List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException;
+											  List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException;
 	
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search by label algorithm
@@ -57,7 +56,7 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException 
 	 * @throws EntitySuggestionException 
 	 */
-	public ResultSet<? extends EntityPreview> suggestByLabel(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
+	public ResultSet<? extends EntityPreview> suggestByLabel(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException;
 
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search 

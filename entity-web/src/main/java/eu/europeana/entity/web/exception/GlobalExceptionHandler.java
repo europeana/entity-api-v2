@@ -1,21 +1,9 @@
 package eu.europeana.entity.web.exception;
 
-import javax.annotation.Resource;
-
-import eu.europeana.api.commons.web.exception.EuropeanaGlobalExceptionHandler;
+import eu.europeana.api.commons_sb3.error.EuropeanaGlobalExceptionHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-
-import eu.europeana.api.commons.config.i18n.I18nService;
-import eu.europeana.entity.web.config.EntityAppConfig;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends EuropeanaGlobalExceptionHandler {
-
-	@Resource(name = EntityAppConfig.BEAN_I18N_SERVICE)
-	I18nService i18nService;
-
-	protected I18nService getI18nService() {
-		return i18nService;
-	}
 
 }

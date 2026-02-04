@@ -2,8 +2,6 @@ package eu.europeana.entity.utils.jsonld;
 
 import java.util.Comparator;
 import java.util.HashMap;
-//import org.apache.stanbol.commons.jsonld.JsonLdCommon;
-
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
 
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
