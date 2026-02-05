@@ -1,6 +1,13 @@
 package eu.europeana.entity.config;
 
+/**
+ * I18 constants for the messages related to Entity API v2
+ */
 public class I18nConstants {
+
+	private I18nConstants() {
+		// to hide implicit one
+	}
 
 	// 4xx
 	public static final String CANT_FIND_BY_SAME_AS_URI   = "error.entity_same_as_not_found";
