@@ -3,6 +3,9 @@ package eu.europeana.entity.web.exception;
 import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Exception generated while generating statistics
+ */
 public class UsageStatsException extends EuropeanaApiException {
 
     private static final long serialVersionUID = -2506967519765835153L;
@@ -16,6 +19,14 @@ public class UsageStatsException extends EuropeanaApiException {
         super(message);
     }
 
+    /**
+     * Initialise a new exception for which there is no root cause
+     *
+     * @param message invalid version
+     */
+    public UsageStatsException(String message, Throwable th) {
+        super(message, th);
+    }
     /**
      * We don't want to log the stack trace for this exception
      *

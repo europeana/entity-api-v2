@@ -57,7 +57,8 @@ public class SuggestionSetSerializer extends JsonLd {
      * key. If the key is NULL and there does not exist a resource with an empty
      * String as key the resource will be added using an empty String ("") as key.
      *
-     * @throws EuropeanaI18nApiException
+     * @return serialised string
+     * @throws EuropeanaI18nApiException exception thrown
      */
     public String serialize() throws EuropeanaI18nApiException {
 

@@ -217,7 +217,7 @@ public class SearchController extends BaseRest {
 			String jsonLd = serializeResultsPage(resPage, null, entityWebConfig.getEntityDataEndpoint());
 
 			// build response
-			MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);
+			MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
 			headers.add(ALLOW, ALLOW_GET);
 			ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
 

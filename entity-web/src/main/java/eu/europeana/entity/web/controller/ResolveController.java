@@ -44,7 +44,6 @@ public class ResolveController extends BaseRest {
     private static final String ACCEPT_HEADER_RDF_XML = ACCEPT + CONTENT_TYPE_RDF_XML;
     private static final String ACCEPT_HEADER_APPLICATION_XML = ACCEPT + MediaType.APPLICATION_XML_VALUE;
 
-
     /**
      * @deprecated since = "04-02-2026" ,
      *             Entity Management APi is used for entity retrieval now
@@ -144,7 +143,7 @@ public class ResolveController extends BaseRest {
         Date etagDate = (timestamp != null) ? timestamp : new Date();
         String etag = generateETag(etagDate, format.name(), getApiVersion());
 
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
         headers.add(ETAG, "" + etag);
         headers.add(ALLOW, ALLOW_GET);
         if (!format.equals(RdfFormat.SCHEMA)) {
@@ -168,7 +167,7 @@ public class ResolveController extends BaseRest {
             verifyReadAccess(request);
         }
 
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
         headers.add(ALLOW, ALLOW_GET);
 
         //validate the uri

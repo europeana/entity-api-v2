@@ -53,8 +53,10 @@ public abstract class BaseRest extends BaseRestController {
 
     private static final Set<String> ISO_LANGUAGES      = Set.of(Locale.getISOLanguages());
 
-    private static  final String REGEX_PATTERN = "\\p{Punct}";
+    private static  final String REGEX_PATTERN          = "\\p{Punct}";
     private static final Pattern pattern                = Pattern.compile(REGEX_PATTERN);
+    protected static final int EXPECTED_SIZE            = 5;
+
 
     @Resource(name = AppConfigConstants.BEAN_AUTHORIZATION_SERVICE)
     EntityAuthorizationService entityAuthorizationService;
@@ -151,7 +153,9 @@ public abstract class BaseRest extends BaseRestController {
      */
     protected RdfFormat getFormatType(String extension) throws InvalidParamException {
         // default format JsonLd
-        if (extension == null) return RdfFormat.JSONLD;
+        if (extension == null) {
+            return RdfFormat.JSONLD;
+        }
 
         RdfFormat format = RdfFormat.getFormatByExtension(extension);
         if (format != null && validFormats.contains(format)) {

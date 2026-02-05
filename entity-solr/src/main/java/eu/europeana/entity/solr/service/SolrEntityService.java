@@ -27,6 +27,7 @@ public interface SolrEntityService {
 	/**
 	 * This method retrieves available Entities by searching the given entity URI.
 	 * @param entityUri - See {@link ConceptSolrFields#ID}
+	 * @param type type of entity
 	 * @return entity with the url and type matching
 	 * @throws EntityRetrievalException exception while retrieving entity
 	 * @throws UnsupportedEntityTypeException if the type is invalid

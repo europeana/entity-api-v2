@@ -3,6 +3,9 @@ package eu.europeana.entity.web.model.vocabulary;
 import static eu.europeana.api.commons_sb3.definitions.oauth.Operations.*;
 import eu.europeana.api.commons_sb3.definitions.oauth.Role;
 
+/**
+ * User roles allowed with the operations
+ */
 public enum UserRoles implements Role {
 
     /**

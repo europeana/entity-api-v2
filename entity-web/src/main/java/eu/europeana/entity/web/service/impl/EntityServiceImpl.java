@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Implementation class
  * @author GrafR
  */
 @Service(AppConfigConstants.BEAN_ENTITY_SERVICE)

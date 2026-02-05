@@ -46,7 +46,8 @@ public class UsageStatsService {
     /**
      *  Retrieves the metric response per language per type in percentages.
      *
-     * @param metric
+     * @param metric metric fetched
+     * @throws UsageStatsException exception thrown
      */
     public void getStatsForLang(EntityMetric metric) throws UsageStatsException {
        // 1) for total entities per type : query=*&profile=facets&facet=type&pageSize=0
@@ -144,7 +145,10 @@ public class UsageStatsService {
      *
      * @throws UsageStatsException
      */
-    private static void calculatePercentageValues(EntityStats entityPerLanguage, EntityStats entitystatsTotal, EntitiesPerLanguage entities) throws UsageStatsException {
+    private static void calculatePercentageValues(
+            EntityStats entityPerLanguage,
+            EntityStats entitystatsTotal,
+            EntitiesPerLanguage entities) throws UsageStatsException {
         //SG: TODO: 
        entities.setTimespans(getPercentage(entityPerLanguage.getTimespans(), entitystatsTotal.getTimespans()));
        entities.setPlaces(getPercentage(entityPerLanguage.getPlaces(), entitystatsTotal.getPlaces()));
@@ -170,7 +174,7 @@ public class UsageStatsService {
              return (int) (100 * count / totalCount) ;
           }
         } catch (Exception e) {
-            throw new UsageStatsException("Error calculating the percentage values." +e.getMessage());
+            throw new UsageStatsException("Error calculating the percentage values." +e.getMessage(), e);
         }
         return 0l;
     }

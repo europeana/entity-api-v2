@@ -21,8 +21,8 @@ public interface EntityService {
 	 * Retrieve entity by url
 	 * @param type type of entity
 	 * @param identifier id of the entity
-	 * @return
-	 * @throws EuropeanaApiException
+	 * @return entity found
+	 * @throws EuropeanaApiException exception thrown
 	 */
 	Entity retrieveByUrl(String type, String identifier) throws EuropeanaApiException;
 
@@ -35,13 +35,15 @@ public interface EntityService {
 	 * @param namespace namespace param to be searched
 	 * @param rows rows to be fetched
 	 * @param algorithm The default algorithm is "suggest" but other types are possible
+	 * @param scope scope of the search
 	 * @return syggested entities
-	 * @throws EuropeanaApiException
+	 * @throws EuropeanaApiException exception thrown
 	 * 
 	 * e.g. GET /entity/suggest?text=leonard&language=en
 	 */
 	<T extends EntityPreview> ResultSet<T> suggest(
-			String text, String[] language, List<EntityTypes> entityTypes, String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm) throws EuropeanaApiException;
+			String text, String[] language, List<EntityTypes> entityTypes, String scope,
+			String namespace, int rows, SuggestAlgorithmTypes algorithm) throws EuropeanaApiException;
 
 
 	/**
@@ -64,7 +66,7 @@ public interface EntityService {
 	 * 
 	 * @param uri uri to be searched
 	 * @return a list of found entities or an exception if no entity is found
-	 * @throws EuropeanaApiException
+	 * @throws EuropeanaApiException exception thrown
 	 */
 	List<String> resolveByUri(String uri) throws EuropeanaApiException;
 	
@@ -82,7 +84,7 @@ public interface EntityService {
 	 * @param entityTypes types of entities
 	 * @param suggest suggest filter
 	 * @return  list of entities
-	 * @throws InvalidParamException
+	 * @throws InvalidParamException exception thrown
 	 */
 	public List<EntityTypes> validateEntityTypes(List<EntityTypes> entityTypes, boolean suggest) throws InvalidParamException;
 
@@ -99,7 +101,7 @@ public interface EntityService {
 	 * return the entities from the string
 	 * @param commaSepEntityTypes comma seperated list of entities
 	 * @return list of entity types
-	 * @throws EuropeanaI18nApiException
+	 * @throws EuropeanaI18nApiException exception thrown
 	 */
 	List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws EuropeanaI18nApiException;
 		

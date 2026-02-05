@@ -12,6 +12,9 @@ import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.model.vocabulary.UserRoles;
 
+/**
+ * Entity api v2 authorization service
+ */
 @Component(AppConfigConstants.BEAN_AUTHORIZATION_SERVICE)
 public class EntityAuthorizationService extends BaseAuthorizationService implements AuthorizationService {
 
