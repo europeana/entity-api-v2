@@ -67,10 +67,6 @@
 		<sonar.organization>europeana</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-		<!--To have custom date time format for the build info-->
-		<build.timestamp>${maven.build.timestamp}</build.timestamp>
-		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
-
 		<!--	Other apis -->
 		<version.commons.api.sb3>0.1.4-SNAPSHOT</version.commons.api.sb3>
 
