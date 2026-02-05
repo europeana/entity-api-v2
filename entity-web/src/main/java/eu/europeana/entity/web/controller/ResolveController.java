@@ -10,8 +10,6 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.exception.EntityNotFoundException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
@@ -34,8 +32,6 @@ import static eu.europeana.api.commons_sb3.definitions.caching.CachingHeaders.ET
 import static eu.europeana.api.commons_sb3.definitions.http.HttpHeaders.*;
 
 @Controller
-//@SwaggerSelect
-@Api(tags = "Entity retrieval", description = " ")
 public class ResolveController extends BaseRest {
 
     @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
@@ -55,7 +51,6 @@ public class ResolveController extends BaseRest {
      *             Entity Management APi is used for entity retrieval now
      */
     @Deprecated(since = "04-02-2026")
-    @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}.jsonld", "/entity/{type}/base/{identifier}.jsonld",
             "/entity/{type}/{identifier}.json",
             "/entity/{type}/base/{identifier}.json"}, method = RequestMethod.GET, produces = {
@@ -72,7 +67,6 @@ public class ResolveController extends BaseRest {
      *             Entity Management APi is used for entity retrieval now
      */
     @Deprecated(since = "04-02-2026")
-    @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}.schema.jsonld",
             "/entity/{type}/base/{identifier}.schema.jsonld"}, method = RequestMethod.GET, produces = {
             CONTENT_TYPE_JSONLD, MediaType.APPLICATION_JSON_VALUE})
@@ -88,7 +82,6 @@ public class ResolveController extends BaseRest {
      *             Entity Management APi is used for entity retrieval now
      */
     @Deprecated(since = "04-02-2026")
-    @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}.xml",
             "/entity/{type}/base/{identifier}.xml"}, method = RequestMethod.GET, produces = {
             CONTENT_TYPE_APPLICATION_RDF_XML, CONTENT_TYPE_RDF_XML,
@@ -105,7 +98,6 @@ public class ResolveController extends BaseRest {
      *             Entity Management APi is used for entity retrieval now
      */
     @Deprecated(since = "04-02-2026")
-    @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}",
             "/entity/{type}/base/{identifier}"}, method = RequestMethod.GET, headers = {ACCEPT_HEADER_JSONLD,
             ACCEPT_HEADER_JSON}, produces = {CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8})
@@ -122,7 +114,6 @@ public class ResolveController extends BaseRest {
      *             Entity Management APi is used for entity retrieval now
      */
     @Deprecated(since = "04-02-2026")
-    @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}",
             "/entity/{type}/base/{identifier}"}, method = RequestMethod.GET, headers = {
             ACCEPT_HEADER_APPLICATION_RDF_XML, ACCEPT_HEADER_RDF_XML,
@@ -168,7 +159,6 @@ public class ResolveController extends BaseRest {
         return response;
     }
 
-    @ApiOperation(value = "Performs a lookup for the entity in all 4 datasets", nickname = "resolveEntity")
     @RequestMapping(value = {"/entity/resolve"}, method = RequestMethod.GET,
             produces = {CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8})
     public ResponseEntity<String> resolveEntity(

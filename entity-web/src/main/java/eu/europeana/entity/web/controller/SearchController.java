@@ -32,20 +32,15 @@ import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.jsonld.SuggestionSetSerializer;
 import eu.europeana.entity.web.model.view.EntityPreview;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 import static eu.europeana.api.commons_sb3.definitions.http.HttpHeaders.*;
 
 @Controller
-@Api(tags = "Discovery API")
-//@SwaggerSelect
 public class SearchController extends BaseRest {
   
     @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
     private EntityWebConfig entityWebConfig;
 
-    @ApiOperation(value = "Suggest entities for the given text query. Suported values for type: Agent, Place, Concept, Timespan, All. Supported values for scope: europeana. Supported values for algorithm: monolingual (default), suggestByLabel", nickname = "getSuggestion", response = java.lang.Void.class)
     @RequestMapping(value = { "/entity/suggest", "/entity/suggest.json",  "/entity/suggest.jsonld" }, method = RequestMethod.GET, produces = {
 	    CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8 })
     public ResponseEntity<String> getSuggestion(
@@ -97,8 +92,6 @@ public class SearchController extends BaseRest {
 	}
 
     
-    @ApiOperation(value = "Search entities for the given text query. By default the search will return all entity fields. "
-	    + "The facets profile and the facet param are available for including facets in the response. fl and lang params are used to reduce the amount of data included in the response", nickname = "search", response = java.lang.Void.class)
     @RequestMapping(value = { "/entity/search", "/entity/search.json", "/entity/search.jsonld" }, method = RequestMethod.GET, produces = {
 	    CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8, })
     public ResponseEntity<String> search(
@@ -185,9 +178,6 @@ public class SearchController extends BaseRest {
 		}
 	}
 
-	@ApiOperation(value = "Performs a text based lookup for entities to inform enrichment services on Metis. " +
-			"Suported values for type: Agent, Place, Concept, Timespan, All. Supported values for scope: europeana",
-			nickname = "enrichEntity", response = java.lang.Void.class)
 	@RequestMapping(value = { "/entity/enrich"}, method = RequestMethod.GET, produces = {
 			CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8 })
 	public ResponseEntity<String> enrichEntity(
