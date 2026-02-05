@@ -2,10 +2,6 @@ package eu.europeana.entity.config;
 
 public class AppConfigConstants {
 
-    private AppConfigConstants() {
-        // to hide implicit one
-    }
-
     // beans
     public static final String BEAN_AUTHORIZATION_SERVICE     = "entityAuthorizationService";
     public static final String BEAN_CLIENT_DETAILS_SERVICE    = "entityClientDetailsService";
