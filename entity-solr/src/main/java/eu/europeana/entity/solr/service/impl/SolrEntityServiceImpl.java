@@ -111,7 +111,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     }
 
     @Override
-    public ResultSet<? extends Entity> search(Query searchQuery, String[] outLanguage, List<EntityTypes> entityTypes,
+    public <T extends Entity> ResultSet<T> search(Query searchQuery, String[] outLanguage, List<EntityTypes> entityTypes,
 											  String scope) throws EntityRetrievalException {
 
 	ResultSet<? extends Entity> res = null;
@@ -131,7 +131,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    throw new EntityRetrievalException(
 		    "An error occured exception occured when searching entities: " + searchQuery.toString() + "", e);
 	}
-	return res;
+	return (ResultSet<T>) res;
     }
 
     private RuntimeException handleRemoteSolrException(Query searchQuery, HttpSolrClient.RemoteSolrException e) {
@@ -165,7 +165,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
      * java.lang.String, int)
      */
     @Override
-    public ResultSet<? extends EntityPreview> suggestByLabel(String text, String[] requestedLanguages,
+    public <T extends EntityPreview> ResultSet<T> suggestByLabel(String text, String[] requestedLanguages,
 	    List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException {
 
 	SolrQuery solrQuery = new EntityQueryBuilder().buildSuggestByLabelQuery(text, entityTypes, scope, rows,
@@ -175,7 +175,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
     }
     
     @Override
-    public ResultSet<? extends EntityPreview> suggestByLanguage(String text, String[] requestedLanguages,
+    public <T extends EntityPreview> ResultSet<T> suggestByLanguage(String text, String[] requestedLanguages,
 	    List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException {
 
 	SolrQuery solrQuery = new EntityQueryBuilder().buildSuggestForLanguageQuery(text, entityTypes, scope, rows,
@@ -184,7 +184,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	return fetchSuggestions(text, requestedLanguages, rows, solrQuery);
     }
 
-    private ResultSet<? extends EntityPreview> fetchSuggestions(String text, String[] requestedLanguages, int rows,
+    private <T extends EntityPreview> ResultSet<T> fetchSuggestions(String text, String[] requestedLanguages, int rows,
 	    SolrQuery solrQuery) throws EntitySuggestionException {
 	ResultSet<? extends EntityPreview> res = null;
 	try {
@@ -198,7 +198,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    throw new EntitySuggestionException(
 		    "Unexpected exception occured when searching entities: " + solrQuery.toString(), e);
 	}
-	return res;
+	return (ResultSet<T>) res;
     }
     
    

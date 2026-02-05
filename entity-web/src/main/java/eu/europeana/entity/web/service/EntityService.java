@@ -52,7 +52,7 @@ public interface EntityService {
 	 * @param scope scope of the search
 	 * @return entity based on the query
 	 */
-	public ResultSet<? extends Entity> search(Query query, String[] preferredLanguages, List<EntityTypes> entityTypes, String scope) ;
+	<T extends Entity> ResultSet<T> search(Query query, String[] preferredLanguages, List<EntityTypes> entityTypes, String scope) ;
 	
 	
 	/**

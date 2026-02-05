@@ -42,12 +42,12 @@ public interface SolrEntityService {
 	 * @return
 	 * @throws EntityRetrievalException 
 	 */
-	ResultSet<? extends Entity> search(Query searchQuery, String[] outLanguage,
+	<T extends Entity> ResultSet<T> search(Query searchQuery, String[] outLanguage,
 											  List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException;
 	
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search by label algorithm
-	 * @param searchQuery The query text
+	 * @param text The query text
 	 * @param requestedLanguages
 	 * @param entityTypes
 	 * @param scope
@@ -56,12 +56,12 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException 
 	 * @throws EntitySuggestionException 
 	 */
-	ResultSet<? extends EntityPreview> suggestByLabel(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException;
+	<T extends EntityPreview> ResultSet<T> suggestByLabel(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException;
 
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search 
 	 * by language algorithm
-	 * @param searchQuery The query text
+	 * @param text The query text
 	 * @param requestedLanguages
 	 * @param entityTypes
 	 * @param scope
@@ -70,7 +70,7 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException 
 	 * @throws EntitySuggestionException 
 	 */
-	ResultSet<? extends EntityPreview> suggestByLanguage(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
+	<T extends EntityPreview> ResultSet<T> suggestByLanguage(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
 
 	
 	/**

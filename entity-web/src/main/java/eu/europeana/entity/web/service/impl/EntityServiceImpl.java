@@ -121,7 +121,7 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public ResultSet<? extends Entity> search(Query query, String[] outLanguage, List<EntityTypes> entityTypes,
+    public <T extends Entity> ResultSet<T> search(Query query, String[] outLanguage, List<EntityTypes> entityTypes,
                                               String scope) {
         return solrEntityService.search(query, outLanguage, entityTypes, scope);
     }
