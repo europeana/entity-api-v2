@@ -28,7 +28,7 @@ import org.springframework.context.ApplicationContext;
     MongoMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
 public class EntityApp extends SpringBootServletInitializer {
 
-  private static final Logger logger = LogManager.getLogger(EntityApp.class);
+  private static final Logger LOGGER = LogManager.getLogger(EntityApp.class);
 
   /**
    * Main entry point of this application
@@ -38,7 +38,7 @@ public class EntityApp extends SpringBootServletInitializer {
   public static void main(String[] args) {
     LogManager.getLogger(EntityApp.class).info("Configure Spring Application!");
     ApplicationContext ctx = SpringApplication.run(EntityApp.class, args);
-    if (logger.isDebugEnabled()) {
+    if (LOGGER.isDebugEnabled()) {
       printRegisteredBeans(ctx);
     }
   }
@@ -48,7 +48,7 @@ public class EntityApp extends SpringBootServletInitializer {
     String[] beanNames = ctx.getBeanDefinitionNames();
 
     Arrays.sort(beanNames);
-    logger.debug("Instantiated beans:");
-    logger.debug(StringUtils.join(beanNames, "\n"));
+    LOGGER.debug("Instantiated beans:");
+    LOGGER.debug(StringUtils.join(beanNames, "\n"));
   }    
 }

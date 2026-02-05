@@ -14,7 +14,7 @@ import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import eu.europeana.api.commons_sb3.oauth2.BaseRestController;
 import eu.europeana.api.commons_sb3.oauth2.service.authorization.AuthorizationService;
-import eu.europeana.entity.I18nConstants;
+import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.InvalidProfileException;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
@@ -53,8 +53,8 @@ public abstract class BaseRest extends BaseRestController {
 
     private static final Set<String> ISO_LANGUAGES      = Set.of(Locale.getISOLanguages());
 
-    private static  final String regexPattern           = "\\p{Punct}";
-    private static final Pattern pattern                = Pattern.compile(regexPattern);
+    private static  final String REGEX_PATTERN = "\\p{Punct}";
+    private static final Pattern pattern                = Pattern.compile(REGEX_PATTERN);
 
     @Resource(name = AppConfigConstants.BEAN_AUTHORIZATION_SERVICE)
     EntityAuthorizationService entityAuthorizationService;

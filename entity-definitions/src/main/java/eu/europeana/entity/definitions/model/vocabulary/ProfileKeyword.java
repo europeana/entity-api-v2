@@ -1,6 +1,13 @@
 package eu.europeana.entity.definitions.model.vocabulary;
 
+/**
+ * Class used in {@link LdProfiles} for headers values
+ */
 public class ProfileKeyword {
+
+    private ProfileKeyword() {
+        // to hide implicit one
+    }
 
     public static final String VALUE_LD_CONTAINEDIRIS = "http://www.w3.org/ns/oa#PreferContainedIRIs";
     public static final String VALUE_LD_MINIMAL = "http://www.w3.org/ns/ldp#PreferMinimalContainer";

@@ -3,7 +3,7 @@ package eu.europeana.entity.web.jsonld;
 import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
 import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants;
 import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
-import eu.europeana.entity.I18nConstants;
+import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.ResourcePreview;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;

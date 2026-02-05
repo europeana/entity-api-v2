@@ -13,7 +13,7 @@ import eu.europeana.entity.web.model.view.EntityPreview;
 
 public interface SolrEntityService {
 
-	public static final String HANDLER_SELECT = "/select";
+	String HANDLER_SELECT = "/select";
 	
 	/**
 	 * This method retrieves available Entities by searching the given id.
@@ -31,7 +31,7 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException 
 	 * @throws UnsupportedEntityTypeException 
 	 */
-	public Entity searchByUrl(String type, String entityUri) throws EntityRetrievalException, UnsupportedEntityTypeException;
+	Entity searchByUrl(String type, String entityUri) throws EntityRetrievalException, UnsupportedEntityTypeException;
 	
 	/**
 	 * This method retrieves available Entities that meet the .
@@ -42,7 +42,7 @@ public interface SolrEntityService {
 	 * @return
 	 * @throws EntityRetrievalException 
 	 */
-	public ResultSet<? extends Entity> search(Query searchQuery, String[] outLanguage,
+	ResultSet<? extends Entity> search(Query searchQuery, String[] outLanguage,
 											  List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException;
 	
 	/**
@@ -56,7 +56,7 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException 
 	 * @throws EntitySuggestionException 
 	 */
-	public ResultSet<? extends EntityPreview> suggestByLabel(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException;
+	ResultSet<? extends EntityPreview> suggestByLabel(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException;
 
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search 
@@ -70,7 +70,7 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException 
 	 * @throws EntitySuggestionException 
 	 */
-	public ResultSet<? extends EntityPreview> suggestByLanguage(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
+	ResultSet<? extends EntityPreview> suggestByLanguage(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
 
 	
 	/**
@@ -83,7 +83,7 @@ public interface SolrEntityService {
 	 * @param uri
 	 * @return and empty list or a list of found entities
 	 */
-	public List<String> searchByCoref(String uri);
+	List<String> searchByCoref(String uri);
 	
 
 }

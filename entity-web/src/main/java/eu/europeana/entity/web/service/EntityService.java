@@ -40,7 +40,7 @@ public interface EntityService {
 	 * 
 	 * e.g. GET /entity/suggest?text=leonard&language=en
 	 */
-	ResultSet<? extends EntityPreview> suggest(
+	<T extends EntityPreview> ResultSet<T> suggest(
 			String text, String[] language, List<EntityTypes> entityTypes, String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm) throws EuropeanaApiException;
 
 

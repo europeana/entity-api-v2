@@ -2,7 +2,7 @@ package eu.europeana.entity.web.exception;
 
 import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import org.springframework.http.HttpStatus;
-import eu.europeana.entity.I18nConstants;
+import eu.europeana.entity.config.I18nConstants;
 
 import java.util.List;
 

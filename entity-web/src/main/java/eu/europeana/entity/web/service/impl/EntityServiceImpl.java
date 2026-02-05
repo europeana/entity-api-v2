@@ -9,7 +9,7 @@ import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
 import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import eu.europeana.api.commons_sb3.error.exceptions.ResourceNotFoundException;
-import eu.europeana.entity.I18nConstants;
+import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
@@ -90,7 +90,7 @@ public class EntityServiceImpl implements EntityService {
      * @see eu.europeana.entity.web.service.EntityService#
      */
     @Override
-    public ResultSet<? extends EntityPreview> suggest(String text, String[] language, List<EntityTypes> entityTypes,
+    public <T extends EntityPreview> ResultSet<T> suggest(String text, String[] language, List<EntityTypes> entityTypes,
                                                       String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm)
             throws EuropeanaI18nApiException {
         ResultSet<? extends EntityPreview> res;
@@ -111,7 +111,7 @@ public class EntityServiceImpl implements EntityService {
 					HttpStatus.INTERNAL_SERVER_ERROR, null, null, e);
         }
 
-        return res;
+        return (ResultSet<T>) res;
     }
 
     @Override
