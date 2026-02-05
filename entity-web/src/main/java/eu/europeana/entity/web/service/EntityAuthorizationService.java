@@ -43,11 +43,5 @@ public class EntityAuthorizationService extends BaseAuthorizationService impleme
 	protected Role getRoleByName(String name) {
             return UserRoles.getRoleByName(name);
 	}
-
-//    @Override
-//    protected ApiWriteLockService getApiWriteLockService() {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
     
 }

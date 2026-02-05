@@ -49,6 +49,11 @@ public class ResolveController extends BaseRest {
     private static final String ACCEPT_HEADER_RDF_XML = ACCEPT + CONTENT_TYPE_RDF_XML;
     private static final String ACCEPT_HEADER_APPLICATION_XML = ACCEPT + MediaType.APPLICATION_XML_VALUE;
 
+
+    /**
+     * @deprecated since = "04-02-2026" ,
+     *             Entity Management APi is used for entity retrieval now
+     */
     @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}.jsonld", "/entity/{type}/base/{identifier}.jsonld",
@@ -62,6 +67,10 @@ public class ResolveController extends BaseRest {
         return createResponse(type, identifier, RdfFormat.JSONLD, null, request);
     }
 
+    /**
+     * @deprecated since = "04-02-2026" ,
+     *             Entity Management APi is used for entity retrieval now
+     */
     @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}.schema.jsonld",
@@ -74,6 +83,10 @@ public class ResolveController extends BaseRest {
         return createResponse(type, identifier, RdfFormat.SCHEMA, null, request);
     }
 
+    /**
+     * @deprecated since = "04-02-2026" ,
+     *             Entity Management APi is used for entity retrieval now
+     */
     @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}.xml",
@@ -87,6 +100,10 @@ public class ResolveController extends BaseRest {
         return createResponse(type, identifier, RdfFormat.XML, CONTENT_TYPE_APPLICATION_RDF_XML, request);
     }
 
+    /**
+     * @deprecated since = "04-02-2026" ,
+     *             Entity Management APi is used for entity retrieval now
+     */
     @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}",
@@ -100,6 +117,10 @@ public class ResolveController extends BaseRest {
 
     }
 
+    /**
+     * @deprecated since = "04-02-2026" ,
+     *             Entity Management APi is used for entity retrieval now
+     */
     @Deprecated(since = "04-02-2026")
     @ApiOperation(value = "Retrieve a known entity", nickname = "getEntity", response = java.lang.Void.class)
     @RequestMapping(value = {"/entity/{type}/{identifier}",
@@ -115,6 +136,10 @@ public class ResolveController extends BaseRest {
 
     }
 
+    /**
+     * @deprecated since = "04-02-2026" ,
+     *             Entity Management APi is used for entity retrieval now
+     */
     @Deprecated(since = "04-02-2026")
     private ResponseEntity<String> createResponse(String type, String identifier, RdfFormat format,
                                                   String contentType, HttpServletRequest request) throws EuropeanaApiException {

@@ -48,7 +48,6 @@ public class EntityApp extends SpringBootServletInitializer {
     String[] beanNames = ctx.getBeanDefinitionNames();
 
     Arrays.sort(beanNames);
-    LOG.debug("Instantiated beans:");
-    LOG.debug(StringUtils.join(beanNames, "\n"));
-  }    
+    LOG.debug("Instantiated beans : {} ", StringUtils.join(beanNames, "\n"));
+  }
 }

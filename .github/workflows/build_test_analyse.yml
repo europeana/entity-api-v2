@@ -29,7 +29,10 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Build, run tests and analyse
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage -Dsonar.projectKey=europeana_entity-api-v2 -DskipTests
+        # projectKey should match the <groupId>:<artifactId> of the project (see pom.xml).
+        # As jenkins artifactory job will push the project based on <groupId>:<artifactId>
+        # and if GitHub actions will push a new project in sonar cloud if they don't match
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356 -Pcoverage -Dsonar.projectKey=eu.europeana.entity:entity-api -DskipTests
         env:
           # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
