@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.impl.QueryImpl;
 import org.apache.commons.lang3.StringUtils;
-
-import eu.europeana.api.commons.definitions.search.Query;
-import eu.europeana.api.commons.definitions.search.impl.QueryImpl;
 
 /**
  * TODO: implement a common query definition and implementation in corelib

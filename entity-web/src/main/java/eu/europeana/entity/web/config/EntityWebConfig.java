@@ -15,6 +15,7 @@ public class EntityWebConfig {
 
   @Value("${europeana.apikey.jwttoken.siganturekey:#{null}}")
   String jwtSignatureKey;
+
   @Value("${authorization.api.name:entities}")
   String authorizationApiName;
 
@@ -29,11 +30,12 @@ public class EntityWebConfig {
 
   @Value("${entity.api.endpoint:#{null}}")
   String entityApiEndpoint;
+
   @Value("${entity.data.endpoint:#{null}}")
   String entityDataEndpoint;
+
   @Value("${entity.id.baseurl:http://data.europeana.eu}")
   String entityIdBaseUrl;
-
 
   public String getEntityIdBaseUrl() {
     return entityIdBaseUrl;

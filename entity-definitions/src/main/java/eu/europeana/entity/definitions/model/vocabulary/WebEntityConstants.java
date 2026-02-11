@@ -3,8 +3,6 @@ package eu.europeana.entity.definitions.model.vocabulary;
 public class WebEntityConstants extends WebEntityFields {
 
     // LD fields
-    public static final String CONTEXT = "@context";
-    public static final  String ENTITY_CONTEXT = "https://api.europeana.eu/schema/context/entity.jsonld";
     public static final  String LDP_CONTEXT = "https://www.w3.org/ns/ldp.jsonld";
 
     // REST API query

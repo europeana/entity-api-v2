@@ -6,16 +6,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.impl.QueryImpl;
+import eu.europeana.api.commons_sb3.search.util.QueryBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.HighlightParams;
 import org.apache.solr.common.params.SimpleParams;
 import org.springframework.util.MultiValueMap;
-import eu.europeana.api.commons.definitions.search.Query;
-import eu.europeana.api.commons.definitions.search.impl.QueryImpl;
-import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
-import eu.europeana.api.commons.search.util.QueryBuilder;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
@@ -24,6 +24,8 @@ import eu.europeana.entity.definitions.model.vocabulary.OrganizationSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.model.vocabulary.SuggestionFields;
 import eu.europeana.entity.solr.service.SolrEntityService;
+
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonApiConstants.*;
 
 public class EntityQueryBuilder extends QueryBuilder {
 
@@ -128,7 +130,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	fields = new String[] { OrganizationSolrFields.ID, OrganizationSolrFields.PAYLOAD,
 		OrganizationSolrFields.DERIVED_SCORE };
 	solrQuery.set(CommonParams.SORT, ConceptSolrFields.DERIVED_SCORE + " " + DESC);
-	solrQuery.set(CommonApiConstants.QUERY_PARAM_ROWS,
+	solrQuery.set(QUERY_PARAM_ROWS,
 		Integer.toString(Math.min(rows, Query.DEFAULT_MAX_PAGE_SIZE)));
 	solrQuery.set(HighlightParams.HIGHLIGHT, "true");
 	solrQuery.set(HighlightParams.FIELDS, highlightFields);
@@ -199,10 +201,10 @@ public class EntityQueryBuilder extends QueryBuilder {
 	    throws UnsupportedEncodingException {
 	Query searchQuery = null;
 
-	String queryString = parameters.getFirst(CommonApiConstants.QUERY_PARAM_QUERY);
-	List<String> qfList = parameters.get(CommonApiConstants.QUERY_PARAM_QF);
-	String pageSize = parameters.getFirst(CommonApiConstants.QUERY_PARAM_PAGE_SIZE);
-	String page = parameters.getFirst(CommonApiConstants.QUERY_PARAM_PAGE);
+	String queryString = parameters.getFirst(QUERY_PARAM_QUERY);
+	List<String> qfList = parameters.get(QUERY_PARAM_QF);
+	String pageSize = parameters.getFirst(QUERY_PARAM_PAGE_SIZE);
+	String page = parameters.getFirst(QUERY_PARAM_PAGE);
 //		String type = parameters.getFirst(WebEntityConstants.QUERY_PARAM_TYPE);
 //		String scope = parameters.getFirst(WebEntityConstants.QUERY_PARAM_SCOPE);
 

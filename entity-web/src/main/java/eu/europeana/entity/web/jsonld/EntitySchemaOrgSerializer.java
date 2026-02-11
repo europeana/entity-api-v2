@@ -5,30 +5,28 @@ import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException
 import eu.europeana.entity.definitions.model.Entity;
 
 /**
- * This class supports serialization of Entity object applying 
+ * This class supports serialization of Entity object applying
  * schema.org serialization.
- * 
- * @author GrafR
  *
+ * @author GrafR
  */
 public class EntitySchemaOrgSerializer extends JsonLdSerializer {
 
-	public EntitySchemaOrgSerializer(){
-		super();
-	}
+    public EntitySchemaOrgSerializer() {
+        super();
+    }
 
-	/**
-	 * This method serializes Entity object applying schema.org serialization.
-	 * The thingObject is the object in corelib format.
-	 * 
-	 * @param entity      The Entity object
-	 * @return The serialized entity in json-ld string format
-	 * @throws UnsupportedEntityTypeException
-	 */
-	public String serializeEntity(Entity entity) {
-	    
-	        String jsonLd = "";
-	        //TODO: reimplement
+    /**
+     * This method serializes Entity object applying schema.org serialization.
+     * The thingObject is the object in corelib format.
+     *
+     * @param entity The Entity object
+     * @return The serialized entity in json-ld string format
+     * @throws UnsupportedEntityTypeException
+     */
+    public String serializeEntity(Entity entity) {
+        String jsonLd = "";
+        //TODO: reimplement
 //	        ContextualEntity thingObject = SchemaOrgTypeFactory.createContextualEntity(entity);
 //
 //		SchemaOrgUtils.processEntity(entity, thingObject);
@@ -38,7 +36,7 @@ public class EntitySchemaOrgSerializer extends JsonLdSerializer {
 //		    throw new UnsupportedEntityTypeException(
 //			    "Serialization to schema.org failed for " + thingObject.getId() + e.getMessage());
 //		}
-                return jsonLd;
-	}
-	
+        return jsonLd;
+    }
+
 }

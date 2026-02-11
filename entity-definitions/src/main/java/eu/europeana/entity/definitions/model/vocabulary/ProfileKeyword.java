@@ -1,20 +1,13 @@
 package eu.europeana.entity.definitions.model.vocabulary;
 
-public interface ProfileKeyword {
+/**
+ * Class used in {@link LdProfiles} for headers values
+ */
+public class ProfileKeyword {
 
-    /**
-     * Returns the value used in Linked Data profiles
-     * 
-     * @return
-     */
-    public String getHeaderValue();
-
-    /**
-     * Returns the value used to indicate the profile in Prefer Header
-     * 
-     * @return
-     */
-    public String getPreferHeaderValue();
+    private ProfileKeyword() {
+        // to hide implicit one
+    }
 
     public static final String VALUE_LD_CONTAINEDIRIS = "http://www.w3.org/ns/oa#PreferContainedIRIs";
     public static final String VALUE_LD_MINIMAL = "http://www.w3.org/ns/ldp#PreferMinimalContainer";

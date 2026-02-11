@@ -1,50 +1,60 @@
 package eu.europeana.entity.web.service;
 
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import eu.europeana.api.commons.definitions.search.Query;
-import eu.europeana.api.commons.definitions.search.ResultSet;
-import eu.europeana.api.commons.definitions.search.result.ResultsPage;
-import eu.europeana.api.commons.error.EuropeanaApiException;
-import eu.europeana.api.commons.web.exception.HttpException;
+
+import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
+import jakarta.servlet.http.HttpServletRequest;
+
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
+import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
+import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
+import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.SuggestAlgorithmTypes;
-import eu.europeana.entity.web.exception.ParamValidationException;
 import eu.europeana.entity.web.model.view.EntityPreview;
 
 public interface EntityService {
 
-	Entity retrieveByUrl(String type, String identifier) throws HttpException;
+	/**
+	 * Retrieve entity by url
+	 * @param type type of entity
+	 * @param identifier id of the entity
+	 * @return entity found
+	 * @throws EuropeanaApiException exception thrown
+	 */
+	Entity retrieveByUrl(String type, String identifier) throws EuropeanaApiException;
 
 	/**
 	 * This method provides suggestions for auto-completion
 	 * 
-	 * @param text
-	 * @param language
-	 * @param entityType
-	 * @param namespace
-	 * @param rows
+	 * @param text text to be searched
+	 * @param language language value
+	 * @param entityTypes types of entity
+	 * @param namespace namespace param to be searched
+	 * @param rows rows to be fetched
 	 * @param algorithm The default algorithm is "suggest" but other types are possible
-	 * @return
-	 * @throws HttpException
+	 * @param scope scope of the search
+	 * @return syggested entities
+	 * @throws EuropeanaApiException exception thrown
 	 * 
 	 * e.g. GET /entity/suggest?text=leonard&language=en
 	 */
-	ResultSet<? extends EntityPreview> suggest(
-			String text, String[] language, List<EntityTypes> entityTypes, String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm) throws HttpException, EuropeanaApiException;
+	<T extends EntityPreview> ResultSet<T> suggest(
+			String text, String[] language, List<EntityTypes> entityTypes, String scope,
+			String namespace, int rows, SuggestAlgorithmTypes algorithm) throws EuropeanaApiException;
 
 
 	/**
 	 * This method searches the entities using the provided search query and specific filters
-	 * @param query
-	 * @param preferredLanguages
-	 * @param entityTypes
-	 * @param scope
-	 * @return
-	 * @throws HttpException
+	 * @param query query for the search
+	 * @param preferredLanguages languages to be searched
+	 * @param entityTypes types of entity
+	 * @param scope scope of the search
+	 * @return entity based on the query
 	 */
-	public ResultSet<? extends Entity> search(Query query, String[] preferredLanguages, List<EntityTypes> entityTypes, String scope) throws HttpException;
+	<T extends Entity> ResultSet<T> search(Query query, String[] preferredLanguages, List<EntityTypes> entityTypes, String scope) ;
 	
 	
 	/**
@@ -54,41 +64,45 @@ public interface EntityService {
 	 * 
 	 * using an alternative uri for an entity (lookup will happen within the owl:sameAs properties).
 	 * 
-	 * @param uri
+	 * @param uri uri to be searched
 	 * @return a list of found entities or an exception if no entity is found
-	 * @throws HttpException
+	 * @throws EuropeanaApiException exception thrown
 	 */
-	List<String> resolveByUri(String uri) throws HttpException;
+	List<String> resolveByUri(String uri) throws EuropeanaApiException;
 	
 	
 	/**
 	 * This method build the results page object for the search results retrieved with the given search query.
-	 * @param searchQuery
-	 * @param results
-	 * @param request
-	 * @return
+	 * @param searchQuery search query
+	 * @param results results of which results will be build
+	 * @param request request sent
+	 * @return result page of the results fetched
 	 */
 	public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, HttpServletRequest request);
 	
 	/**
-	 * @param entityTypes
-	 * @param suggest
-	 * @return 
-	 * @throws ParamValidationException
+	 * @param entityTypes types of entities
+	 * @param suggest suggest filter
+	 * @return  list of entities
+	 * @throws InvalidParamException exception thrown
 	 */
-	public List<EntityTypes> validateEntityTypes(List<EntityTypes> entityTypes, boolean suggest) throws ParamValidationException;
+	public List<EntityTypes> validateEntityTypes(List<EntityTypes> entityTypes, boolean suggest) throws InvalidParamException;
 
 	/**
-	 * 
+	 * Searches with entity ids
 	 * @param searchQuery the query to search for entities
 	 * @param scope optional parameter to filter only entities used in europeana, see also general search method
 	 * @param entityTypes optional parameter to filter results by entity type
-	 * @return
-	 * @throws HttpException
+	 * @return list of entity ids
 	 */
-	public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes) throws HttpException;
+	public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes);
 
-	
-	List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws ParamValidationException;
+	/**
+	 * return the entities from the string
+	 * @param commaSepEntityTypes comma seperated list of entities
+	 * @return list of entity types
+	 * @throws EuropeanaI18nApiException exception thrown
+	 */
+	List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws EuropeanaI18nApiException;
 		
 }

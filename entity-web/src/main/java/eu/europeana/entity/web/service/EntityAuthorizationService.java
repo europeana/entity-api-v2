@@ -1,21 +1,22 @@
 package eu.europeana.entity.web.service;
 
-import javax.annotation.Resource;
-
+import eu.europeana.api.commons_sb3.definitions.oauth.Role;
+import eu.europeana.api.commons_sb3.oauth2.service.authorization.AuthorizationService;
+import eu.europeana.api.commons_sb3.oauth2.service.authorization.BaseAuthorizationService;
+import jakarta.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Component;
-
-import eu.europeana.api.commons.definitions.vocabulary.Role;
-import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
-import eu.europeana.api.commons.service.authorization.BaseAuthorizationService;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.model.vocabulary.UserRoles;
 
+/**
+ * Entity api v2 authorization service
+ */
 @Component(AppConfigConstants.BEAN_AUTHORIZATION_SERVICE)
-public class EntityAuthorizationService extends BaseAuthorizationService implements eu.europeana.api.commons.service.authorization.AuthorizationService {
+public class EntityAuthorizationService extends BaseAuthorizationService implements AuthorizationService {
 
     protected final Logger logger = LogManager.getLogger(getClass());
 
@@ -45,11 +46,5 @@ public class EntityAuthorizationService extends BaseAuthorizationService impleme
 	protected Role getRoleByName(String name) {
             return UserRoles.getRoleByName(name);
 	}
-
-    @Override
-    protected ApiWriteLockService getApiWriteLockService() {
-        // TODO Auto-generated method stub
-        return null;
-    }
     
 }

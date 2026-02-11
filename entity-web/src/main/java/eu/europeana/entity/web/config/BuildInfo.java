@@ -11,7 +11,7 @@ import eu.europeana.entity.config.AppConfigConstants;
  * While generating a war file this data is written automatically to the build.properties file which is read here.
  * Note that the same information is also available in the Spring-Boot /actuator/info endpoint
  */
-@Configuration(AppConfigConstants.BEAN_BUILD_INFO)
+@Configuration
 @PropertySource("classpath:build.properties")
 public class BuildInfo {
 
@@ -26,6 +26,9 @@ public class BuildInfo {
 
     @Value("${info.build.number}")
     private String buildNumber;
+
+    @Value("${info.build.date}")
+    private String timestamp;
 
     public String getAppName() {
         return appName;
@@ -42,4 +45,9 @@ public class BuildInfo {
     public String getBuildNumber() {
         return buildNumber;
     }
+
+    public String getBuildTimestamp() {
+        return timestamp;
+    }
+
 }

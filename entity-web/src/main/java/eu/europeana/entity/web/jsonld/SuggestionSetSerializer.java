@@ -1,18 +1,9 @@
 package eu.europeana.entity.web.jsonld;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.stanbol.commons.jsonld.JsonLd;
-import org.apache.stanbol.commons.jsonld.JsonLdProperty;
-import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
-import org.apache.stanbol.commons.jsonld.JsonLdResource;
-import org.springframework.http.HttpStatus;
-
-import eu.europeana.api.commons.definitions.search.ResultSet;
-import eu.europeana.api.commons.definitions.vocabulary.CommonLdConstants;
-import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.entity.app.I18nConstants;
+import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
+import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants;
+import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
+import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.ResourcePreview;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
@@ -20,258 +11,265 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityFields;
 import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.utils.jsonld.EntityJsonComparator;
-import eu.europeana.entity.web.model.view.AgentPreview;
-import eu.europeana.entity.web.model.view.EntityPreview;
-import eu.europeana.entity.web.model.view.OrganizationPreview;
-import eu.europeana.entity.web.model.view.PlacePreview;
-import eu.europeana.entity.web.model.view.TimeSpanPreview;
+import eu.europeana.entity.web.model.view.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.stanbol.commons.jsonld.JsonLd;
+import org.apache.stanbol.commons.jsonld.JsonLdProperty;
+import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
+import org.apache.stanbol.commons.jsonld.JsonLdResource;
+import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class SuggestionSetSerializer extends JsonLd {
 
     public SuggestionSetSerializer() {
-	super();
-	setPropOrderComparator(new EntityJsonComparator());
+        super();
+        setPropOrderComparator(new EntityJsonComparator());
     }
 
     ResultSet<? extends EntityPreview> entitySet;
     String entityIdBaseUrl;
 
     public ResultSet<? extends EntityPreview> getEntitySet() {
-	return entitySet;
+        return entitySet;
     }
 
     public void setConceptSet(ResultSet<? extends EntityPreview> entitySet) {
-	this.entitySet = entitySet;
+        this.entitySet = entitySet;
     }
 
     /**
+     *
      */
     public SuggestionSetSerializer(ResultSet<? extends EntityPreview> entitySet, String entityIdBaseUrl) {
-	super();
-	this.entityIdBaseUrl = entityIdBaseUrl;
-	setPropOrderComparator(new EntityJsonComparator());
-	registerContainerProperty(WebEntityConstants.IS_PART_OF);
-	registerContainerProperty(WebEntityConstants.ITEMS);
-	setConceptSet(entitySet);
+        super();
+        this.entityIdBaseUrl = entityIdBaseUrl;
+        setPropOrderComparator(new EntityJsonComparator());
+        registerContainerProperty(WebEntityConstants.IS_PART_OF);
+        registerContainerProperty(WebEntityConstants.ITEMS);
+        setConceptSet(entitySet);
     }
 
     /**
      * Adds the given concept to this JsonLd object using the resource's subject as
      * key. If the key is NULL and there does not exist a resource with an empty
      * String as key the resource will be added using an empty String ("") as key.
-     * 
-     * @throws HttpException
+     *
+     * @return serialised string
+     * @throws EuropeanaI18nApiException exception thrown
      */
-    public String serialize() throws HttpException {
+    public String serialize() throws EuropeanaI18nApiException {
 
-	setUseTypeCoercion(false);
-	setUseCuries(true);
-	setUsedNamespaces(namespacePrefixMap);
+        setUseTypeCoercion(false);
+        setUseCuries(true);
+        setUsedNamespaces(namespacePrefixMap);
 
-	JsonLdResource jsonLdResource = new JsonLdResource();
-	jsonLdResource.setSubject("");
+        JsonLdResource jsonLdResource = new JsonLdResource();
+        jsonLdResource.setSubject("");
 
-	JsonLdProperty contextProperty = new JsonLdProperty(WebEntityConstants.AT_CONTEXT);
-	contextProperty.getValues().add(new JsonLdPropertyValue(WebEntityConstants.LDP_CONTEXT));
-	contextProperty.getValues().add(new JsonLdPropertyValue(WebEntityConstants.ENTITY_CONTEXT));
+        JsonLdProperty contextProperty = new JsonLdProperty(WebEntityConstants.AT_CONTEXT);
+        contextProperty.getValues().add(new JsonLdPropertyValue(WebEntityConstants.LDP_CONTEXT));
+        contextProperty.getValues().add(new JsonLdPropertyValue(CommonLdConstants.ENTITY_CONTEXT));
 
-	jsonLdResource.putProperty(contextProperty);
+        jsonLdResource.putProperty(contextProperty);
 
-	// TODO: update JSONLD output and add the @language:en to context
+        // TODO: update JSONLD output and add the @language:en to context
 
-	jsonLdResource.putProperty(WebEntityConstants.TYPE, CommonLdConstants.RESULT_PAGE);
-	jsonLdResource.putProperty(WebEntityConstants.TOTAL, getEntitySet().getResultSize());
+        jsonLdResource.putProperty(WebEntityConstants.TYPE, CommonLdConstants.RESULT_PAGE);
+        jsonLdResource.putProperty(WebEntityConstants.TOTAL, getEntitySet().getResultSize());
 
-	serializeItems(jsonLdResource);
+        serializeItems(jsonLdResource);
 
-	put(jsonLdResource);
+        put(jsonLdResource);
 
-	return toString(4);
+        return toString(4);
     }
 
-    protected void serializeItems(JsonLdResource jsonLdResource) throws HttpException {
+    protected void serializeItems(JsonLdResource jsonLdResource) throws EuropeanaI18nApiException {
 
-	// do not serialize if empty
-	if (getEntitySet().isEmpty())
-	    return;
+        // do not serialize if empty
+        if (getEntitySet().isEmpty())
+            return;
 
-	JsonLdProperty containsProperty = new JsonLdProperty(WebEntityConstants.ITEMS);
-	JsonLdPropertyValue propertyValue;
+        JsonLdProperty containsProperty = new JsonLdProperty(WebEntityConstants.ITEMS);
+        JsonLdPropertyValue propertyValue;
 
-	for (EntityPreview entityPreview : getEntitySet().getResults()) {
-	    propertyValue = buildEntityPreviewPropertyValue(entityPreview);
-	    containsProperty.addValue(propertyValue);
-	}
+        for (EntityPreview entityPreview : getEntitySet().getResults()) {
+            propertyValue = buildEntityPreviewPropertyValue(entityPreview);
+            containsProperty.addValue(propertyValue);
+        }
 
-	jsonLdResource.putProperty(containsProperty);
+        jsonLdResource.putProperty(containsProperty);
 
     }
 
     /**
      * This method constructs isShownBy property
+     *
      * @param entity
      * @param field
      * @return jsonLd property for isShownBy field
      */
     private JsonLdProperty createIsShownByResource(EntityPreview entity, String field) {
-		
-	JsonLdProperty isShownByProperty = new JsonLdProperty(field);
-	JsonLdPropertyValue isShownByValue = new JsonLdPropertyValue();
-		
-	if (!StringUtils.isEmpty(entity.getIsShownById())) { 			
-		isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.ID, entity.getIsShownById()));
-		isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.TYPE, WebEntityFields.WEB_RESOURCE));
-	}
-	if (!StringUtils.isEmpty(entity.getIsShownBySource())) 			
-		isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.SOURCE, entity.getIsShownBySource()));
-	if (!StringUtils.isEmpty(entity.getIsShownByThumbnail())) 			
-		isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.THUMBNAIL, entity.getIsShownByThumbnail()));
-	isShownByProperty.addValue(isShownByValue);		
-	return isShownByProperty;
+
+        JsonLdProperty isShownByProperty = new JsonLdProperty(field);
+        JsonLdPropertyValue isShownByValue = new JsonLdPropertyValue();
+
+        if (!StringUtils.isEmpty(entity.getIsShownById())) {
+            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.ID, entity.getIsShownById()));
+            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.TYPE, WebEntityFields.WEB_RESOURCE));
+        }
+        if (!StringUtils.isEmpty(entity.getIsShownBySource()))
+            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.SOURCE, entity.getIsShownBySource()));
+        if (!StringUtils.isEmpty(entity.getIsShownByThumbnail()))
+            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.THUMBNAIL, entity.getIsShownByThumbnail()));
+        isShownByProperty.addValue(isShownByValue);
+        return isShownByProperty;
     }
 
-    private JsonLdPropertyValue buildEntityPreviewPropertyValue(EntityPreview entityPreview) throws HttpException {
+    private JsonLdPropertyValue buildEntityPreviewPropertyValue(EntityPreview entityPreview) throws EuropeanaI18nApiException {
 
-	JsonLdPropertyValue entityPreviewPropValue = new JsonLdPropertyValue();
+        JsonLdPropertyValue entityPreviewPropValue = new JsonLdPropertyValue();
 
-	// id
-	String entityIdAdjusted = EntityUtils.replaceBaseUrlInId(entityPreview.getEntityId(), entityIdBaseUrl);
-	entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.ID, entityIdAdjusted));
-	
-	JsonLdProperty prefLabelProp = buildMapOfStringsProperty(WebEntityConstants.PREF_LABEL,
-		entityPreview.getPreferredLabel(), "");
-	if (prefLabelProp != null) {
-	    entityPreviewPropValue.putProperty(prefLabelProp);
-	}
+        // id
+        String entityIdAdjusted = EntityUtils.replaceBaseUrlInId(entityPreview.getEntityId(), entityIdBaseUrl);
+        entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.ID, entityIdAdjusted));
 
-	// altLabel
-	if (entityPreview.getAltLabel() != null && !entityPreview.getAltLabel().isEmpty()) {
-	    JsonLdProperty altLabelProp = buildMapProperty(WebEntityConstants.ALT_LABEL,
-		    entityPreview.getAltLabel(), "");
-	    entityPreviewPropValue.putProperty(altLabelProp);
-	}
+        JsonLdProperty prefLabelProp = buildMapOfStringsProperty(WebEntityConstants.PREF_LABEL,
+                entityPreview.getPreferredLabel(), "");
+        if (prefLabelProp != null) {
+            entityPreviewPropValue.putProperty(prefLabelProp);
+        }
 
-	// hiddenLabel
-	if (entityPreview.getHiddenLabel() != null && !entityPreview.getHiddenLabel().isEmpty()) {
-	    JsonLdProperty hiddenLabelProp = buildMapProperty(WebEntityConstants.HIDDEN_LABEL,
-		    entityPreview.getHiddenLabel(), "");
-	    entityPreviewPropValue.putProperty(hiddenLabelProp);
-	}
-	
-	// depiction
-	if (entityPreview.getDepiction() != null)
-	    entityPreviewPropValue
-		    .putProperty(new JsonLdProperty(WebEntityConstants.DEPICTION, entityPreview.getDepiction()));
-	//isShownBy
-	if (!StringUtils.isEmpty((entityPreview).getIsShownById())) {	
-	    entityPreviewPropValue.putProperty(createIsShownByResource(
-			entityPreview, WebEntityFields.IS_SHOWN_BY));	
-	}
+        // altLabel
+        if (entityPreview.getAltLabel() != null && !entityPreview.getAltLabel().isEmpty()) {
+            JsonLdProperty altLabelProp = buildMapProperty(WebEntityConstants.ALT_LABEL,
+                    entityPreview.getAltLabel(), "");
+            entityPreviewPropValue.putProperty(altLabelProp);
+        }
 
-	String type = entityPreview.getType();
-	EntityTypes entityType = null;
-	try {
-	    entityType = EntityTypes.getByInternalType(type);
-	} catch (UnsupportedEntityTypeException e) {
-	    throw new HttpException(null, I18nConstants.UNSUPPORTED_ENTITY_TYPE, new String[] { 
-		    WebEntityConstants.ENTITY_API_RESOURCE, type },
-		    HttpStatus.NOT_FOUND, null);
-	}
+        // hiddenLabel
+        if (entityPreview.getHiddenLabel() != null && !entityPreview.getHiddenLabel().isEmpty()) {
+            JsonLdProperty hiddenLabelProp = buildMapProperty(WebEntityConstants.HIDDEN_LABEL,
+                    entityPreview.getHiddenLabel(), "");
+            entityPreviewPropValue.putProperty(hiddenLabelProp);
+        }
 
-	if (entityType != null) {
-	    entityPreviewPropValue
-		    .putProperty(new JsonLdProperty(WebEntityConstants.TYPE, entityType.getInternalType()));
+        // depiction
+        if (entityPreview.getDepiction() != null)
+            entityPreviewPropValue
+                    .putProperty(new JsonLdProperty(WebEntityConstants.DEPICTION, entityPreview.getDepiction()));
+        //isShownBy
+        if (!StringUtils.isEmpty((entityPreview).getIsShownById())) {
+            entityPreviewPropValue.putProperty(createIsShownByResource(
+                    entityPreview, WebEntityFields.IS_SHOWN_BY));
+        }
 
-	    switch (entityType) {
-	    case Organization:
-	    case Aggregator:  
-		putOrganizationSpecificProperties((OrganizationPreview) entityPreview, entityPreviewPropValue);
-		break;
+        String type = entityPreview.getType();
+        EntityTypes entityType = null;
+        try {
+            entityType = EntityTypes.getByInternalType(type);
+        } catch (UnsupportedEntityTypeException e) {
+            throw new EuropeanaI18nApiException(null, null, null, HttpStatus.NOT_FOUND,
+					I18nConstants.UNSUPPORTED_ENTITY_TYPE,
+					Arrays.asList(WebEntityConstants.ENTITY_API_RESOURCE, "", type),
+					e);
+        }
 
-	    case Concept:
-		// add top concept, when available
-		break;
+        if (entityType != null) {
+            entityPreviewPropValue
+                    .putProperty(new JsonLdProperty(WebEntityConstants.TYPE, entityType.getInternalType()));
 
-	    case Agent:
-		putAgentSpecificProperties((AgentPreview) entityPreview, entityPreviewPropValue);
-		break;
+            switch (entityType) {
+                case Organization:
+                case Aggregator:
+                    putOrganizationSpecificProperties((OrganizationPreview) entityPreview, entityPreviewPropValue);
+                    break;
 
-	    case Place:
-		putPlaceSpecificProperties((PlacePreview) entityPreview, entityPreviewPropValue);
-		break;
+                case Concept:
+                    // add top concept, when available
+                    break;
 
-	    case TimeSpan:
-		putTimeSpanSpecificProperties((TimeSpanPreview) entityPreview, entityPreviewPropValue);
-		break;
-	    
-	    default:
-		break;
-	    }
+                case Agent:
+                    putAgentSpecificProperties((AgentPreview) entityPreview, entityPreviewPropValue);
+                    break;
 
-	}
+                case Place:
+                    putPlaceSpecificProperties((PlacePreview) entityPreview, entityPreviewPropValue);
+                    break;
 
-	return entityPreviewPropValue;
+                case TimeSpan:
+                    putTimeSpanSpecificProperties((TimeSpanPreview) entityPreview, entityPreviewPropValue);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        return entityPreviewPropValue;
     }
 
     private void putTimeSpanSpecificProperties(TimeSpanPreview entityPreview,
-	    JsonLdPropertyValue entityPreviewPropValue) {
-	if (entityPreview.getBegin() != null)
-	    entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.BEGIN, entityPreview.getBegin()));
+                                               JsonLdPropertyValue entityPreviewPropValue) {
+        if (entityPreview.getBegin() != null)
+            entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.BEGIN, entityPreview.getBegin()));
 
-	if (entityPreview.getEnd() != null)
-	    entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.END, entityPreview.getEnd()));
+        if (entityPreview.getEnd() != null)
+            entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.END, entityPreview.getEnd()));
     }
 
     private void putPlaceSpecificProperties(PlacePreview entityPreview, JsonLdPropertyValue entityPreviewPropValue) {
 
-	List<ResourcePreview> partOfList = entityPreview.getIsPartOf();
-	JsonLdProperty prefLabelProp;
+        List<ResourcePreview> partOfList = entityPreview.getIsPartOf();
+        JsonLdProperty prefLabelProp;
 
-	if (partOfList != null && !partOfList.isEmpty()) {
-	    JsonLdProperty isPartOfProp = new JsonLdProperty(WebEntityConstants.IS_PART_OF);
-	    JsonLdPropertyValue propValue;
-	    for (ResourcePreview resourcePreview : partOfList) {
-		propValue = new JsonLdPropertyValue();
-		propValue.getValues().put(WebEntityConstants.ID, resourcePreview.getHttpUri());
+        if (partOfList != null && !partOfList.isEmpty()) {
+            JsonLdProperty isPartOfProp = new JsonLdProperty(WebEntityConstants.IS_PART_OF);
+            JsonLdPropertyValue propValue;
+            for (ResourcePreview resourcePreview : partOfList) {
+                propValue = new JsonLdPropertyValue();
+                propValue.getValues().put(WebEntityConstants.ID, resourcePreview.getHttpUri());
 //				propValue.getValues().put(WebEntityConstants.PREF_LABEL, resourcePreview.getPrefLabel());
-		prefLabelProp = buildMapOfStringsProperty(WebEntityConstants.PREF_LABEL, resourcePreview.getPrefLabel(),
-			"");
-		propValue.getPropertyMap().put(WebEntityConstants.PREF_LABEL, prefLabelProp);
+                prefLabelProp = buildMapOfStringsProperty(WebEntityConstants.PREF_LABEL, resourcePreview.getPrefLabel(),
+                        "");
+                propValue.getPropertyMap().put(WebEntityConstants.PREF_LABEL, prefLabelProp);
 
-		isPartOfProp.addValue(propValue);
-	    }
+                isPartOfProp.addValue(propValue);
+            }
 
-	    entityPreviewPropValue.putProperty(isPartOfProp);
-	}
+            entityPreviewPropValue.putProperty(isPartOfProp);
+        }
     }
 
     private void putAgentSpecificProperties(AgentPreview entityPreview, JsonLdPropertyValue entityPreviewPropValue) {
-	if (entityPreview.getDateOfBirth() != null)
-	    entityPreviewPropValue
-		    .putProperty(new JsonLdProperty(WebEntityConstants.DATE_OF_BIRTH, entityPreview.getDateOfBirth()));
+        if (entityPreview.getDateOfBirth() != null)
+            entityPreviewPropValue
+                    .putProperty(new JsonLdProperty(WebEntityConstants.DATE_OF_BIRTH, entityPreview.getDateOfBirth()));
 
-	if (entityPreview.getDateOfDeath() != null)
-	    entityPreviewPropValue
-		    .putProperty(new JsonLdProperty(WebEntityConstants.DATE_OF_DEATH, entityPreview.getDateOfDeath()));
+        if (entityPreview.getDateOfDeath() != null)
+            entityPreviewPropValue
+                    .putProperty(new JsonLdProperty(WebEntityConstants.DATE_OF_DEATH, entityPreview.getDateOfDeath()));
 
-	if (entityPreview.getProfessionOrOccuation() != null && !entityPreview.getProfessionOrOccuation().isEmpty())
-	    entityPreviewPropValue.putProperty(buildMapProperty(WebEntityConstants.PROFESSION_OR_OCCUPATION,
-		    entityPreview.getProfessionOrOccuation(), ""));
+        if (entityPreview.getProfessionOrOccuation() != null && !entityPreview.getProfessionOrOccuation().isEmpty())
+            entityPreviewPropValue.putProperty(buildMapProperty(WebEntityConstants.PROFESSION_OR_OCCUPATION,
+                    entityPreview.getProfessionOrOccuation(), ""));
     }
 
     private void putOrganizationSpecificProperties(OrganizationPreview entityPreview,
-	    JsonLdPropertyValue entityPreviewPropValue) {
-	if (entityPreview.getAcronym() != null && !entityPreview.getAcronym().isEmpty())
-	    entityPreviewPropValue
-		    .putProperty(buildMapProperty(WebEntityConstants.ACRONYM, entityPreview.getAcronym(), null));
+                                                   JsonLdPropertyValue entityPreviewPropValue) {
+        if (entityPreview.getAcronym() != null && !entityPreview.getAcronym().isEmpty())
+            entityPreviewPropValue
+                    .putProperty(buildMapProperty(WebEntityConstants.ACRONYM, entityPreview.getAcronym(), null));
 
-	if (entityPreview.getCountry() != null)
-	    entityPreviewPropValue
-		    .putProperty(new JsonLdProperty(WebEntityConstants.COUNTRY, entityPreview.getCountry()));
+        if (entityPreview.getCountry() != null)
+            entityPreviewPropValue
+                    .putProperty(new JsonLdProperty(WebEntityConstants.COUNTRY, entityPreview.getCountry()));
 
-	if (entityPreview.getOrganizationDomain() != null)
-	    entityPreviewPropValue.putProperty(
-		    new JsonLdProperty(WebEntityConstants.ORGANIZATION_DOMAIN, entityPreview.getOrganizationDomain()));
+        if (entityPreview.getOrganizationDomain() != null)
+            entityPreviewPropValue.putProperty(
+                    new JsonLdProperty(WebEntityConstants.ORGANIZATION_DOMAIN, entityPreview.getOrganizationDomain()));
 
     }
 }

@@ -1,13 +1,16 @@
 package eu.europeana.entity.utils.jsonld;
 
 import java.util.Optional;
+
+import eu.europeana.api.commons_sb3.definitions.utils.DateUtils;
+import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants;
+import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
+import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
 import org.apache.stanbol.commons.jsonld.JsonLdPropertyValue;
 import org.apache.stanbol.commons.jsonld.JsonLdResource;
-import eu.europeana.api.commons.definitions.utils.DateUtils;
-import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Agent;
 import eu.europeana.entity.definitions.model.Concept;
 import eu.europeana.entity.definitions.model.Entity;
@@ -18,7 +21,7 @@ import eu.europeana.entity.definitions.model.impl.BaseEntity;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.utils.EntityUtils;
 
-import static eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants.*;
+import static eu.europeana.entity.definitions.model.vocabulary.WebEntityFields.*;
 
 public class EuropeanaEntityLd extends JsonLd {
 
@@ -42,7 +45,7 @@ public class EuropeanaEntityLd extends JsonLd {
     setUsedNamespaces(namespacePrefixMap);
 
     ldResource.setSubject("");
-    ldResource.putProperty(CONTEXT, ENTITY_CONTEXT);
+    ldResource.putProperty(CommonLdConstants.context, CommonLdConstants.ENTITY_CONTEXT);
 
     // common EntityProperties
     ldResource.putProperty(ID,
@@ -50,7 +53,6 @@ public class EuropeanaEntityLd extends JsonLd {
     ldResource.putProperty(TYPE, entity.getType());
     putStringArrayProperty(IDENTIFIER, entity.getIdentifier(), ldResource);
     putStringArrayProperty(SAME_AS, entity.getSameAs(), ldResource);
-    // jsonLdResource.putProperty(RDF_ABOUT, entity.getAbout());
     putStringArrayProperty(IS_RELATED_TO, entity.getIsRelatedTo(), ldResource);
 
     if (!StringUtils.isEmpty(entity.getDepiction())) {

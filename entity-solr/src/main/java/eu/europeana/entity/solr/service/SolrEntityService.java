@@ -1,9 +1,8 @@
 package eu.europeana.entity.solr.service;
 
 import java.util.List;
-
-import eu.europeana.api.commons.definitions.search.Query;
-import eu.europeana.api.commons.definitions.search.ResultSet;
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
@@ -14,7 +13,7 @@ import eu.europeana.entity.web.model.view.EntityPreview;
 
 public interface SolrEntityService {
 
-	public static final String HANDLER_SELECT = "/select";
+	String HANDLER_SELECT = "/select";
 	
 	/**
 	 * This method retrieves available Entities by searching the given id.
@@ -28,50 +27,53 @@ public interface SolrEntityService {
 	/**
 	 * This method retrieves available Entities by searching the given entity URI.
 	 * @param entityUri - See {@link ConceptSolrFields#ID}
-	 * @return
-	 * @throws EntityRetrievalException 
-	 * @throws UnsupportedEntityTypeException 
+	 * @param type type of entity
+	 * @return entity with the url and type matching
+	 * @throws EntityRetrievalException exception while retrieving entity
+	 * @throws UnsupportedEntityTypeException if the type is invalid
 	 */
-	public Entity searchByUrl(String type, String entityUri) throws EntityRetrievalException, UnsupportedEntityTypeException;
+	Entity searchByUrl(String type, String entityUri) throws EntityRetrievalException, UnsupportedEntityTypeException;
 	
 	/**
-	 * This method retrieves available Entities that meet the .
+	 * This method retrieves available Entities for the search query.
 	 * @param searchQuery The search query
-	 * @param outLanguage
-	 * @param entityTypes
-	 * @param scope
-	 * @return
-	 * @throws EntityRetrievalException 
+	 * @param outLanguage the output language
+	 * @param entityTypes types of entity
+	 * @param scope scope of the search
+	 * @return ResultSet of entities matching the search
+	 * @throws EntityRetrievalException exception while retrieving entity
 	 */
-	public ResultSet<? extends Entity> search(Query searchQuery, String[] outLanguage,
-			List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException;
+	<T extends Entity> ResultSet<T> search(Query searchQuery, String[] outLanguage,
+											  List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException;
 	
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search by label algorithm
-	 * @param searchQuery The query text
-	 * @param requestedLanguages
-	 * @param entityTypes
-	 * @param scope
-	 * @param rows
-	 * @return
-	 * @throws EntityRetrievalException 
-	 * @throws EntitySuggestionException 
+	 * @param text The query text
+	 * @param requestedLanguages languages requested
+	 * @param entityTypes types of entity
+	 * @param scope scope of the search
+	 * @param rows number of rows requested
+	 * @return ResultSet of entities matching the search
+	 * @throws EntityRetrievalException exception while retrieving entity
+	 * @throws EntitySuggestionException exception while suggesting and entity
 	 */
-	public ResultSet<? extends EntityPreview> suggestByLabel(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
+	<T extends EntityPreview> ResultSet<T> suggestByLabel(String text, String[] requestedLanguages,
+														  List<EntityTypes> entityTypes, String scope, int rows) throws EntitySuggestionException;
 
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search 
 	 * by language algorithm
-	 * @param searchQuery The query text
-	 * @param requestedLanguages
-	 * @param entityTypes
-	 * @param scope
-	 * @param rows
-	 * @return
-	 * @throws EntityRetrievalException 
-	 * @throws EntitySuggestionException 
+	 * @param text The query text
+	 * @param requestedLanguages languages requested
+	 * @param entityTypes types of entity
+	 * @param scope scope of the search
+	 * @param rows number of rows requested
+	 * @return ResultSet of entities matching the search
+	 * @throws EntityRetrievalException exception while retrieving entity
+	 * @throws EntitySuggestionException exception while suggesting and entity
 	 */
-	public ResultSet<? extends EntityPreview> suggestByLanguage(String text, String[] requestedLanguages, List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
+	<T extends EntityPreview> ResultSet<T> suggestByLanguage(String text, String[] requestedLanguages,
+															 List<EntityTypes> entityTypes, String scope,  int rows) throws EntitySuggestionException;
 
 	
 	/**
@@ -81,10 +83,10 @@ public interface SolrEntityService {
 	 * 
 	 * using an alternative uri for an entity (lookup will happen within the coref property).
 	 * 
-	 * @param uri
+	 * @param uri url sent in the request
 	 * @return and empty list or a list of found entities
 	 */
-	public List<String> searchByCoref(String uri);
+	List<String> searchByCoref(String uri);
 	
 
 }
