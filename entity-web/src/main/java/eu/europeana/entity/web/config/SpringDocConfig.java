@@ -26,7 +26,7 @@ public class SpringDocConfig {
 
     /**
      * Info endpoint data
-     * @return
+     * @return open api
      */
     @Bean
     public OpenAPI userServiceOpenAPI() {

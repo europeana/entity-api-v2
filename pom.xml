@@ -58,8 +58,8 @@
 		<version.junit>5.7.0</version.junit>
 
 		<!-- Spring Boot 3 is based on Spring Framework 6.0 and Jakarta EE 9.-->
-		<version.springBoot>3.1.2</version.springBoot>
-		<spring-framework.version>6.0.11</spring-framework.version>
+		<version.springBoot>3.3.5</version.springBoot>
+		<spring-framework.version>6.2.0</spring-framework.version>
 		<springdoc.version>2.3.0</springdoc.version>
 		<version.swagger>3.0.0</version.swagger>
 

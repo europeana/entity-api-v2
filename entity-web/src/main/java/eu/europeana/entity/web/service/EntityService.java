@@ -89,7 +89,7 @@ public interface EntityService {
 	public List<EntityTypes> validateEntityTypes(List<EntityTypes> entityTypes, boolean suggest) throws InvalidParamException;
 
 	/**
-	 * 
+	 * Searches with entity ids
 	 * @param searchQuery the query to search for entities
 	 * @param scope optional parameter to filter only entities used in europeana, see also general search method
 	 * @param entityTypes optional parameter to filter results by entity type
