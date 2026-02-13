@@ -49,6 +49,10 @@
 					<artifactId>wstx-asl</artifactId>
 					<groupId>org.codehaus.woodstox</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.woodstox</groupId>
+					<artifactId>woodstox-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -87,6 +91,10 @@
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jakarta.annotation</groupId>
+					<artifactId>jakarta.annotation-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
