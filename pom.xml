@@ -49,12 +49,6 @@
 		should be required -->
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		
-<!--		&lt;!&ndash; property to be used for add opens jvm arguments in plugins &ndash;&gt;-->
-<!--		<java.17.addopens>&#45;&#45;add-opens java.base/java.util=ALL-UNNAMED-->
-<!--			&#45;&#45;add-opens java.base/java.lang=ALL-UNNAMED-->
-<!--		</java.17.addopens>-->
-		
 		<version.junit>5.7.0</version.junit>
 
 		<!-- Spring Boot 3 is based on Spring Framework 6.0 and Jakarta EE 9.-->
