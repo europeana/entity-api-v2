@@ -13,4 +13,4 @@ ADD https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/$ELASTIC_APM
 
 COPY ./entity-web/target/entity-web-executable.jar /opt/app/entity-web-executable.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "--add-opens=java.base/java.util=ALL-UNNAMED",  "--add-opens=java.base/java.lang=ALL-UNNAMED",   "-jar", "/opt/app/entity-web-executable.jar"]
+ENTRYPOINT ["java", "-jar", "/opt/app/entity-web-executable.jar"]

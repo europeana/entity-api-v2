@@ -17,12 +17,5 @@
 			<artifactId>entity-definitions</artifactId>
 			<version>2.4-SNAPSHOT</version>
 		</dependency>
-
-		<!-- moved from annotation-web -->
-		<dependency>
-			<groupId>org.codehaus.jettison</groupId>
-			<artifactId>jettison</artifactId>
-			<version>1.1</version>
-		</dependency>
 	</dependencies>
 </project>
