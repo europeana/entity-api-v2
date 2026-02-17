@@ -1,110 +1,97 @@
 package eu.europeana.entity.definitions.model.vocabulary;
 
+/**
+ * Class with field values used during json/jsonld serialisation
+ */
 public class WebEntityFields {
 
-    public static final String LANGUAGE_EN = "en";
-
-    // common fields
-    public static final String ID = "id";
-    public static final String TYPE = "type";
-    public static final String SAME_AS = "sameAs";
-    public static final String IDENTIFIER = "identifier";
-    public static final String HAS_PART = "hasPart";
-    public static final String IS_PART_OF = "isPartOf";
-    public static final String PREF_LABEL = "prefLabel";
-    public static final String HIDDEN_LABEL = "hiddenLabel";
-    public static final String ALT_LABEL = "altLabel";
-    public static final String NOTE = "note";
-    public static final String DEPICTION = "depiction";
-    public static final String SOURCE = "source";
-    public static final String THUMBNAIL = "thumbnail";
-    public static final String IS_SHOWN_BY = "isShownBy";
-    public static final String PAGE_RANK = "pageRank";
-    public static final String RECORD_COUNT = "recordCount";
-    public static final String SCORE = "score";
-
-    //Enrichment field
-    public static final String ENRICH_LABEL_FIELD = "label_enrich";
-
-    // common administrative information
-    public static final String CREATED = "created";
-    public static final String MODIFIED = "modified";
-    public static final String AGGREGATION = "Aggregation";
-    public static final String IS_AGGREGATED_BY = "isAggregatedBy";
+    /**
+     * common Json/Jsonld serialization fields
+     * The naming convention is not followed and rather named how the value exactly is
+     * This done to avoid confusion with other class fields that have the
+     * same constants but with the different value.
+     * @See: org.apache.stanbol.commons.jsonld.JsonLdCommon has the same constants
+     *       with "@" appended to it
+     * This also helps visualize the JSON response more easily,
+     * rather than having to navigate to another class to check the exact value of the constant.
+     */
+    public static final String sameAs           = "sameAs";
+    public static final String identifier       = "identifier";
+    public static final String hasPart          = "hasPart";
+    public static final String isPartOf         = "isPartOf";
+    public static final String prefLabel        = "prefLabel";
+    public static final String hiddenLabel      = "hiddenLabel";
+    public static final String altLabel         = "altLabel";
+    public static final String note             = "note";
+    public static final String depiction        = "depiction";
+    public static final String source           = "source";
+    public static final String thumbnail        = "thumbnail";
+    public static final String isShownBy        = "isShownBy";
+    public static final String pageRank         = "pageRank";
+    public static final String recordCount      = "recordCount";
+    public static final String score            = "score";
+    public static final String created          = "created";
+    public static final String modified         = "modified";
+    public static final String Aggregation      = "Aggregation";
+    public static final String isAggregatedBy   = "isAggregatedBy";
 
     // concept fields
-    public static final String NOTATION = "notation";
-    public static final String RELATED = "related";
-    public static final String BROADER = "broader";
-    public static final String NARROWER = "narrower";
-
+    public static final String notation         = "notation";
+    public static final String related          = "related";
+    public static final String broader          = "broader";
+    public static final String narrower         = "narrower";
     // match fields
-    public static final String EXACT_MATCH = "exactMatch";
-    public static final String CLOSE_MATCH = "closeMatch";
-    public static final String BROAD_MATCH = "broadMatch";
-    public static final String NARROW_MATCH = "narrowMatch";
-    public static final String RELATED_MATCH = "relatedMatch";
-    public static final String IN_SCHEME = "inScheme";
-
+    public static final String exactMatch       = "exactMatch";
+    public static final String closeMatch       = "closeMatch";
+    public static final String broadMatch       = "broadMatch";
+    public static final String narrowMatch      = "narrowMatch";
+    public static final String relatedMatch     = "relatedMatch";
+    public static final String inScheme         = "inScheme";
     // Agent fields
-    public static final String DATE = "date";
-    public static final String BEGIN = "begin";
-    public static final String END = "end";
-    public static final String HAS_MET = "hasMet";
-    public static final String IS_RELATED_TO = "isRelatedTo";
-    public static final String NAME = "name";
-    public static final String BIOGRAPHICAL_INFORMATION = "biographicalInformation";
-    public static final String DATE_OF_BIRTH = "dateOfBirth";
-    public static final String DATE_OF_DEATH = "dateOfDeath";
-    public static final String PLACE_OF_BIRTH = "placeOfBirth";
-    public static final String PLACE_OF_DEATH = "placeOfDeath";
-    public static final String DATE_OF_ESTABLISHMENT = "dateOfEstablishment";
-    public static final String DATE_OF_TERMINATION = "dateOfTermination";
-    public static final String GENDER = "gender";
-    public static final String PROFESSION_OR_OCCUPATION = "professionOrOccupation";
-    public static final String WAS_PRESENT_AT = "wasPresentAt";
-
+    public static final String date             = "date";
+    public static final String begin            = "begin";
+    public static final String end              = "end";
+    public static final String hasMet           = "hasMet";
+    public static final String isRelatedTo      = "isRelatedTo";
+    public static final String name             = "name";
+    public static final String biographicalInformation = "biographicalInformation";
+    public static final String dateOfBirth         = "dateOfBirth";
+    public static final String dateOfDeath         = "dateOfDeath";
+    public static final String placeOfBirth        = "placeOfBirth";
+    public static final String placeOfDeath        = "placeOfDeath";
+    public static final String dateOfEstablishment = "dateOfEstablishment";
+    public static final String dateOfTermination   = "dateOfTermination";
+    public static final String gender              = "gender";
+    public static final String professionOrOccupation = "professionOrOccupation";
+    public static final String wasPresentAt         = "wasPresentAt";
     // Place fields
-    public static final String LATITUDE = "lat";
-    public static final String LONGITUDE = "long";
-    public static final String ALTITUDE = "alt";
-    public static final String LATITUDE_LONGITUDE = "lat_long";
-
-    public static final String IS_NEXT_IN_SEQUENCE = "isNextInSequence";
-    public static final String TYPE_PLACE = "Place";
-    
-
+    public static final String lat                  = "lat";
+    public static final String _long                = "long";
+    public static final String alt                  = "alt";
+    public static final String isNextInSequence     = "isNextInSequence";
+    public static final String Place                = "Place";
     // Organization fields
-    public static final String DESCRIPTION = "description";
-    public static final String ACRONYM = "acronym";
-    public static final String COUNTRY = "country";
-    public static final String ORGANIZATION_DOMAIN = "organizationDomain";
-    public static final String EUROPEANA_ROLE = "europeanaRole";
-    public static final String GEOGRAPHIC_LEVEL = "geographicLevel";
-    public static final String FOAF_LOGO = "logo";
-    public static final String FOAF_HOMEPAGE = "homepage";
-    public static final String FOAF_PHONE = "phone";
-    public static final String FOAF_MBOX = "mbox";
-    public static final String AGGREGATED_VIA = "aggregatedVia";
-
+    public static final String description          = "description";
+    public static final String acronym              = "acronym";
+    public static final String country              = "country";
+    public static final String organizationDomain   = "organizationDomain";
+    public static final String europeanaRole        = "europeanaRole";
+    public static final String geographicLevel      = "geographicLevel";
+    public static final String FOAF_LOGO            = "logo";
+    public static final String FOAF_HOMEPAGE        = "homepage";
+    public static final String FOAF_PHONE           = "phone";
+    public static final String FOAF_MBOX            = "mbox";
+    public static final String aggregatedVia        = "aggregatedVia";
     // Address Fields
-    public static final String STREET_ADDRESS = "streetAddress";
-    public static final String LOCALITY = "locality";
-    public static final String REGION = "region";
-    public static final String POSTAL_CODE = "postalCode";
-    public static final String COUNTRY_NAME = "countryName";
-    public static final String POST_OFFICE_BOX = "postOfficeBox";
-    public static final String HAS_GEO = "hasGeo";
-    public static final String HAS_ADDRESS = "hasAddress";
-    public static final String ADDRESS_TYPE = "Address";
-
-    // ConceptScheme fields
-    public static final String TOTAL = "total";
-
-    // Authentication
-    public static final String USER_ADMIN = "admin";
-
-    // Type
-    public static final String WEB_RESOURCE = "WebResource";
+    public static final String streetAddress        = "streetAddress";
+    public static final String locality             = "locality";
+    public static final String region               = "region";
+    public static final String postalCode           = "postalCode";
+    public static final String countryName          = "countryName";
+    public static final String postOfficeBox        = "postOfficeBox";
+    public static final String hasGeo               = "hasGeo";
+    public static final String hasAddress           = "hasAddress";
+    public static final String Address              = "Address";
+    public static final String WebResource          = "WebResource";
 
 }

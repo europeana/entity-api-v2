@@ -33,6 +33,9 @@ import eu.europeana.entity.web.model.view.OrganizationPreview;
 import eu.europeana.entity.web.model.view.PlacePreview;
 import eu.europeana.entity.web.model.view.TimeSpanPreview;
 
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.id;
+import static eu.europeana.entity.definitions.model.vocabulary.WebEntityFields.*;
+
 public class SuggestionUtils {
 
 	private final Logger log = LogManager.getLogger(getClass());
@@ -84,7 +87,7 @@ public class SuggestionUtils {
 		propertyNode = entityNode.get(SuggestionFields.ID);
 		preview.setEntityId(propertyNode.asText());
 
-		propertyNode = entityNode.get(WebEntityFields.DEPICTION);
+		propertyNode = entityNode.get(depiction);
 		if (propertyNode != null)
 			preview.setDepiction(propertyNode.asText());
 		
@@ -284,13 +287,13 @@ public class SuggestionUtils {
 	private void putIsShownByProperties(JsonNode payloadNode, EntityPreview preview) {
 		JsonNode propertyNode = payloadNode.get(SuggestionFields.IS_SHOWN_BY);
 		if (propertyNode != null) {
-		    JsonNode idNode = propertyNode.get(WebEntityFields.ID);
+		    JsonNode idNode = propertyNode.get(id);
 		    if (idNode != null)
 			preview.setIsShownById(idNode.textValue());
-		    JsonNode sourceNode = propertyNode.get(WebEntityFields.SOURCE);
+		    JsonNode sourceNode = propertyNode.get(source);
 		    if (sourceNode != null)
 			preview.setIsShownBySource(sourceNode.textValue());
-		    JsonNode thumbnailNode = propertyNode.get(WebEntityFields.THUMBNAIL);
+		    JsonNode thumbnailNode = propertyNode.get(thumbnail);
 		    if (thumbnailNode != null)
 			preview.setIsShownByThumbnail(thumbnailNode.textValue());
 		}
@@ -317,18 +320,18 @@ public class SuggestionUtils {
 	private void putOrganizationSpecificProperties(
 			OrganizationPreview preview, JsonNode payloadNode, List<String> preferredLanguages) {
 
-		Map<String, List<String>> acronym = getValuesAsLanguageMapList(
-				payloadNode, WebEntityConstants.ACRONYM, preferredLanguages);
-		preview.setAcronym(acronym);
+		Map<String, List<String>> acronymMap = getValuesAsLanguageMapList(
+				payloadNode, acronym, preferredLanguages);
+		preview.setAcronym(acronymMap);
 		
 		//only english versions are available for now, and the structure is not a language map
-		JsonNode propertyNode = payloadNode.get(WebEntityFields.COUNTRY);
+		JsonNode propertyNode = payloadNode.get(country);
 		if (propertyNode != null) {
-			preview.setCountry(propertyNode.get(WebEntityFields.ID).textValue());
+			preview.setCountry(propertyNode.get(id).textValue());
 		}
 		
 		//only english versions are available for now, and the structure is not a language map
-		propertyNode = payloadNode.get(WebEntityFields.ORGANIZATION_DOMAIN);
+		propertyNode = payloadNode.get(organizationDomain);
 		if (propertyNode != null)
 			preview.setOrganizationDomain(propertyNode.textValue());
 	}

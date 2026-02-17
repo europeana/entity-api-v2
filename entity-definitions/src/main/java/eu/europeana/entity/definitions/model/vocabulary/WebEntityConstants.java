@@ -7,11 +7,6 @@ public class WebEntityConstants extends WebEntityFields {
 
     // REST API query
     public static final String SLASH = "/";
-    public static final String PAR_CHAR = "?";
-
-    public static final String PATH_PARAM_TYPE = "type";
-    public static final String PATH_PARAM_IDENTIFIER = "identifier";
-
     public static final String QUERY_PARAM_TYPE = "type";
     public static final String QUERY_PARAM_FIELD = "field";
     public static final String QUERY_PARAM_SCOPE = "scope";
@@ -26,10 +21,6 @@ public class WebEntityConstants extends WebEntityFields {
     public static final String PARAM_TYPE_ALL = "All";
     public static final String PARAM_LANGUAGE_ALL = "all";
     public static final String PARAM_LANGUAGE_EN = "en";
-
-    public static final String PARAM_TYPE_AGENT = "agent";
-    public static final String PARAM_TYPE_PLACE = "place";
-    public static final String PARAM_TYPE_CONCEPT = "concept";
     public static final String PARAM_SCOPE_EUROPEANA = "europeana";
     public static final String PARAM_DEFAULT_ROWS = "10";
 
@@ -42,9 +33,7 @@ public class WebEntityConstants extends WebEntityFields {
     public static final String BACKSLASH = "\\";
     public static final String SOLR_ESCAPED_QUOTE = "\\\"";
     public static final String SOLR_ESCAPED_BACKSLASH = "\\\\";
-
-    public static final String PARAM_PROFILE_FACETS = "facets";
-    public static final String TYPE_BASIC_CONTAINER = "BasicContainer";
+    public static final String ENRICH_LABEL_FIELD = "label_enrich";
 
     /** URI constants */
     public static final String PROTOCOL_GEO = "geo:";
@@ -60,21 +49,13 @@ public class WebEntityConstants extends WebEntityFields {
     /**
      * Model attribute names
      */
-    public static final String AT_CONTEXT = "@context";
-    public static final String AT_LANGUAGE = "@language";
-    public static final String ITEMS = "items";
     public static final String TOP_CONCEPT = "topConcept";
-    public static final String TOTAL = "total";
 
-    // Page fields
-    public static final String PART_OF = "partOf";
-    public static final String PREV = "prev";
-    public static final String NEXT = "next";
+    // profile
     public static final String FACETS = "facets";
 
     // Algorithm types
     public static final String ALGORITHM = "algorithm";
-    // see SuggestAlgorithmTypes.suggestByLabel
     public static final String SUGGEST_ALGORITHM_DEFAULT = "suggestByLabel";
     public static final String SUGGEST_MONOLINGUAL = "monolingual";
     public static final String FIELD_LABEL = "label";
@@ -85,9 +66,6 @@ public class WebEntityConstants extends WebEntityFields {
     public static final String ROWS = "rows";
 
     // Defaults
-    public static final String USER_ANONYMOUNS = "anonymous";
-    public static final String PROFILE_MINIMAL = "minimal";
-    public final static String BASE_CONCEPT_SCHEME_URL = "http://data.europeana.eu/scheme/";
     public static final String ENTITY_API_RESOURCE = "entity";
 
 }
