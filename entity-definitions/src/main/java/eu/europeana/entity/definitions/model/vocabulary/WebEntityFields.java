@@ -3,6 +3,7 @@ package eu.europeana.entity.definitions.model.vocabulary;
 /**
  * Class with field values used during json/jsonld serialisation
  */
+@SuppressWarnings("java:S115")
 public class WebEntityFields {
 
     /**
