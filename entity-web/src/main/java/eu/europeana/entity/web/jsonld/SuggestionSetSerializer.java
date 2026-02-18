@@ -168,14 +168,14 @@ public class SuggestionSetSerializer extends JsonLd {
                     entityPreview, isShownBy));
         }
 
-        String type = entityPreview.getType();
+        String previewType = entityPreview.getType();
         EntityTypes entityType = null;
         try {
-            entityType = EntityTypes.getByInternalType(type);
+            entityType = EntityTypes.getByInternalType(previewType);
         } catch (UnsupportedEntityTypeException e) {
             throw new EuropeanaI18nApiException(null, null, null, HttpStatus.NOT_FOUND,
 					I18nConstants.UNSUPPORTED_ENTITY_TYPE,
-					Arrays.asList(WebEntityConstants.ENTITY_API_RESOURCE, "", type),
+					Arrays.asList(WebEntityConstants.ENTITY_API_RESOURCE, previewType),
 					e);
         }
 

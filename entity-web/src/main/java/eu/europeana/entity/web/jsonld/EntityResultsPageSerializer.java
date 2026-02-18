@@ -21,8 +21,8 @@ public class EntityResultsPageSerializer<T extends Entity> extends ResultsPageSe
 
     String entityIdBaseUrl;
 
-    public EntityResultsPageSerializer(ResultsPage<T> resPage, String context, String type, String entityIdBaseUrl) {
-        super(resPage, context, type);
+    public EntityResultsPageSerializer(ResultsPage<T> resPage, String contextValue, String typeValue, String entityIdBaseUrl) {
+        super(resPage, contextValue, typeValue);
         this.entityIdBaseUrl = entityIdBaseUrl;
         setPropOrderComparator(new EntityJsonComparator());
     }
