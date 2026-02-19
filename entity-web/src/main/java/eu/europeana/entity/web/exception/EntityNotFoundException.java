@@ -9,7 +9,7 @@ import java.util.List;
 public class EntityNotFoundException extends EuropeanaI18nApiException {
 
     public EntityNotFoundException(List<String> i18params) {
-        super(null, null, null, HttpStatus.NOT_FOUND, I18nConstants.CANT_FIND_BY_SAME_AS_URI, i18params);
+        super(null, null, "Not Found", HttpStatus.NOT_FOUND, I18nConstants.CANT_FIND_BY_SAME_AS_URI, i18params);
     }
 
     @Override
