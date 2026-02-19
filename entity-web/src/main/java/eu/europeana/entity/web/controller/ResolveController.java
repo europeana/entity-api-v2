@@ -6,6 +6,7 @@ import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
+import eu.europeana.entity.web.exception.EntityNotFoundException;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
@@ -51,9 +52,9 @@ public class ResolveController extends BaseRest {
 
         List<String> entityUris = getEntityService().resolveByUri(validatedUri);
 
-        //EA-4372 if empty, return 404 Not Found ( no exceptions)
+        //EA-4372 if empty, return 404 Not Found (exception without logging)
         if (entityUris.isEmpty()) {
-            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException(Arrays.asList(WebEntityConstants.ENTITY_API_RESOURCE, validatedUri));
         }
 
         String preferredEntity = EntityUtils.replaceBaseUrlInId(entityUris.get(0), entityWebConfig.getEntityDataEndpoint());
