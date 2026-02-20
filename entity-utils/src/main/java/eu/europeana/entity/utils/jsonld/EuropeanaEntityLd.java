@@ -5,7 +5,6 @@ import java.util.Optional;
 import eu.europeana.api.commons_sb3.definitions.utils.DateUtils;
 import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
-import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.stanbol.commons.jsonld.JsonLd;
 import org.apache.stanbol.commons.jsonld.JsonLdProperty;
@@ -22,6 +21,9 @@ import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.utils.EntityUtils;
 
 import static eu.europeana.entity.definitions.model.vocabulary.WebEntityFields.*;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.context;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.id;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.type;
 
 public class EuropeanaEntityLd extends JsonLd {
 
@@ -33,9 +35,9 @@ public class EuropeanaEntityLd extends JsonLd {
     super();
     this.entityIdBaseUrl = entityIdBaseUrl;
     setPropOrderComparator(new EntityJsonComparator());
-    registerContainerProperty(BIOGRAPHICAL_INFORMATION);
-    registerContainerProperty(PLACE_OF_BIRTH);
-    registerContainerProperty(PLACE_OF_DEATH);
+    registerContainerProperty(biographicalInformation);
+    registerContainerProperty(placeOfBirth);
+    registerContainerProperty(placeOfDeath);
     setEntity(entity);
   }
 
@@ -45,28 +47,26 @@ public class EuropeanaEntityLd extends JsonLd {
     setUsedNamespaces(namespacePrefixMap);
 
     ldResource.setSubject("");
-    ldResource.putProperty(CommonLdConstants.context, CommonLdConstants.ENTITY_CONTEXT);
+    ldResource.putProperty(context, CommonLdConstants.ENTITY_CONTEXT);
 
     // common EntityProperties
-    ldResource.putProperty(ID,
-        EntityUtils.replaceBaseUrlInId(entity.getEntityId(), entityIdBaseUrl));
-    ldResource.putProperty(TYPE, entity.getType());
-    putStringArrayProperty(IDENTIFIER, entity.getIdentifier(), ldResource);
-    putStringArrayProperty(SAME_AS, entity.getSameAs(), ldResource);
-    putStringArrayProperty(IS_RELATED_TO, entity.getIsRelatedTo(), ldResource);
+    ldResource.putProperty(id, EntityUtils.replaceBaseUrlInId(entity.getEntityId(), entityIdBaseUrl));
+    ldResource.putProperty(type, entity.getType());
+    putStringArrayProperty(identifier, entity.getIdentifier(), ldResource);
+    putStringArrayProperty(sameAs, entity.getSameAs(), ldResource);
+    putStringArrayProperty(isRelatedTo, entity.getIsRelatedTo(), ldResource);
 
     if (!StringUtils.isEmpty(entity.getDepiction())) {
-      ldResource
-          .putProperty(createWikimediaResource(entity.getDepiction(), DEPICTION));
+      ldResource.putProperty(createWikimediaResource(entity.getDepiction(), depiction));
     }
 
     // common SKOS_Properties
-    putMapOfStringProperty(PREF_LABEL, ((BaseEntity) entity).getPrefLabel(), "",
+    putMapOfStringProperty(prefLabel, ((BaseEntity) entity).getPrefLabel(), "",
         ldResource);
-    putMapOfStringListProperty(ALT_LABEL, entity.getAltLabel(), "", ldResource);
-    putMapOfStringListProperty(HIDDEN_LABEL, entity.getHiddenLabel(), "",
+    putMapOfStringListProperty(altLabel, entity.getAltLabel(), "", ldResource);
+    putMapOfStringListProperty(hiddenLabel, entity.getHiddenLabel(), "",
         ldResource);
-    putMapOfStringListProperty(NOTE, entity.getNote(), "", ldResource);
+    putMapOfStringListProperty(note, entity.getNote(), "", ldResource);
 
     // common administrative information (created, modified)
     putAggregationProperty(entity, ldResource);
@@ -74,7 +74,7 @@ public class EuropeanaEntityLd extends JsonLd {
     // isShownBy
     if (!StringUtils.isEmpty(((BaseEntity) entity).getIsShownById())) {
       ldResource
-          .putProperty(createIsShownByResource((BaseEntity) entity, IS_SHOWN_BY));
+          .putProperty(createIsShownByResource((BaseEntity) entity, isShownBy));
     }
 
     // specific properties (by entity type)
@@ -98,18 +98,15 @@ public class EuropeanaEntityLd extends JsonLd {
     JsonLdPropertyValue isShownByValue = new JsonLdPropertyValue();
 
     if (!StringUtils.isEmpty(entity.getIsShownById())) {
-      isShownByValue.putProperty(new JsonLdProperty(ID, entity.getIsShownById()));
-      isShownByValue
-          .putProperty(new JsonLdProperty(TYPE, WEB_RESOURCE));
+      isShownByValue.putProperty(new JsonLdProperty(id, entity.getIsShownById()));
+      isShownByValue.putProperty(new JsonLdProperty(type, WebResource));
     }
 
     if (!StringUtils.isEmpty(entity.getIsShownBySource()))
-      isShownByValue
-          .putProperty(new JsonLdProperty(SOURCE, entity.getIsShownBySource()));
+      isShownByValue.putProperty(new JsonLdProperty(source, entity.getIsShownBySource()));
 
     if (!StringUtils.isEmpty(entity.getIsShownByThumbnail()))
-      isShownByValue.putProperty(
-          new JsonLdProperty(THUMBNAIL, entity.getIsShownByThumbnail()));
+      isShownByValue.putProperty(new JsonLdProperty(thumbnail, entity.getIsShownByThumbnail()));
 
     isShownByProperty.addValue(isShownByValue);
     return isShownByProperty;
@@ -120,24 +117,24 @@ public class EuropeanaEntityLd extends JsonLd {
     JsonLdProperty depictionProperty = new JsonLdProperty(field);
     JsonLdPropertyValue depictionValue = new JsonLdPropertyValue();
 
-    depictionValue.putProperty(new JsonLdProperty(ID, wikimediaCommonsId));
+    depictionValue.putProperty(new JsonLdProperty(id, wikimediaCommonsId));
     String sourceValue = EntityUtils.createWikimediaResourceString(wikimediaCommonsId);
-    depictionValue.putProperty(new JsonLdProperty(SOURCE, sourceValue));
+    depictionValue.putProperty(new JsonLdProperty(source, sourceValue));
 
     depictionProperty.addValue(depictionValue);
     return depictionProperty;
   }
 
   private void putConceptSpecificProperties(Concept entity, JsonLdResource jsonLdResource) {
-    putMapOfStringListProperty(NOTATION, entity.getNotation(), "", jsonLdResource);
-    putStringArrayProperty(RELATED, entity.getRelated(), jsonLdResource);
-    putStringArrayProperty(BROADER, entity.getBroader(), jsonLdResource);
-    putStringArrayProperty(NARROWER, entity.getNarrower(), jsonLdResource);
-    putStringArrayProperty(EXACT_MATCH, entity.getExactMatch(), jsonLdResource);
-    putStringArrayProperty(CLOSE_MATCH, entity.getCloseMatch(), jsonLdResource);
-    putStringArrayProperty(BROAD_MATCH, entity.getBroadMatch(), jsonLdResource);
-    putStringArrayProperty(NARROW_MATCH, entity.getNarrowMatch(), jsonLdResource);
-    putStringArrayProperty(RELATED_MATCH, entity.getRelatedMatch(), jsonLdResource);
+    putMapOfStringListProperty(notation, entity.getNotation(), "", jsonLdResource);
+    putStringArrayProperty(related, entity.getRelated(), jsonLdResource);
+    putStringArrayProperty(broader, entity.getBroader(), jsonLdResource);
+    putStringArrayProperty(narrower, entity.getNarrower(), jsonLdResource);
+    putStringArrayProperty(exactMatch, entity.getExactMatch(), jsonLdResource);
+    putStringArrayProperty(closeMatch, entity.getCloseMatch(), jsonLdResource);
+    putStringArrayProperty(broadMatch, entity.getBroadMatch(), jsonLdResource);
+    putStringArrayProperty(narrowMatch, entity.getNarrowMatch(), jsonLdResource);
+    putStringArrayProperty(relatedMatch, entity.getRelatedMatch(), jsonLdResource);
   }
 
   private void putSpecificProperties(Entity entity, JsonLdResource jsonLdResource)
@@ -174,11 +171,9 @@ public class EuropeanaEntityLd extends JsonLd {
 
   private void putTimeSpanSpecificProperties(TimeSpan entity, JsonLdResource jsonLdResource) {
     putBaseEntityProperties((BaseEntity) entity, jsonLdResource);
-    putStringArrayProperty(IS_NEXT_IN_SEQUENCE, entity.getIsNextInSequence(),
-        jsonLdResource);
-
-    putStringProperty(BEGIN, entity.getBegin(), jsonLdResource);
-    putStringProperty(END, entity.getEnd(), jsonLdResource);
+    putStringArrayProperty(isNextInSequence, entity.getIsNextInSequence(), jsonLdResource);
+    putStringProperty(begin, entity.getBegin(), jsonLdResource);
+    putStringProperty(end, entity.getEnd(), jsonLdResource);
   }
 
 
@@ -186,14 +181,13 @@ public class EuropeanaEntityLd extends JsonLd {
     putBaseEntityProperties((BaseEntity) entity, jsonLdResource);
 
     if (entity.getLatitude() != null)
-      putStringProperty(LATITUDE, "" + entity.getLatitude(), jsonLdResource);
+      putStringProperty(lat, "" + entity.getLatitude(), jsonLdResource);
     if (entity.getLongitude() != null)
-      putStringProperty(LONGITUDE, "" + entity.getLongitude(), jsonLdResource);
+      putStringProperty(_long, "" + entity.getLongitude(), jsonLdResource);
     if (entity.getAltitude() != null)
-      putStringProperty(ALTITUDE, "" + entity.getAltitude(), jsonLdResource);
+      putStringProperty(alt, "" + entity.getAltitude(), jsonLdResource);
 
-    putStringArrayProperty(IS_NEXT_IN_SEQUENCE, entity.getIsNextInSequence(),
-        jsonLdResource);
+    putStringArrayProperty(isNextInSequence, entity.getIsNextInSequence(), jsonLdResource);
   }
 
   private void putAgentSpecificProperties(Agent entity, JsonLdResource jsonLdResource) {
@@ -201,30 +195,24 @@ public class EuropeanaEntityLd extends JsonLd {
     putBaseEntityProperties((BaseEntity) entity, jsonLdResource);
 
     // Agent Props
-    putMapOfStringProperty(NAME, entity.getName(), "", jsonLdResource);
-    putMapOfReferencesProperty(BIOGRAPHICAL_INFORMATION,
+    putMapOfStringProperty(name, entity.getName(), "", jsonLdResource);
+    putMapOfReferencesProperty(biographicalInformation,
         entity.getBiographicalInformation(), "", jsonLdResource);
-    putMapOfReferencesProperty(PROFESSION_OR_OCCUPATION,
+    putMapOfReferencesProperty(professionOrOccupation,
         entity.getProfessionOrOccupation(), "", jsonLdResource);
 
-    putStringArrayProperty(DATE_OF_DEATH, entity.getDateOfDeath(), jsonLdResource);
-    putStringArrayProperty(DATE_OF_BIRTH, entity.getDateOfBirth(), jsonLdResource);
+    putStringArrayProperty(dateOfDeath, entity.getDateOfDeath(), jsonLdResource);
+    putStringArrayProperty(dateOfBirth, entity.getDateOfBirth(), jsonLdResource);
     if (!StringUtils.isEmpty(entity.getDateOfEstablishment())) {
-      ldResource.putProperty(DATE_OF_ESTABLISHMENT,
-          entity.getDateOfEstablishment());
+      ldResource.putProperty(dateOfEstablishment, entity.getDateOfEstablishment());
     }
     if (!StringUtils.isEmpty(entity.getDateOfTermination())) {
-      ldResource.putProperty(DATE_OF_TERMINATION, entity.getDateOfTermination());
+      ldResource.putProperty(dateOfTermination, entity.getDateOfTermination());
     }
-
-    putStringArrayProperty(BEGIN, entity.getBegin(), jsonLdResource);
-    putStringArrayProperty(END, entity.getEnd(), jsonLdResource);
-
-
-    putMapOfReferencesProperty(PLACE_OF_BIRTH, entity.getPlaceOfBirth(), "",
-        jsonLdResource);
-    putMapOfReferencesProperty(PLACE_OF_DEATH, entity.getPlaceOfDeath(), "",
-        jsonLdResource);
+    putStringArrayProperty(begin, entity.getBegin(), jsonLdResource);
+    putStringArrayProperty(end, entity.getEnd(), jsonLdResource);
+    putMapOfReferencesProperty(placeOfBirth, entity.getPlaceOfBirth(), "", jsonLdResource);
+    putMapOfReferencesProperty(placeOfDeath, entity.getPlaceOfDeath(), "", jsonLdResource);
 
   }
 
@@ -234,35 +222,33 @@ public class EuropeanaEntityLd extends JsonLd {
     putBaseEntityProperties((BaseEntity) entity, jsonLdResource);
 
     // Organization properties
-    putMapOfStringProperty(DESCRIPTION, entity.getDescription(), "", ldResource);
+    putMapOfStringProperty(description, entity.getDescription(), "", ldResource);
 
-    putMapOfStringListProperty(ACRONYM, entity.getAcronym(), "", ldResource);
+    putMapOfStringListProperty(acronym, entity.getAcronym(), "", ldResource);
 
     if (!StringUtils.isEmpty(entity.getLogo())) {
       ldResource.putProperty(createWikimediaResource(entity.getLogo(), FOAF_LOGO));
     }
 
-    if (!StringUtils.isEmpty(entity.getHomepage()))
+    if (!StringUtils.isEmpty(entity.getHomepage())) {
       ldResource.putProperty(FOAF_HOMEPAGE, entity.getHomepage());
+    }
 
-    if (entity.getPhone() != null)
+    if (entity.getPhone() != null) {
       putListProperty(FOAF_PHONE, entity.getPhone(), jsonLdResource);
-    if (entity.getMbox() != null)
+    }
+    if (entity.getMbox() != null) {
       putListProperty(FOAF_MBOX, entity.getMbox(), jsonLdResource);
+    }
 
     if (entity.getEuropeanaRole() != null) {
-      putListProperty(EUROPEANA_ROLE, entity.getEuropeanaRole(), jsonLdResource);
+      putListProperty(europeanaRole, entity.getEuropeanaRole(), jsonLdResource);
     }
-    
     if (entity.getAggregatedVia() != null) {
-      putListProperty(AGGREGATED_VIA, entity.getAggregatedVia(), jsonLdResource);
+      putListProperty(aggregatedVia, entity.getAggregatedVia(), jsonLdResource);
     }
-
-    // putMapOfStringProperty(DESCRIPTION, entity.getDescription(), "", ldResource);
-
     putCountryProperty(entity, ldResource);
     putAddressProperty(entity, ldResource);
-
   }
 
   private void putCountryProperty(Organization entity, JsonLdResource ldResource) {
@@ -276,20 +262,19 @@ public class EuropeanaEntityLd extends JsonLd {
     // id is extracted from country 
     Optional<String> countryId = entity.getCountry().stream().filter(c -> c.startsWith("http")).findFirst();
     if(countryId.isPresent()) {
-      countryPropValue.putProperty(new JsonLdProperty(ID, countryId.get()));
+      countryPropValue.putProperty(new JsonLdProperty(id, countryId.get()));
     }
     
-    countryPropValue.putProperty(new JsonLdProperty(TYPE, TYPE_PLACE));
-    JsonLdProperty prefLabelProp = buildMapOfStringsProperty(PREF_LABEL,
-        entity.getCountryLabel(), "");
+    countryPropValue.putProperty(new JsonLdProperty(type, Place));
+    JsonLdProperty prefLabelProp = buildMapOfStringsProperty(prefLabel, entity.getCountryLabel(), "");
     
     if(prefLabelProp != null) {
       countryPropValue.putProperty(prefLabelProp); 
     }
 
-    JsonLdProperty country = new JsonLdProperty(COUNTRY);
-    country.addValue(countryPropValue);
-    ldResource.putProperty(country);
+    JsonLdProperty countryField = new JsonLdProperty(country);
+    countryField.addValue(countryPropValue);
+    ldResource.putProperty(countryField);
   }
 
 
@@ -302,34 +287,34 @@ public class EuropeanaEntityLd extends JsonLd {
     // build address object (the (json) value of the hasAddress property)
     JsonLdPropertyValue vcardAddress = new JsonLdPropertyValue();
     // id is mapped to rdf:about
-    vcardAddress.putProperty(new JsonLdProperty(ID, entity.getHasAddress()));
+    vcardAddress.putProperty(new JsonLdProperty(id, entity.getHasAddress()));
     vcardAddress
-        .putProperty(new JsonLdProperty(TYPE, ADDRESS_TYPE));
+        .putProperty(new JsonLdProperty(type, Address));
 
     if (!StringUtils.isEmpty(entity.getStreetAddress()))
       vcardAddress.putProperty(
-          new JsonLdProperty(STREET_ADDRESS, entity.getStreetAddress()));
+          new JsonLdProperty(streetAddress, entity.getStreetAddress()));
     if (!StringUtils.isEmpty(entity.getLocality()))
-      vcardAddress.putProperty(new JsonLdProperty(LOCALITY, entity.getLocality()));
+      vcardAddress.putProperty(new JsonLdProperty(locality, entity.getLocality()));
     if (!StringUtils.isEmpty(entity.getRegion()))
-      vcardAddress.putProperty(new JsonLdProperty(REGION, entity.getRegion()));
+      vcardAddress.putProperty(new JsonLdProperty(region, entity.getRegion()));
     if (!StringUtils.isEmpty(entity.getPostalCode()))
       vcardAddress
-          .putProperty(new JsonLdProperty(POSTAL_CODE, entity.getPostalCode()));
+          .putProperty(new JsonLdProperty(postalCode, entity.getPostalCode()));
     if (!StringUtils.isEmpty(entity.getCountryName()))
       vcardAddress
-          .putProperty(new JsonLdProperty(COUNTRY_NAME, entity.getCountryName()));
+          .putProperty(new JsonLdProperty(countryName, entity.getCountryName()));
     if (!StringUtils.isEmpty(entity.getPostBox()))
       vcardAddress
-          .putProperty(new JsonLdProperty(POST_OFFICE_BOX, entity.getPostBox()));
+          .putProperty(new JsonLdProperty(postOfficeBox, entity.getPostBox()));
 
     if (!StringUtils.isEmpty(entity.getHasGeo()))
       vcardAddress.putProperty(
-          new JsonLdProperty(HAS_GEO, EntityUtils.toGeoUri(entity.getHasGeo())));
+          new JsonLdProperty(hasGeo, EntityUtils.toGeoUri(entity.getHasGeo())));
 
-    JsonLdProperty hasAddress = new JsonLdProperty(HAS_ADDRESS);
-    hasAddress.addValue(vcardAddress);
-    ldResource.putProperty(hasAddress);
+    JsonLdProperty hasAddressField = new JsonLdProperty(hasAddress);
+    hasAddressField.addValue(vcardAddress);
+    ldResource.putProperty(hasAddressField);
   }
 
   private void putAggregationProperty(Entity entity, JsonLdResource ldResource) {
@@ -341,31 +326,31 @@ public class EuropeanaEntityLd extends JsonLd {
     // build aggregation object (the (json) value of the isAggregatedBy property)
     JsonLdPropertyValue oreAggregation = new JsonLdPropertyValue();
     // id is mapped to rdf:about
-    oreAggregation.putProperty(new JsonLdProperty(ID,
-        entity.getEntityId() + "#" + AGGREGATION.toLowerCase()));
+    oreAggregation.putProperty(new JsonLdProperty(id,
+        entity.getEntityId() + "#" + Aggregation.toLowerCase()));
     oreAggregation
-        .putProperty(new JsonLdProperty(TYPE, AGGREGATION));
+        .putProperty(new JsonLdProperty(type, Aggregation));
 
     if (entity.getCreated() != null)
-      oreAggregation.putProperty(new JsonLdProperty(CREATED,
+      oreAggregation.putProperty(new JsonLdProperty(created,
           DateUtils.convertDateToStr(entity.getCreated())));
     if (entity.getModified() != null)
-      oreAggregation.putProperty(new JsonLdProperty(MODIFIED,
+      oreAggregation.putProperty(new JsonLdProperty(modified,
           DateUtils.convertDateToStr(entity.getModified())));
     
-    oreAggregation.putProperty(new JsonLdProperty(PAGE_RANK, entity.getPageRank()));
-    oreAggregation.putProperty(new JsonLdProperty(RECORD_COUNT, entity.getEuropeanaDocCount()));
-    oreAggregation.putProperty(new JsonLdProperty(SCORE, entity.getDerivedScore()));
+    oreAggregation.putProperty(new JsonLdProperty(pageRank, entity.getPageRank()));
+    oreAggregation.putProperty(new JsonLdProperty(recordCount, entity.getEuropeanaDocCount()));
+    oreAggregation.putProperty(new JsonLdProperty(score, entity.getDerivedScore()));
 
-    JsonLdProperty isAggregatedBy = new JsonLdProperty(IS_AGGREGATED_BY);
-    isAggregatedBy.addValue(oreAggregation);
-    ldResource.putProperty(isAggregatedBy);
+    JsonLdProperty isAggregatedByField = new JsonLdProperty(isAggregatedBy);
+    isAggregatedByField.addValue(oreAggregation);
+    ldResource.putProperty(isAggregatedByField);
   }
 
   private void putBaseEntityProperties(BaseEntity entity, JsonLdResource jsonLdResource) {
     // COMMON Entity PROPERTIES?
-    putStringArrayProperty(IS_PART_OF, entity.getIsPartOf(), jsonLdResource);
-    putStringArrayProperty(HAS_PART, entity.getHasPart(), jsonLdResource);
+    putStringArrayProperty(isPartOf, entity.getIsPartOf(), jsonLdResource);
+    putStringArrayProperty(hasPart, entity.getHasPart(), jsonLdResource);
   }
 
   public JsonLdResource getLdResource() {
@@ -376,6 +361,6 @@ public class EuropeanaEntityLd extends JsonLd {
   public boolean isContainerProperty(String property) {
     // TODO Auto-generated method stub, overwrite this method as the super
     // implementation is
-    return !IS_PART_OF.equals(property) && super.isContainerProperty(property);
+    return !isPartOf.equals(property) && super.isContainerProperty(property);
   }
 }

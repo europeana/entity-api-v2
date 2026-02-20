@@ -1,12 +1,9 @@
 package eu.europeana.entity.web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import eu.europeana.api.commons_sb3.definitions.format.RdfFormat;
-import eu.europeana.api.commons_sb3.definitions.http.HttpHeaders;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPageSerializer;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
-import eu.europeana.api.commons_sb3.definitions.utils.HeaderUtils;
 import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants;
 import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
@@ -16,26 +13,18 @@ import eu.europeana.api.commons_sb3.oauth2.BaseRestController;
 import eu.europeana.api.commons_sb3.oauth2.service.authorization.AuthorizationService;
 import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.config.AppConfigConstants;
-import eu.europeana.entity.definitions.exceptions.InvalidProfileException;
-import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
-import eu.europeana.entity.definitions.model.vocabulary.LdProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.SuggestAlgorithmTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.utils.EntityUtils;
-import eu.europeana.entity.utils.jsonld.EuropeanaEntityLd;
-import eu.europeana.entity.web.config.BuildInfo;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.jsonld.EntityResultsPageSerializer;
-import eu.europeana.entity.web.jsonld.EntitySchemaOrgSerializer;
 import eu.europeana.entity.web.jsonld.JsonLdSerializer;
 import eu.europeana.entity.web.service.EntityAuthorizationService;
 import eu.europeana.entity.web.service.EntityService;
 import eu.europeana.entity.web.service.UsageStatsService;
-import eu.europeana.entity.web.xml.EntityXmlSerializer;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,9 +36,6 @@ import java.util.regex.Pattern;
 public abstract class BaseRest extends BaseRestController {
 
     private static final Logger LOGGER                  = LogManager.getLogger(BaseRest.class);
-
-    private static Collection<RdfFormat> validFormats   = Arrays.asList(RdfFormat.JSONLD, RdfFormat.JSON,
-            RdfFormat.SCHEMA, RdfFormat.XML);
 
     private static final Set<String> ISO_LANGUAGES      = Set.of(Locale.getISOLanguages());
 
@@ -67,12 +53,6 @@ public abstract class BaseRest extends BaseRestController {
     @Resource(name = AppConfigConstants.BEAN_WEB_CONFIG)
     EntityWebConfig webConfig;
 
-    @Resource
-    BuildInfo buildInfo;
-
-    @Resource(name = AppConfigConstants.BEAN_XML_SERIALIZER)
-    EntityXmlSerializer entityXmlSerializer;
-
     @Resource(name = AppConfigConstants.BEAN_EM_JSONLD_SERIALIZER)
     JsonLdSerializer jsonLdSerializer;
 
@@ -87,26 +67,16 @@ public abstract class BaseRest extends BaseRestController {
         return entityService;
     }
 
-    public void setEntityService(EntityService entityService) {
-        this.entityService = entityService;
-    }
-
-    public void setUsageStatsService(UsageStatsService usageStatsService) {
-        this.usageStatsService = usageStatsService;
-    }
-
     public UsageStatsService getUsageStatsService() {
         return usageStatsService;
     }
 
-    public String getApiVersion() {
-        return buildInfo.getAppVersion();
-    }
-
-    protected EntityWebConfig getConfig() {
-        return webConfig;
-    }
-
+    /**
+     * Serializes the metric data
+     * @param metricData data obtained from solr
+     * @return string
+     * @throws EuropeanaApiException
+     */
     protected String serializeMetricView(EntityMetric metricData) throws EuropeanaApiException {
         return jsonLdSerializer.serializeToJson(metricData);
     }
@@ -140,30 +110,6 @@ public abstract class BaseRest extends BaseRestController {
             throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_PAGE,
                     "positive integer value and >= 1",
                     String.valueOf(page)));
-        }
-    }
-
-    /**
-     * Entity api will only support json OR jsonld Or schema.jsonld, or xml  formats
-     * This method verifies if the provided format parameter is a valid one
-     *
-     * @param extension extension provided in the request
-     * @return The valid Rdf Format. Default Jsonld if none provided
-     * @throws InvalidParamException
-     */
-    protected RdfFormat getFormatType(String extension) throws InvalidParamException {
-        // default format JsonLd
-        if (extension == null) {
-            return RdfFormat.JSONLD;
-        }
-
-        RdfFormat format = RdfFormat.getFormatByExtension(extension);
-        if (format != null && validFormats.contains(format)) {
-            return format;
-        } else {
-            throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_FORMAT,
-                    validFormats.toString(),
-                    extension));
         }
     }
 
@@ -228,37 +174,6 @@ public abstract class BaseRest extends BaseRestController {
     }
 
     /**
-     * This method takes profile from a HTTP header if it exists or from the passed
-     * request parameter.
-     *
-     * @param paramProfile The HTTP request parameter
-     * @param request      The HTTP request with headers
-     * @return profile value
-     * @throws InvalidParamException
-     */
-    public LdProfiles getProfile(String paramProfile, HttpServletRequest request) throws EuropeanaApiException {
-
-        LdProfiles profile = null;
-        String preferHeader = request.getHeader(HttpHeaders.PREFER);
-        if (preferHeader != null) {
-            // identify profile by prefer header
-            profile = getProfile(preferHeader);
-            LOGGER.debug("Profile identified by prefer header: {}", profile.name());
-        } else {
-            if (paramProfile == null)
-                return LdProfiles.MINIMAL;
-            // get profile from param
-            try {
-                profile = LdProfiles.getByName(paramProfile);
-            } catch (InvalidProfileException e) {
-                throw new InvalidParamException(Arrays.asList(CommonApiConstants.QUERY_PARAM_PROFILE,
-                        Arrays.asList(LdProfiles.values()).toString(), paramProfile), e);
-            }
-        }
-        return profile;
-    }
-
-    /**
      * This method returns the json-ld serialization for the given results page,
      * according to the specifications of the provided search profile
      *
@@ -272,69 +187,10 @@ public abstract class BaseRest extends BaseRestController {
         ResultsPageSerializer<? extends Entity> serializer = new EntityResultsPageSerializer<>(
                 resPage,
                 CommonLdConstants.ENTITY_CONTEXT,
-                CommonLdConstants.RESULT_PAGE,
+                CommonLdConstants.ResultPage,
                 entityIdBaseUrl);
         String profileVal = (profile == null) ? null : profile.name();
         return serializer.serialize(profileVal);
-    }
-
-    /**
-     * This method retrieves view profile if provided within the "If-Match" HTTP
-     * header
-     *
-     * @return profile value
-     * @throws EuropeanaApiException
-     */
-    // TODO have generic implementation in API-Commons
-    LdProfiles getProfile(String preferHeader) throws EuropeanaApiException {
-        LdProfiles ldProfile = null;
-        String ldPreferHeaderStr = null;
-        String INCLUDE = "include";
-
-        if (StringUtils.isNotEmpty(preferHeader)) {
-            // log header for debuging
-            LOGGER.debug("'Prefer' header value: {} ", preferHeader);
-            try {
-                Map<String, String> preferHeaderMap = HeaderUtils.parsePreferHeader(preferHeader);
-                ldPreferHeaderStr = preferHeaderMap.get(INCLUDE).replace("\"", "");
-                ldProfile = LdProfiles.getByHeaderValue(ldPreferHeaderStr.trim());
-            } catch (InvalidProfileException e) {
-                throw new InvalidParamException(Arrays.asList(HttpHeaders.PREFER,
-                        Arrays.asList(LdProfiles.values()).toString(), preferHeader), e);
-            } catch (Throwable th) {
-                throw new InvalidParamException(Arrays.asList(HttpHeaders.PREFER,
-                        "valid header format", preferHeader), th);
-            }
-        }
-        return ldProfile;
-    }
-
-    /**
-     * This method selects serialization method according to provided format.
-     *
-     * @param entity The entity to be serialised
-     * @param format The format extension
-     * @return entity in the requested format
-     * @throws EuropeanaI18nApiException
-     */
-    protected String serialize(Entity entity, RdfFormat format) throws EuropeanaI18nApiException {
-        try {
-            if (RdfFormat.JSONLD.equals(format)) {
-                EuropeanaEntityLd entityLd = new EuropeanaEntityLd(entity, webConfig.getEntityDataEndpoint());
-                return entityLd.toString(4);
-            } else if (RdfFormat.SCHEMA.equals(format)) {
-                return (new EntitySchemaOrgSerializer()).serializeEntity(entity);
-            } else if (RdfFormat.XML.equals(format)) {
-                return entityXmlSerializer.serializeXml(entity, webConfig.getEntityDataEndpoint());
-            }
-            return null;
-        } catch (UnsupportedEntityTypeException e) {
-            throw new EuropeanaI18nApiException(null, null, null,
-                    HttpStatus.NOT_FOUND,
-                    I18nConstants.UNSUPPORTED_ENTITY_TYPE,
-                    Arrays.asList( WebEntityConstants.ENTITY_API_RESOURCE, entity.getType()),
-                    e);
-        }
     }
 
     @Override

@@ -4,7 +4,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import org.apache.stanbol.commons.jsonld.JsonLdCommon;
 
-import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.id;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.type;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.total;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.partOf;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.prev;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.next;
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.items;
+import static eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants.*;
 
 
 /**
@@ -21,95 +28,95 @@ public class EntityJsonComparator implements Comparator<Object> {
 	static {
 		propOrderMap.put(JsonLdCommon.CONTEXT, 10);
 		//AGENTS
-		propOrderMap.put(WebEntityConstants.ID, 20);
-		propOrderMap.put(WebEntityConstants.TYPE, 30);
-		propOrderMap.put(WebEntityConstants.TOTAL, 40);
-		propOrderMap.put(WebEntityConstants.DEPICTION, 50);
-		propOrderMap.put(WebEntityConstants.IS_SHOWN_BY, 51);
-		propOrderMap.put(WebEntityConstants.PREF_LABEL, 60);
-		propOrderMap.put(WebEntityConstants.ALT_LABEL, 70);
-		propOrderMap.put(WebEntityConstants.HIDDEN_LABEL, 80);
-		propOrderMap.put(WebEntityConstants.NAME, 90);
-		propOrderMap.put(WebEntityConstants.BEGIN, 100);
-		propOrderMap.put(WebEntityConstants.DATE_OF_BIRTH, 110);
-		propOrderMap.put(WebEntityConstants.DATE_OF_ESTABLISHMENT, 120);
-		propOrderMap.put(WebEntityConstants.END, 130);
-		propOrderMap.put(WebEntityConstants.DATE_OF_DEATH, 140);
-		propOrderMap.put(WebEntityConstants.DATE_OF_TERMINATION, 150);
-		propOrderMap.put(WebEntityConstants.DATE, 160);
-		propOrderMap.put(WebEntityConstants.PLACE_OF_BIRTH, 170);
-		propOrderMap.put(WebEntityConstants.PLACE_OF_DEATH, 180);
-		propOrderMap.put(WebEntityConstants.GENDER, 190);
-		propOrderMap.put(WebEntityConstants.PROFESSION_OR_OCCUPATION, 200);
-		propOrderMap.put(WebEntityConstants.BIOGRAPHICAL_INFORMATION, 210);
-//		propOrderMap.put(WebEntityConstants.IS_SHOWN_BY, 215); //2200
+		propOrderMap.put(id, 20);
+		propOrderMap.put(type, 30);
+		propOrderMap.put(total, 40);
+		propOrderMap.put(depiction, 50);
+		propOrderMap.put(isShownBy, 51);
+		propOrderMap.put(prefLabel, 60);
+		propOrderMap.put(altLabel, 70);
+		propOrderMap.put(hiddenLabel, 80);
+		propOrderMap.put(name, 90);
+		propOrderMap.put(begin, 100);
+		propOrderMap.put(dateOfBirth, 110);
+		propOrderMap.put(dateOfEstablishment, 120);
+		propOrderMap.put(end, 130);
+		propOrderMap.put(dateOfDeath, 140);
+		propOrderMap.put(dateOfTermination, 150);
+		propOrderMap.put(date, 160);
+		propOrderMap.put(placeOfBirth, 170);
+		propOrderMap.put(placeOfDeath, 180);
+		propOrderMap.put(gender, 190);
+		propOrderMap.put(professionOrOccupation, 200);
+		propOrderMap.put(biographicalInformation, 210);
+//		propOrderMap.put(IS_SHOWN_BY, 215); //2200
 		//Place
-		propOrderMap.put(WebEntityConstants.LATITUDE, 220);
-		propOrderMap.put(WebEntityConstants.LONGITUDE, 230);
-		propOrderMap.put(WebEntityConstants.ALTITUDE, 240);
+		propOrderMap.put(lat, 220);
+		propOrderMap.put(_long, 230);
+		propOrderMap.put(alt, 240);
 //		
 		//Agent
-		propOrderMap.put(WebEntityConstants.NOTE, 250);
+		propOrderMap.put(note, 250);
 		
 		//Concept
-		propOrderMap.put(WebEntityConstants.NOTATION, 260);
-		propOrderMap.put(WebEntityConstants.BROADER, 270);
-		propOrderMap.put(WebEntityConstants.NARROWER, 280);
-		propOrderMap.put(WebEntityConstants.RELATED, 290);
-		propOrderMap.put(WebEntityConstants.BROAD_MATCH, 300);
-		propOrderMap.put(WebEntityConstants.NARROW_MATCH, 310);
-		propOrderMap.put(WebEntityConstants.RELATED_MATCH, 320);
-		propOrderMap.put(WebEntityConstants.CLOSE_MATCH, 330);
-		propOrderMap.put(WebEntityConstants.EXACT_MATCH, 340);
+		propOrderMap.put(notation, 260);
+		propOrderMap.put(broader, 270);
+		propOrderMap.put(narrower, 280);
+		propOrderMap.put(related, 290);
+		propOrderMap.put(broadMatch, 300);
+		propOrderMap.put(narrowMatch, 310);
+		propOrderMap.put(relatedMatch, 320);
+		propOrderMap.put(closeMatch, 330);
+		propOrderMap.put(exactMatch, 340);
 		
 		//Organizations
-		propOrderMap.put(WebEntityConstants.ACRONYM, 65);
-		propOrderMap.put(WebEntityConstants.DESCRIPTION, 360);
-		propOrderMap.put(WebEntityConstants.FOAF_LOGO, 370);
-		propOrderMap.put(WebEntityConstants.EUROPEANA_ROLE, 380);
-//		propOrderMap.put(WebEntityConstants.ORGANIZATION_DOMAIN, 390);
-//		propOrderMap.put(WebEntityConstants.GEOGRAPHIC_LEVEL, 400);
-		propOrderMap.put(WebEntityConstants.COUNTRY, 410);
-		propOrderMap.put(WebEntityConstants.FOAF_HOMEPAGE, 420);
-		propOrderMap.put(WebEntityConstants.FOAF_PHONE, 430);
-		propOrderMap.put(WebEntityConstants.FOAF_MBOX, 440);
+		propOrderMap.put(acronym, 65);
+		propOrderMap.put(description, 360);
+		propOrderMap.put(FOAF_LOGO, 370);
+		propOrderMap.put(europeanaRole, 380);
+//		propOrderMap.put(ORGANIZATION_DOMAIN, 390);
+//		propOrderMap.put(GEOGRAPHIC_LEVEL, 400);
+		propOrderMap.put(country, 410);
+		propOrderMap.put(FOAF_HOMEPAGE, 420);
+		propOrderMap.put(FOAF_PHONE, 430);
+		propOrderMap.put(FOAF_MBOX, 440);
 		//Organization - relations
-		propOrderMap.put(WebEntityConstants.HAS_ADDRESS, 510);
-		propOrderMap.put(WebEntityConstants.AGGREGATED_VIA, 520);
+		propOrderMap.put(hasAddress, 510);
+		propOrderMap.put(aggregatedVia, 520);
 		
 		//Agent - relations
-		propOrderMap.put(WebEntityConstants.HAS_PART, 460);
-		propOrderMap.put(WebEntityConstants.IS_PART_OF, 470);
-		propOrderMap.put(WebEntityConstants.HAS_MET, 480);
-		propOrderMap.put(WebEntityConstants.IS_RELATED_TO, 490);
-		propOrderMap.put(WebEntityConstants.WAS_PRESENT_AT, 500);
+		propOrderMap.put(hasPart, 460);
+		propOrderMap.put(isPartOf, 470);
+		propOrderMap.put(hasMet, 480);
+		propOrderMap.put(isRelatedTo, 490);
+		propOrderMap.put(wasPresentAt, 500);
 		
 		//generic/other relations
-		propOrderMap.put(WebEntityConstants.IDENTIFIER, 620);
-		propOrderMap.put(WebEntityConstants.IS_NEXT_IN_SEQUENCE, 630);
-		propOrderMap.put(WebEntityConstants.IN_SCHEME, 640);
-		propOrderMap.put(WebEntityConstants.SAME_AS, 650);
+		propOrderMap.put(identifier, 620);
+		propOrderMap.put(isNextInSequence, 630);
+		propOrderMap.put(inScheme, 640);
+		propOrderMap.put(sameAs, 650);
 		//address
-		propOrderMap.put(WebEntityConstants.STREET_ADDRESS, 1010);
-		propOrderMap.put(WebEntityConstants.POSTAL_CODE, 1020);
-		propOrderMap.put(WebEntityConstants.POST_OFFICE_BOX, 1030);
-		propOrderMap.put(WebEntityConstants.LOCALITY, 1040);
-		propOrderMap.put(WebEntityConstants.REGION, 1050);
-		propOrderMap.put(WebEntityConstants.COUNTRY_NAME, 1060);
+		propOrderMap.put(streetAddress, 1010);
+		propOrderMap.put(postalCode, 1020);
+		propOrderMap.put(postOfficeBox, 1030);
+		propOrderMap.put(locality, 1040);
+		propOrderMap.put(region, 1050);
+		propOrderMap.put(countryName, 1060);
 				
 		//Page
-		propOrderMap.put(WebEntityConstants.PART_OF, 2050);
-		propOrderMap.put(WebEntityConstants.PREV, 2090);
-		propOrderMap.put(WebEntityConstants.NEXT, 2100);
-		propOrderMap.put(WebEntityConstants.FACETS, 2110);
-		propOrderMap.put(WebEntityConstants.ITEMS, 2120);
+		propOrderMap.put(partOf, 2050);
+		propOrderMap.put(prev, 2090);
+		propOrderMap.put(next, 2100);
+		propOrderMap.put(FACETS, 2110);
+		propOrderMap.put(items, 2120);
 		
 		//aggregation
-        propOrderMap.put(WebEntityConstants.CREATED, 3000);
-        propOrderMap.put(WebEntityConstants.MODIFIED, 3010);
-        propOrderMap.put(WebEntityConstants.PAGE_RANK, 3020);
-        propOrderMap.put(WebEntityConstants.RECORD_COUNT, 3030);
-        propOrderMap.put(WebEntityConstants.SCORE, 3040);
+        propOrderMap.put(created, 3000);
+        propOrderMap.put(modified, 3010);
+        propOrderMap.put(pageRank, 3020);
+        propOrderMap.put(recordCount, 3030);
+        propOrderMap.put(score, 3040);
 
 	}
 

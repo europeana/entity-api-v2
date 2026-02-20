@@ -1,14 +1,12 @@
 package eu.europeana.entity.web.jsonld;
 
 import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
-import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants;
 import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.ResourcePreview;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
-import eu.europeana.entity.definitions.model.vocabulary.WebEntityFields;
 import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.utils.jsonld.EntityJsonComparator;
 import eu.europeana.entity.web.model.view.*;
@@ -21,6 +19,9 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.*;
+import static eu.europeana.entity.definitions.model.vocabulary.WebEntityFields.*;
 
 public class SuggestionSetSerializer extends JsonLd {
 
@@ -47,8 +48,8 @@ public class SuggestionSetSerializer extends JsonLd {
         super();
         this.entityIdBaseUrl = entityIdBaseUrl;
         setPropOrderComparator(new EntityJsonComparator());
-        registerContainerProperty(WebEntityConstants.IS_PART_OF);
-        registerContainerProperty(WebEntityConstants.ITEMS);
+        registerContainerProperty(isPartOf);
+        registerContainerProperty(items);
         setConceptSet(entitySet);
     }
 
@@ -69,16 +70,16 @@ public class SuggestionSetSerializer extends JsonLd {
         JsonLdResource jsonLdResource = new JsonLdResource();
         jsonLdResource.setSubject("");
 
-        JsonLdProperty contextProperty = new JsonLdProperty(WebEntityConstants.AT_CONTEXT);
+        JsonLdProperty contextProperty = new JsonLdProperty(context);
         contextProperty.getValues().add(new JsonLdPropertyValue(WebEntityConstants.LDP_CONTEXT));
-        contextProperty.getValues().add(new JsonLdPropertyValue(CommonLdConstants.ENTITY_CONTEXT));
+        contextProperty.getValues().add(new JsonLdPropertyValue(ENTITY_CONTEXT));
 
         jsonLdResource.putProperty(contextProperty);
 
         // TODO: update JSONLD output and add the @language:en to context
 
-        jsonLdResource.putProperty(WebEntityConstants.TYPE, CommonLdConstants.RESULT_PAGE);
-        jsonLdResource.putProperty(WebEntityConstants.TOTAL, getEntitySet().getResultSize());
+        jsonLdResource.putProperty(type, ResultPage);
+        jsonLdResource.putProperty(total, getEntitySet().getResultSize());
 
         serializeItems(jsonLdResource);
 
@@ -93,7 +94,7 @@ public class SuggestionSetSerializer extends JsonLd {
         if (getEntitySet().isEmpty())
             return;
 
-        JsonLdProperty containsProperty = new JsonLdProperty(WebEntityConstants.ITEMS);
+        JsonLdProperty containsProperty = new JsonLdProperty(items);
         JsonLdPropertyValue propertyValue;
 
         for (EntityPreview entityPreview : getEntitySet().getResults()) {
@@ -118,13 +119,13 @@ public class SuggestionSetSerializer extends JsonLd {
         JsonLdPropertyValue isShownByValue = new JsonLdPropertyValue();
 
         if (!StringUtils.isEmpty(entity.getIsShownById())) {
-            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.ID, entity.getIsShownById()));
-            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.TYPE, WebEntityFields.WEB_RESOURCE));
+            isShownByValue.putProperty(new JsonLdProperty(id, entity.getIsShownById()));
+            isShownByValue.putProperty(new JsonLdProperty(type, WebResource));
         }
         if (!StringUtils.isEmpty(entity.getIsShownBySource()))
-            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.SOURCE, entity.getIsShownBySource()));
+            isShownByValue.putProperty(new JsonLdProperty(source, entity.getIsShownBySource()));
         if (!StringUtils.isEmpty(entity.getIsShownByThumbnail()))
-            isShownByValue.putProperty(new JsonLdProperty(WebEntityFields.THUMBNAIL, entity.getIsShownByThumbnail()));
+            isShownByValue.putProperty(new JsonLdProperty(thumbnail, entity.getIsShownByThumbnail()));
         isShownByProperty.addValue(isShownByValue);
         return isShownByProperty;
     }
@@ -135,9 +136,9 @@ public class SuggestionSetSerializer extends JsonLd {
 
         // id
         String entityIdAdjusted = EntityUtils.replaceBaseUrlInId(entityPreview.getEntityId(), entityIdBaseUrl);
-        entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.ID, entityIdAdjusted));
+        entityPreviewPropValue.putProperty(new JsonLdProperty(id, entityIdAdjusted));
 
-        JsonLdProperty prefLabelProp = buildMapOfStringsProperty(WebEntityConstants.PREF_LABEL,
+        JsonLdProperty prefLabelProp = buildMapOfStringsProperty(prefLabel,
                 entityPreview.getPreferredLabel(), "");
         if (prefLabelProp != null) {
             entityPreviewPropValue.putProperty(prefLabelProp);
@@ -145,14 +146,14 @@ public class SuggestionSetSerializer extends JsonLd {
 
         // altLabel
         if (entityPreview.getAltLabel() != null && !entityPreview.getAltLabel().isEmpty()) {
-            JsonLdProperty altLabelProp = buildMapProperty(WebEntityConstants.ALT_LABEL,
+            JsonLdProperty altLabelProp = buildMapProperty(altLabel,
                     entityPreview.getAltLabel(), "");
             entityPreviewPropValue.putProperty(altLabelProp);
         }
 
         // hiddenLabel
         if (entityPreview.getHiddenLabel() != null && !entityPreview.getHiddenLabel().isEmpty()) {
-            JsonLdProperty hiddenLabelProp = buildMapProperty(WebEntityConstants.HIDDEN_LABEL,
+            JsonLdProperty hiddenLabelProp = buildMapProperty(hiddenLabel,
                     entityPreview.getHiddenLabel(), "");
             entityPreviewPropValue.putProperty(hiddenLabelProp);
         }
@@ -160,27 +161,27 @@ public class SuggestionSetSerializer extends JsonLd {
         // depiction
         if (entityPreview.getDepiction() != null)
             entityPreviewPropValue
-                    .putProperty(new JsonLdProperty(WebEntityConstants.DEPICTION, entityPreview.getDepiction()));
+                    .putProperty(new JsonLdProperty(depiction, entityPreview.getDepiction()));
         //isShownBy
         if (!StringUtils.isEmpty((entityPreview).getIsShownById())) {
             entityPreviewPropValue.putProperty(createIsShownByResource(
-                    entityPreview, WebEntityFields.IS_SHOWN_BY));
+                    entityPreview, isShownBy));
         }
 
-        String type = entityPreview.getType();
+        String previewType = entityPreview.getType();
         EntityTypes entityType = null;
         try {
-            entityType = EntityTypes.getByInternalType(type);
+            entityType = EntityTypes.getByInternalType(previewType);
         } catch (UnsupportedEntityTypeException e) {
             throw new EuropeanaI18nApiException(null, null, null, HttpStatus.NOT_FOUND,
 					I18nConstants.UNSUPPORTED_ENTITY_TYPE,
-					Arrays.asList(WebEntityConstants.ENTITY_API_RESOURCE, "", type),
+					Arrays.asList(WebEntityConstants.ENTITY_API_RESOURCE, previewType),
 					e);
         }
 
         if (entityType != null) {
             entityPreviewPropValue
-                    .putProperty(new JsonLdProperty(WebEntityConstants.TYPE, entityType.getInternalType()));
+                    .putProperty(new JsonLdProperty(type, entityType.getInternalType()));
 
             switch (entityType) {
                 case Organization:
@@ -214,10 +215,10 @@ public class SuggestionSetSerializer extends JsonLd {
     private void putTimeSpanSpecificProperties(TimeSpanPreview entityPreview,
                                                JsonLdPropertyValue entityPreviewPropValue) {
         if (entityPreview.getBegin() != null)
-            entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.BEGIN, entityPreview.getBegin()));
+            entityPreviewPropValue.putProperty(new JsonLdProperty(begin, entityPreview.getBegin()));
 
         if (entityPreview.getEnd() != null)
-            entityPreviewPropValue.putProperty(new JsonLdProperty(WebEntityConstants.END, entityPreview.getEnd()));
+            entityPreviewPropValue.putProperty(new JsonLdProperty(end, entityPreview.getEnd()));
     }
 
     private void putPlaceSpecificProperties(PlacePreview entityPreview, JsonLdPropertyValue entityPreviewPropValue) {
@@ -226,15 +227,14 @@ public class SuggestionSetSerializer extends JsonLd {
         JsonLdProperty prefLabelProp;
 
         if (partOfList != null && !partOfList.isEmpty()) {
-            JsonLdProperty isPartOfProp = new JsonLdProperty(WebEntityConstants.IS_PART_OF);
+            JsonLdProperty isPartOfProp = new JsonLdProperty(isPartOf);
             JsonLdPropertyValue propValue;
             for (ResourcePreview resourcePreview : partOfList) {
                 propValue = new JsonLdPropertyValue();
-                propValue.getValues().put(WebEntityConstants.ID, resourcePreview.getHttpUri());
-//				propValue.getValues().put(WebEntityConstants.PREF_LABEL, resourcePreview.getPrefLabel());
-                prefLabelProp = buildMapOfStringsProperty(WebEntityConstants.PREF_LABEL, resourcePreview.getPrefLabel(),
+                propValue.getValues().put(id, resourcePreview.getHttpUri());
+                prefLabelProp = buildMapOfStringsProperty(prefLabel, resourcePreview.getPrefLabel(),
                         "");
-                propValue.getPropertyMap().put(WebEntityConstants.PREF_LABEL, prefLabelProp);
+                propValue.getPropertyMap().put(prefLabel, prefLabelProp);
 
                 isPartOfProp.addValue(propValue);
             }
@@ -244,32 +244,35 @@ public class SuggestionSetSerializer extends JsonLd {
     }
 
     private void putAgentSpecificProperties(AgentPreview entityPreview, JsonLdPropertyValue entityPreviewPropValue) {
-        if (entityPreview.getDateOfBirth() != null)
+        if (entityPreview.getDateOfBirth() != null) {
             entityPreviewPropValue
-                    .putProperty(new JsonLdProperty(WebEntityConstants.DATE_OF_BIRTH, entityPreview.getDateOfBirth()));
+                    .putProperty(new JsonLdProperty(dateOfBirth, entityPreview.getDateOfBirth()));
+        }
 
-        if (entityPreview.getDateOfDeath() != null)
+        if (entityPreview.getDateOfDeath() != null){
             entityPreviewPropValue
-                    .putProperty(new JsonLdProperty(WebEntityConstants.DATE_OF_DEATH, entityPreview.getDateOfDeath()));
+                    .putProperty(new JsonLdProperty(dateOfDeath, entityPreview.getDateOfDeath()));
+        }
 
-        if (entityPreview.getProfessionOrOccuation() != null && !entityPreview.getProfessionOrOccuation().isEmpty())
-            entityPreviewPropValue.putProperty(buildMapProperty(WebEntityConstants.PROFESSION_OR_OCCUPATION,
+        if (entityPreview.getProfessionOrOccuation() != null && !entityPreview.getProfessionOrOccuation().isEmpty()) {
+            entityPreviewPropValue.putProperty(buildMapProperty(professionOrOccupation,
                     entityPreview.getProfessionOrOccuation(), ""));
+        }
     }
 
     private void putOrganizationSpecificProperties(OrganizationPreview entityPreview,
                                                    JsonLdPropertyValue entityPreviewPropValue) {
-        if (entityPreview.getAcronym() != null && !entityPreview.getAcronym().isEmpty())
-            entityPreviewPropValue
-                    .putProperty(buildMapProperty(WebEntityConstants.ACRONYM, entityPreview.getAcronym(), null));
+        if (entityPreview.getAcronym() != null && !entityPreview.getAcronym().isEmpty()) {
+            entityPreviewPropValue.putProperty(buildMapProperty(acronym, entityPreview.getAcronym(), null));
+        }
 
-        if (entityPreview.getCountry() != null)
-            entityPreviewPropValue
-                    .putProperty(new JsonLdProperty(WebEntityConstants.COUNTRY, entityPreview.getCountry()));
+        if (entityPreview.getCountry() != null) {
+            entityPreviewPropValue.putProperty(new JsonLdProperty(country, entityPreview.getCountry()));
+        }
 
-        if (entityPreview.getOrganizationDomain() != null)
-            entityPreviewPropValue.putProperty(
-                    new JsonLdProperty(WebEntityConstants.ORGANIZATION_DOMAIN, entityPreview.getOrganizationDomain()));
+        if (entityPreview.getOrganizationDomain() != null) {
+            entityPreviewPropValue.putProperty(new JsonLdProperty(organizationDomain, entityPreview.getOrganizationDomain()));
+        }
 
     }
 }

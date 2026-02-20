@@ -44,7 +44,7 @@ public class UsageStatsException extends EuropeanaApiException {
      */
     @Override
     public boolean doLogStacktrace() {
-        return true;
+        return false;
     }
 
     @Override
