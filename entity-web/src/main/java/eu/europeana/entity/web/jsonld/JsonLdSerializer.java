@@ -1,8 +1,11 @@
 package eu.europeana.entity.web.jsonld;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Locale;
+
 import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
 import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ public class JsonLdSerializer {
 
     public JsonLdSerializer() {
         mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
         SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         mapper.setDateFormat(df);
     }
@@ -31,8 +35,12 @@ public class JsonLdSerializer {
             return mapper.writer().writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new EuropeanaI18nApiException(
-                "Cannot serialize object!", null, null,  HttpStatus.INTERNAL_SERVER_ERROR,
-                I18nConstants.SERVER_ERROR_CANT_SERIALIZE_OBJECT, Arrays.asList(object.toString()), e);
+                    "Cannot serialize object!", null, null,  HttpStatus.INTERNAL_SERVER_ERROR,
+                    I18nConstants.SERVER_ERROR_CANT_SERIALIZE_OBJECT, Arrays.asList(object.toString()), e);
         }
+    }
+
+    public void write(Object object, OutputStream out) throws IOException {
+            mapper.writerFor(object.getClass()).writeValue(out, object);
     }
 }

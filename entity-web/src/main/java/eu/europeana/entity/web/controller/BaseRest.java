@@ -29,7 +29,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -72,13 +77,35 @@ public abstract class BaseRest extends BaseRestController {
     }
 
     /**
+     * Creates a {@link ResponseEntity} containing a {@link StreamingResponseBody} which streams the given object
+     * serialized as JSON-LD to the output stream.
+     *
+     * @param object the object to be serialized and streamed in the response body
+     * @param headers the HTTP headers to be set in the response
+     * @param status the HTTP status code for the response
+     * @return a {@link ResponseEntity} containing the streamed content and the specified headers and status
+     */
+    public ResponseEntity<StreamingResponseBody> getResponse(Object object,
+                                                             MultiValueMap<String, String> headers,
+                                                             HttpStatus status) {
+        StreamingResponseBody responseBody = new StreamingResponseBody() {
+            @Override
+            public void writeTo(OutputStream out) throws IOException {
+                jsonLdSerializer.write(object, out);
+                out.flush();
+            }
+        };
+        return new ResponseEntity<>(responseBody, headers, status);
+    }
+
+    /**
      * Serializes the metric data
      * @param metricData data obtained from solr
      * @return string
      * @throws EuropeanaApiException
      */
-    protected String serializeMetricView(EntityMetric metricData) throws EuropeanaApiException {
-        return jsonLdSerializer.serializeToJson(metricData);
+    protected void serializeMetricView(EntityMetric metricData, OutputStream out) throws IOException {
+        jsonLdSerializer.write(metricData, out);
     }
 
     /**
