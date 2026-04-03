@@ -37,6 +37,17 @@ public class ResolveController extends BaseRest {
     private I18nService i18nService;
 
 
+    /**
+     * Resolves an entity based on the provided URI and returns an appropriate HTTP response.
+     *
+     * @param uri the URI of the entity to be resolved.
+     * @param request the HTTP request object used for authentication and other request-related information.
+     * @return a ResponseEntity containing the resolution result. Possible outcomes include:
+     *         - HTTP 301 (Moved Permanently) if a single entity URI is resolved.
+     *         - HTTP 300 (Multiple Choices) if multiple entity URIs are resolved.
+     *         - HTTP 404 (Not Found) if no entity URIs are resolved.
+     * @throws EuropeanaApiException if an error occurs during processing.
+     */
     @RequestMapping(value = {"/entity/resolve"}, method = RequestMethod.GET,
             produces = {CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8})
     public ResponseEntity<StreamingResponseBody> resolveEntity(

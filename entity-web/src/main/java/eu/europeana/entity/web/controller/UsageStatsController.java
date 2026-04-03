@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.util.Collections;
 import java.util.Date;
 
 @Controller
 public class UsageStatsController extends BaseRest {
 
     /**
-     * Method to generate metric for entity api
+     * Generates usage statistics for entities and returns the result as a streaming JSON response.
      *
-     * @param request
-     * @return
+     * @param request the HTTP servlet request containing the details of the client's request
+     * @return a {@code ResponseEntity<StreamingResponseBody>} containing the streaming response with usage statistics
+     * @throws EuropeanaApiException if there is an error during the generation of usage statistics
      */
     @GetMapping(value = "/entity/stats", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StreamingResponseBody> generateUsageStats(
@@ -34,9 +34,11 @@ public class UsageStatsController extends BaseRest {
     }
 
     /**
-     * Get the usage statistics for entity api
+     * Retrieves usage statistics for entities and returns the result as a streaming JSON response.
      *
-     * @return
+     * @return a {@code ResponseEntity<StreamingResponseBody>} containing the streaming response
+     *         with the entity usage statistics
+     * @throws EuropeanaApiException if an error occurs during the retrieval of usage statistics
      */
     private ResponseEntity<StreamingResponseBody> getEntitiesStats() throws EuropeanaApiException {
         EntityMetric metric = new EntityMetric();
