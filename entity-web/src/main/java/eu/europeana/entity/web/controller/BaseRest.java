@@ -28,8 +28,11 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -39,8 +42,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public abstract class BaseRest extends BaseRestController {
-
-    private static final Logger LOGGER                  = LogManager.getLogger(BaseRest.class);
 
     private static final Set<String> ISO_LANGUAGES      = Set.of(Locale.getISOLanguages());
 
@@ -88,6 +89,15 @@ public abstract class BaseRest extends BaseRestController {
     public ResponseEntity<StreamingResponseBody> getResponse(Object object,
                                                              MultiValueMap<String, String> headers,
                                                              HttpStatus status) {
+
+        if (headers == null) {
+            headers = new LinkedMultiValueMap<>(1);
+        }
+
+        if (headers != null && !headers.containsKey(HttpHeaders.CONTENT_TYPE)) {
+            headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        }
+
         StreamingResponseBody responseBody = new StreamingResponseBody() {
             @Override
             public void writeTo(OutputStream out) throws IOException {
