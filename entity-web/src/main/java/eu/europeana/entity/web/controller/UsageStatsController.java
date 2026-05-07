@@ -3,9 +3,13 @@ package eu.europeana.entity.web.controller;
 import eu.europeana.api.commons_sb3.definitions.statistics.UsageStatsFields;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
+import eu.europeana.api.commons_sb3.oauth2.utils.OAuthUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +33,11 @@ public class UsageStatsController extends BaseRest {
     @GetMapping(value = "/entity/stats", produces = {CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8})
     public ResponseEntity<StreamingResponseBody> generateUsageStats(
             HttpServletRequest request) throws EuropeanaApiException {
+        Authentication auth = null;
         if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-            verifyReadAccess(request);
+            auth = verifyReadAccess(request);
         }
-        return getEntitiesStats();
+        return getEntitiesStats(auth);
     }
 
     /**
@@ -42,12 +47,16 @@ public class UsageStatsController extends BaseRest {
      *         with the entity usage statistics
      * @throws EuropeanaApiException if an error occurs during the retrieval of usage statistics
      */
-    private ResponseEntity<StreamingResponseBody> getEntitiesStats() throws EuropeanaApiException {
+    private ResponseEntity<StreamingResponseBody> getEntitiesStats(Authentication auth) throws EuropeanaApiException {
         EntityMetric metric = new EntityMetric();
         metric.setType(UsageStatsFields.OVERALL_TOTAL_TYPE);
         getUsageStatsService().getStatsForLang(metric);
         metric.setTimestamp(new Date());
-        return getResponse(metric, null, HttpStatus.OK);
+
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(3);
+        addRateLimitHeaders(headers, auth);
+
+        return getResponse(metric, headers , HttpStatus.OK);
     }
 }
 

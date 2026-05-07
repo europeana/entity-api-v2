@@ -14,6 +14,7 @@ import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -51,8 +52,9 @@ public class SearchController extends BaseRest {
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_ROWS, defaultValue = WebEntityConstants.PARAM_DEFAULT_ROWS) int rows,
 	    @RequestParam(value = WebEntityConstants.ALGORITHM, required = false, defaultValue = WebEntityConstants.SUGGEST_MONOLINGUAL) String algorithm,
 	    HttpServletRequest request) throws EuropeanaApiException {
+		Authentication auth = null;
 		if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-			verifyReadAccess(request);
+		 auth =	verifyReadAccess(request);
 		}
 
 	    // validate algorithm parameter
@@ -83,6 +85,8 @@ public class SearchController extends BaseRest {
 
 	    // build response
 	    MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(5);
+		addRateLimitHeaders(headers, auth);
+
 	    // removed in #EA-763 and specifications
 	    // //headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 	    headers.add(ALLOW, ALLOW_GET);
@@ -108,10 +112,10 @@ public class SearchController extends BaseRest {
 		    + Query.DEFAULT_PAGE_SIZE) int pageSize,
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PROFILE, required = false) String profile,
 	    HttpServletRequest request) throws EuropeanaApiException {
-        
+        Authentication auth = null;
         try {
         	if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-				verifyReadAccess(request);
+				auth = verifyReadAccess(request);
 			}
 	    // ** Process input params
 	    if (StringUtils.isBlank(queryString))
@@ -168,6 +172,7 @@ public class SearchController extends BaseRest {
 	    // removed in #EA-763 and specifications
 	    // //headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 	    headers.add(ALLOW, ALLOW_GET);
+		addRateLimitHeaders(headers, auth);
 
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
