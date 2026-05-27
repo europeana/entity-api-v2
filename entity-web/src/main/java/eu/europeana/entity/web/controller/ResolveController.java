@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -54,12 +55,14 @@ public class ResolveController extends BaseRest {
             @RequestParam(value = WebEntityConstants.QUERY_PARAM_URI) String uri, HttpServletRequest request)
             throws EuropeanaApiException {
 
+        Authentication auth = null;
         if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-            verifyReadAccess(request);
+           auth = verifyReadAccess(request);
         }
 
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
         headers.add(ALLOW, ALLOW_GET);
+        addRateLimitHeaders(headers, auth);
 
         //validate the uri
         String validatedUri = EntityUtils.convertToValidUri(uri);
