@@ -11,7 +11,6 @@ import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import eu.europeana.api.commons_sb3.oauth2.BaseRestController;
 import eu.europeana.api.commons_sb3.oauth2.service.authorization.AuthorizationService;
-import eu.europeana.api.commons_sb3.oauth2.utils.OAuthUtils;
 import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.model.Entity;
@@ -31,7 +30,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -228,24 +226,6 @@ public abstract class BaseRest extends BaseRestController {
                 entityIdBaseUrl);
         String profileVal = (profile == null) ? null : profile.name();
         return serializer.serialize(profileVal);
-    }
-
-    /**
-     * Adds rate limit-related headers to the provided HTTP headers map based on the details extracted
-     * from the given authentication object.
-     *
-     * @param headers the HTTP headers to which the rate limit-related details will be added
-     * @param auth the authentication object containing details used to generate rate limit headers
-     */
-    public void addRateLimitHeaders(MultiValueMap<String, String> headers, Authentication auth) {
-       Map<String, String> details = OAuthUtils.getDetails(auth);
-       if (details != null) {
-           details.forEach((key, value) -> {
-               if (value != null) {
-                   headers.add(key, value.toString());
-               }
-           });
-       }
     }
 
     @Override
