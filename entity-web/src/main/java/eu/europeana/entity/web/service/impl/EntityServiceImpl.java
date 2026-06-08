@@ -19,6 +19,7 @@ import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.service.SolrEntityService;
+import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.model.view.EntityPreview;
 import eu.europeana.entity.web.service.EntityService;
@@ -31,6 +32,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static eu.europeana.entity.utils.EntityUtils.isEmptyOrAll;
 
 /**
  * Implementation class
@@ -158,9 +161,6 @@ public class EntityServiceImpl implements EntityService {
         return entityTypes;
     }
 
-    private boolean isEmptyOrAll(List<EntityTypes> entityTypes) {
-        return entityTypes == null || entityTypes.isEmpty() || entityTypes.contains(EntityTypes.All);
-    }
 
     // TODO: consider usage of a helper class for helper methods
     public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, HttpServletRequest request) {

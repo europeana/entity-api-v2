@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
+import eu.europeana.entity.definitions.model.search.enrich.EnrichRequest;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -228,4 +230,37 @@ public class SearchController extends BaseRest {
 
 			return response;
 	}
+
+
+    @RequestMapping(value = { "/entity/enrich"}, method = RequestMethod.POST, produces = {
+            CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8 })
+    public ResponseEntity<String> enrichEntityPost(
+            @RequestBody EnrichRequest enrichRequest, HttpServletRequest request) throws  EuropeanaApiException {
+        if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+            verifyReadAccess(request);
+        }
+
+        // validate mandotory and valid fields
+		EntityTypes entityType = validateEntityType(enrichRequest.getType());
+		validateEnrichQuery(enrichRequest.getQuery());
+		validateRows(enrichRequest.getRows());
+
+        // build query
+        EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
+        Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(enrichRequest.getQuery(), entityType, enrichRequest.getRows());
+
+        // perform search
+        ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,
+                null);
+
+        ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, request);
+        String jsonLd = serializeResultsPage(resPage, null, entityWebConfig.getEntityDataEndpoint());
+
+        // build response
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
+        headers.add(ALLOW, ALLOW_GET);
+        ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
+
+        return response;
+    }
 }
