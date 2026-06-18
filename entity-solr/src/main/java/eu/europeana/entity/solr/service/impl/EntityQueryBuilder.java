@@ -6,9 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichQuery;
 import eu.europeana.api.commons_sb3.definitions.search.impl.QueryImpl;
 import eu.europeana.api.commons_sb3.search.util.QueryBuilder;
-import eu.europeana.entity.definitions.model.search.enrich.EnrichQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CommonParams;
@@ -19,7 +19,6 @@ import eu.europeana.entity.definitions.model.search.SearchProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
-import eu.europeana.entity.definitions.model.search.enrich.EnrichRequest;
 import eu.europeana.entity.definitions.model.vocabulary.OrganizationSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.model.vocabulary.SuggestionFields;

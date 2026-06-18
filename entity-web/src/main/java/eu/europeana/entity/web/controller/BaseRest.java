@@ -1,6 +1,7 @@
 package eu.europeana.entity.web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichQuery;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPageSerializer;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
@@ -22,7 +23,6 @@ import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.jsonld.EntityResultsPageSerializer;
 import eu.europeana.entity.web.jsonld.JsonLdSerializer;
-import eu.europeana.entity.definitions.model.search.enrich.EnrichQuery;
 import eu.europeana.entity.web.service.EntityAuthorizationService;
 import eu.europeana.entity.web.service.EntityService;
 import eu.europeana.entity.web.service.UsageStatsService;

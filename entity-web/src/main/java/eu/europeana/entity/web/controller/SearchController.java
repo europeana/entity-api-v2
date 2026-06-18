@@ -2,9 +2,10 @@ package eu.europeana.entity.web.controller;
 
 import java.util.Arrays;
 import java.util.List;
+
+import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
-import eu.europeana.entity.definitions.model.search.enrich.EnrichRequest;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -235,7 +236,7 @@ public class SearchController extends BaseRest {
     @RequestMapping(value = { "/entity/enrich"}, method = RequestMethod.POST, produces = {
             CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8 })
     public ResponseEntity<String> enrichEntityPost(
-            @RequestBody EnrichRequest enrichRequest, HttpServletRequest request) throws  EuropeanaApiException {
+			@RequestBody EnrichRequest enrichRequest, HttpServletRequest request) throws  EuropeanaApiException {
         if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
             verifyReadAccess(request);
         }
