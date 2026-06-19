@@ -312,6 +312,10 @@ public class EntityQueryBuilder extends QueryBuilder {
 			searchQuery.setFilters(createFilterForEnrichment(Collections.singletonList(entityType)));
 		}
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
+		// default pageSize
+		if (pageSize == 0) {
+			pageSize = Integer.parseInt(WebEntityConstants.PARAM_DEFAULT_ROWS);
+		}
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
 		return searchQuery;
 	}

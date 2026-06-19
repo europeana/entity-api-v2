@@ -216,16 +216,17 @@ public class EntityServiceImpl implements EntityService {
     }
 
     private String buildCollectionUrl(Query searchQuery, StringBuffer requestUrl, String queryString) {
-
         // queryString = removeParam(WebAnnotationFields.PARAM_WSKEY,
         // queryString);
 
         // remove out of scope parameters
-        queryString = removeParam(CommonApiConstants.QUERY_PARAM_PAGE, queryString);
-        queryString = removeParam(CommonApiConstants.QUERY_PARAM_PAGE_SIZE, queryString);
+        if (StringUtils.isNotEmpty(queryString)) {
+            queryString = removeParam(CommonApiConstants.QUERY_PARAM_PAGE, queryString);
+            queryString = removeParam(CommonApiConstants.QUERY_PARAM_PAGE_SIZE, queryString);
 
-        // avoid duplication of query parameters
-        queryString = removeParam(CommonApiConstants.QUERY_PARAM_PROFILE, queryString);
+            // avoid duplication of query parameters
+            queryString = removeParam(CommonApiConstants.QUERY_PARAM_PROFILE, queryString);
+        }
 
         // add mandatory parameters
         if (StringUtils.isNotBlank(searchQuery.getSearchProfile())) {

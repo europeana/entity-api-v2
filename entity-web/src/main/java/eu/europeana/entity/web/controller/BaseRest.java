@@ -269,7 +269,7 @@ public abstract class BaseRest extends BaseRestController {
     }
 
     public void validateRows(int rows) throws InvalidParamException {
-        if (rows <= 0 || rows > 50) {
+        if (rows < 0 || rows > 50) {
             throw new InvalidParamException(Arrays.asList(CommonApiConstants.QUERY_PARAM_ROWS,
                     "Positive integer value and <= 50", String.valueOf(rows)));
         }
