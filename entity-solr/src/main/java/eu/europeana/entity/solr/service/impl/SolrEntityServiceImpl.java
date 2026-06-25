@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -112,7 +113,7 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 
     @Override
     public <T extends Entity> ResultSet<T> search(Query searchQuery, String[] outLanguage, List<EntityTypes> entityTypes,
-											  String scope) throws EntityRetrievalException {
+											  String scope) throws EntityRetrievalException, InvalidSearchQueryException {
 
 	ResultSet<? extends Entity> res = null;
 	SolrQuery query = (new EntityQueryBuilder()).toSolrQuery(searchQuery, SolrEntityService.HANDLER_SELECT,
@@ -125,34 +126,31 @@ public class SolrEntityServiceImpl extends BaseEntityService implements SolrEnti
 	    res = buildResultSet(rsp, outLanguage);
 	    LOG.debug("search obj res size: {} ", res.getResultSize());
 	} catch (HttpSolrClient.RemoteSolrException e) {
-	    RuntimeException ex = handleRemoteSolrException(searchQuery, e);
-	    throw ex;
-	} catch (IOException | SolrServerException | RuntimeException e) {
+		handleRemoteSolrException(searchQuery, e);
+	} catch (IOException | SolrServerException e) {
 	    throw new EntityRetrievalException(
 		    "An error occured exception occured when searching entities: " + searchQuery.toString() + "", e);
 	}
 	return (ResultSet<T>) res;
     }
 
-    private RuntimeException handleRemoteSolrException(Query searchQuery, HttpSolrClient.RemoteSolrException e) {
+    private void handleRemoteSolrException(Query searchQuery, HttpSolrClient.RemoteSolrException e) throws EntityRetrievalException, InvalidSearchQueryException {
 	String remoteMessage = e.getMessage();
 	String UNDEFINED_FIELD = "undefined field";
-	RuntimeException ex;
 	if (remoteMessage.contains(UNDEFINED_FIELD)) {
 	    // invalid search field
 	    int startPos = remoteMessage.indexOf(UNDEFINED_FIELD) + UNDEFINED_FIELD.length();
 	    String fieldName = remoteMessage.substring(startPos);
-	    ex = new InvalidSearchQueryException(fieldName, e);
+	    throw new InvalidSearchQueryException(fieldName, e);
 	} else {
 	    int separatorPos = remoteMessage.lastIndexOf(':');
 	    if (separatorPos > 0) {
 		// remove server url from remote message
 		remoteMessage = remoteMessage.substring(separatorPos + 1);
 	    }
-	    ex = new EntityRetrievalException("An error occured when searching entities: " + searchQuery.toString()
+	    throw new EntityRetrievalException("An error occured when searching entities: " + searchQuery.toString()
 		    + ", remote message: " + remoteMessage, e);
 	}
-	return ex;
     }
 
     /*

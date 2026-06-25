@@ -53,8 +53,9 @@ public interface EntityService {
 	 * @param entityTypes types of entity
 	 * @param scope scope of the search
 	 * @return entity based on the query
+	 * @throws EuropeanaApiException exception thrown
 	 */
-	<T extends Entity> ResultSet<T> search(Query query, String[] preferredLanguages, List<EntityTypes> entityTypes, String scope) ;
+	<T extends Entity> ResultSet<T> search(Query query, String[] preferredLanguages, List<EntityTypes> entityTypes, String scope) throws EuropeanaApiException;
 	
 	
 	/**
@@ -94,8 +95,9 @@ public interface EntityService {
 	 * @param scope optional parameter to filter only entities used in europeana, see also general search method
 	 * @param entityTypes optional parameter to filter results by entity type
 	 * @return list of entity ids
+	 * @throws EuropeanaApiException exception thrown
 	 */
-	public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes);
+	public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes) throws EuropeanaApiException;
 
 	/**
 	 * return the entities from the string

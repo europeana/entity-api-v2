@@ -1,7 +1,7 @@
 package eu.europeana.entity.solr.exception;
 
 
-public class InvalidSearchQueryException extends RuntimeException {
+public class InvalidSearchQueryException extends Exception {
 
 	private static final long serialVersionUID = -167560566275881316L;
 
