@@ -116,7 +116,6 @@ public class SearchController extends BaseRest {
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PROFILE, required = false) String profile,
 	    HttpServletRequest request) throws EuropeanaApiException {
         Authentication auth = null;
-        try {
         	if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
 				auth = verifyReadAccess(request);
 			}
@@ -180,10 +179,7 @@ public class SearchController extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 	    return response;
-        } catch (InvalidSearchQueryException e){
-				throw new InvalidParamException(Arrays.asList(CommonApiConstants.QUERY_PARAM_QUERY,
-						"valid serach query", queryString));
-		}
+
 	}
 
 	@RequestMapping(value = { "/entity/enrich"}, method = RequestMethod.GET, produces = {

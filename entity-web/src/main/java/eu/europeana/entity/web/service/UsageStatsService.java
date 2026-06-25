@@ -10,7 +10,10 @@ import eu.europeana.api.commons_sb3.definitions.search.Query;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntitiesPerLanguage;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityStats;
+import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
 import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
+import eu.europeana.entity.solr.exception.EntityRetrievalException;
+import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import jakarta.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +52,7 @@ public class UsageStatsService {
      * @param metric metric fetched
      * @throws UsageStatsException exception thrown
      */
-    public void getStatsForLang(EntityMetric metric) throws UsageStatsException {
+    public void getStatsForLang(EntityMetric metric) throws EuropeanaApiException {
        // 1) for total entities per type : query=*&profile=facets&facet=type&pageSize=0
        EntityStats entityTotal = getFacetsResults(buildSearchQuery(QUERY_ALL, FACET));
        metric.setEntitiesPerType(entityTotal);
@@ -79,7 +82,7 @@ public class UsageStatsService {
      * @return
      * @throws UsageStatsException
      */
-    private EntitiesPerLanguage getEntityPerLangValues(String lang, EntityStats entityTotal) throws UsageStatsException {
+    private EntitiesPerLanguage getEntityPerLangValues(String lang, EntityStats entityTotal) throws EuropeanaApiException {
         EntitiesPerLanguage entityPerLanguage = new EntitiesPerLanguage();
         StringBuilder query = new StringBuilder(QUERY_SKOS_PREF_LABEL_PREFIX).append(lang).append(":*");
         // get facet results
@@ -105,34 +108,40 @@ public class UsageStatsService {
      * @param searchQuery
      * @return
      */
-    private EntityStats getFacetsResults(Query searchQuery) {
-        List<FacetFieldView> facets = solrEntityService.search(searchQuery, null,null, null ).getFacetFields();
-        if (!facets.isEmpty()) {
-            EntityStats entityStats = new EntityStats();
-            
-            // fetch the first facet result view
-            Map<String, Long> map = facets.get(0).getValueCountMap();
-            for (Map.Entry<String, Long> entry : map.entrySet()) {
-                if(entry.getKey().equals(EntityTypes.Agent.getInternalType())) {
-                    entityStats.setAgents(entry.getValue());
+    private EntityStats getFacetsResults(Query searchQuery) throws EuropeanaApiException {
+        try {
+            List<FacetFieldView> facets = solrEntityService.search(searchQuery, null, null, null).getFacetFields();
+            if (!facets.isEmpty()) {
+                EntityStats entityStats = new EntityStats();
+
+                // fetch the first facet result view
+                Map<String, Long> map = facets.get(0).getValueCountMap();
+                for (Map.Entry<String, Long> entry : map.entrySet()) {
+                    if (entry.getKey().equals(EntityTypes.Agent.getInternalType())) {
+                        entityStats.setAgents(entry.getValue());
+                    }
+                    if (entry.getKey().equals(EntityTypes.Concept.getInternalType())) {
+                        entityStats.setConcepts(entry.getValue());
+                    }
+                    if (entry.getKey().equals(EntityTypes.Place.getInternalType())) {
+                        entityStats.setPlaces(entry.getValue());
+                    }
+                    if (entry.getKey().equals(EntityTypes.TimeSpan.getInternalType())) {
+                        entityStats.setTimespans(entry.getValue());
+                    }
+                    if (entry.getKey().equals(EntityTypes.Organization.getInternalType())
+                            || entry.getKey().equals(EntityTypes.Aggregator.getInternalType())) {
+                        //cumulate organizations and aggregators
+                        entityStats.setOrganisations(entityStats.getOrganisations() + entry.getValue());
+                    }
                 }
-                if(entry.getKey().equals(EntityTypes.Concept.getInternalType())) {
-                    entityStats.setConcepts(entry.getValue());
-                }
-                if(entry.getKey().equals(EntityTypes.Place.getInternalType())) {
-                    entityStats.setPlaces(entry.getValue());
-                }
-                if(entry.getKey().equals(EntityTypes.TimeSpan.getInternalType())) {
-                    entityStats.setTimespans(entry.getValue());
-                }
-                if(entry.getKey().equals(EntityTypes.Organization.getInternalType())
-                    || entry.getKey().equals(EntityTypes.Aggregator.getInternalType())) {
-                  //cumulate organizations and aggregators   
-                  entityStats.setOrganisations(entityStats.getOrganisations() + entry.getValue());
-                } 
+                entityStats.setAll(entityStats.getOverall());
+                return entityStats;
             }
-            entityStats.setAll(entityStats.getOverall());
-            return entityStats;
+        } catch (EntityRetrievalException e) {
+            throw SearchServiceUtils.convertSolrSearchException(searchQuery.toString(), e);
+        } catch (InvalidSearchQueryException e) {
+            throw SearchServiceUtils.convertSolrSearchException(searchQuery.toString(), e);
         }
         return null;
     }
