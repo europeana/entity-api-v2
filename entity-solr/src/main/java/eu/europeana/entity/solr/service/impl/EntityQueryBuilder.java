@@ -3,11 +3,10 @@ package eu.europeana.entity.solr.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichQuery;
 import eu.europeana.api.commons_sb3.definitions.search.impl.QueryImpl;
 import eu.europeana.api.commons_sb3.search.util.QueryBuilder;
 import org.apache.commons.lang3.StringUtils;
@@ -288,6 +287,40 @@ public class EntityQueryBuilder extends QueryBuilder {
 	return searchQuery;
     }
 
+	/**
+	 * Builds a search query for enriching entity data based on the provided enrichment queries,
+	 * entity type, and page size. The method constructs a query by combining individual enrichment queries,
+	 * applying filters for the specified entity type, and setting sorting and pagination criteria.
+	 *
+	 * @param enrichQuery a list of {@code EnrichQuery} objects containing the text and language parameters
+	 *                    for each enrichment query to include in the search.
+	 * @param entityType the {@code EntityTypes} parameter specifying the type of entities to be filtered in the search.
+	 * @param pageSize the maximum number of results to be retrieved per page; it is constrained to a pre-defined limit.
+	 *
+	 * @return a {@code Query} object representing the constructed search query with applied filters,
+	 *         sorting, and pagination for enrichment purposes.
+	 */
+	public Query buildSearchQueryForEnrichment(List<EnrichQuery> enrichQuery, EntityTypes entityType, int pageSize) {
+		Query searchQuery = new QueryImpl();
+		StringJoiner joiner = new StringJoiner(OR);
+		for (EnrichQuery q : enrichQuery) {
+			joiner.add(createSearchQueryForEnrichment(q.getText(), q.getLang()));
+		}
+		searchQuery.setQuery(joiner.toString());
+
+		if (entityType != null) {
+			searchQuery.setFilters(createFilterForEnrichment(Collections.singletonList(entityType)));
+		}
+		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
+		// default pageSize
+		if (pageSize == 0) {
+			pageSize = Integer.parseInt(WebEntityConstants.PARAM_DEFAULT_ROWS);
+		}
+		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
+		return searchQuery;
+	}
+
+
     public Query buildSearchQueryForEnrichment(String text, String lang, List<EntityTypes> entityTypes, int pageSize) {
 		Query searchQuery = new QueryImpl();
 		searchQuery.setQuery(createSearchQueryForEnrichment(text, lang));
@@ -295,7 +328,6 @@ public class EntityQueryBuilder extends QueryBuilder {
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
 //		searchQuery.setPageNr(1);
-		
 		return searchQuery;
 	}
 

@@ -1,6 +1,7 @@
 package eu.europeana.entity.web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichQuery;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPageSerializer;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
@@ -15,6 +16,7 @@ import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
+import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.SuggestAlgorithmTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.utils.EntityUtils;
@@ -38,6 +40,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static eu.europeana.entity.utils.EntityUtils.isEmptyOrAll;
 
 public abstract class BaseRest extends BaseRestController {
 
@@ -226,6 +230,49 @@ public abstract class BaseRest extends BaseRestController {
                 entityIdBaseUrl);
         String profileVal = (profile == null) ? null : profile.name();
         return serializer.serialize(profileVal);
+    }
+
+    /**
+     * Validates the provided entity type string and returns the corresponding EntityType.
+     * If the input string cannot be mapped to a valid entity type, the default EntityTypes.All is returned.
+     *
+     * @param type the string representation of the entity type to be validated
+     * @return the validated EntityType corresponding to the input string, or EntityTypes.All if no match is found
+     * @throws EuropeanaI18nApiException if an error occurs during validation or mapping
+     */
+    public EntityTypes validateEntityType(String type) throws EuropeanaI18nApiException {
+        List<EntityTypes> entityTypes = getEntityService().getEntityTypesFromString(type);
+        if (isEmptyOrAll(entityTypes)) {
+            return null;
+        } else {
+            return entityTypes.get(0);
+        }
+    }
+
+    public void validateEnrichQuery(List<EnrichQuery> query) throws InvalidParamException {
+        // chek if there is atleast one text present
+        if (query == null || query.isEmpty()) {
+            throw new InvalidParamException(Arrays.asList("query",
+                    "query can not be empty. expected to have one text", "query empty"));
+        }
+
+        // chek the mandatory text field and lang param if present
+        for (EnrichQuery enrichQuery : query) {
+            if (StringUtils.isBlank(enrichQuery.getText())) {
+                throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_TEXT,
+                        "Text is mandatory field for searching", "empty"));
+            }
+            if (StringUtils.isNotBlank(enrichQuery.getLang())) {
+                validateLanguage(enrichQuery.getLang());
+            }
+        }
+    }
+
+    public void validateRows(int rows) throws InvalidParamException {
+        if (rows < 0 || rows > 50) {
+            throw new InvalidParamException(Arrays.asList(CommonApiConstants.QUERY_PARAM_ROWS,
+                    "Positive integer value and <= 50", String.valueOf(rows)));
+        }
     }
 
     @Override

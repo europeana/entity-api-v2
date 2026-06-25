@@ -6,11 +6,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 
 public class EntityUtils {
+
+    public static boolean isEmptyOrAll(List<EntityTypes> entityTypes) {
+        return entityTypes == null || entityTypes.isEmpty() || entityTypes.contains(EntityTypes.All);
+    }
 
     public static String createWikimediaResourceString(String wikimediaCommonsId) {
         assert wikimediaCommonsId.contains("Special:FilePath/");
