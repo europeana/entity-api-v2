@@ -18,11 +18,13 @@ import eu.europeana.entity.definitions.model.vocabulary.SuggestAlgorithmTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
+import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import eu.europeana.entity.solr.service.SolrEntityService;
 import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.model.view.EntityPreview;
 import eu.europeana.entity.web.service.EntityService;
+import eu.europeana.entity.web.service.SearchServiceUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -126,8 +128,14 @@ public class EntityServiceImpl implements EntityService {
 
     @Override
     public <T extends Entity> ResultSet<T> search(Query query, String[] outLanguage, List<EntityTypes> entityTypes,
-                                              String scope) {
-        return solrEntityService.search(query, outLanguage, entityTypes, scope);
+                                              String scope) throws EuropeanaApiException {
+        try {
+            return solrEntityService.search(query, outLanguage, entityTypes, scope);
+        } catch (EntityRetrievalException e) {
+            throw SearchServiceUtils.convertSolrSearchException(query.toString(), e);
+        } catch (InvalidSearchQueryException e) {
+            throw SearchServiceUtils.convertSolrSearchException(query.toString(), e);
+        }
     }
 
     /**
@@ -258,7 +266,7 @@ public class EntityServiceImpl implements EntityService {
 
 
     @Override
-    public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes) {
+    public List<String> searchEntityIds(Query searchQuery, String scope, List<EntityTypes> entityTypes) throws EuropeanaApiException {
         List<String> matchingEntityIds = new ArrayList<>();
         ResultSet<? extends Entity> results = search(searchQuery, null, entityTypes, scope);
         for (Entity searchRes : results.getResults()) {
@@ -278,8 +286,9 @@ public class EntityServiceImpl implements EntityService {
     @Override
     public List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws EuropeanaI18nApiException {
         try {
-            if (StringUtils.isBlank(commaSepEntityTypes)) {
-                return null;
+            if (StringUtils.isEmpty(commaSepEntityTypes)) {
+                throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_TYPE,
+                        "Type cannot be empty", commaSepEntityTypes));
             }
 
             String[] splittedEntityTypes = commaSepEntityTypes.split(",");
@@ -297,7 +306,7 @@ public class EntityServiceImpl implements EntityService {
             return entityTypes;
         } catch (UnsupportedEntityTypeException e) {
             throw new EuropeanaI18nApiException(null, null, null,
-                    HttpStatus.NOT_FOUND,
+                    HttpStatus.BAD_REQUEST,
                     I18nConstants.UNSUPPORTED_ENTITY_TYPE,
                     Arrays.asList( WebEntityConstants.ENTITY_API_RESOURCE, commaSepEntityTypes),
                     e);

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import jakarta.annotation.Resource;
 
 import eu.europeana.api.commons_sb3.definitions.search.Query;
@@ -65,7 +66,7 @@ public class SolrEntityServiceTest {
 	}
 
 	@Test
-	public void testSearch() throws EntityRetrievalException {
+	public void testSearch() throws EntityRetrievalException, InvalidSearchQueryException {
 
 		Query searchQuery = new QueryImpl("\"Giorgos Leonardos\"", 10);
 		ResultSet<? extends Entity> rs = solrEntityService.search(searchQuery, new String[] { "en", "de", "el" }, null,

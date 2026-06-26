@@ -116,7 +116,6 @@ public class SearchController extends BaseRest {
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PROFILE, required = false) String profile,
 	    HttpServletRequest request) throws EuropeanaApiException {
         Authentication auth = null;
-        try {
         	if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
 				auth = verifyReadAccess(request);
 			}
@@ -180,10 +179,7 @@ public class SearchController extends BaseRest {
 	    ResponseEntity<String> response = new ResponseEntity<String>(jsonLd, headers, HttpStatus.OK);
 
 	    return response;
-        } catch (InvalidSearchQueryException e){
-				throw new InvalidParamException(Arrays.asList(CommonApiConstants.QUERY_PARAM_QUERY,
-						"valid serach query", queryString));
-		}
+
 	}
 
 	@RequestMapping(value = { "/entity/enrich"}, method = RequestMethod.GET, produces = {
@@ -248,11 +244,16 @@ public class SearchController extends BaseRest {
         // validate mandotory and valid fields
 		EntityTypes entityType = validateEntityType(enrichRequest.getType());
 		validateEnrichQuery(enrichRequest.getQuery());
+
+		// set default rows is not present
+		if (enrichRequest.getRows() == null) {
+			enrichRequest.setRows(Integer.valueOf(WebEntityConstants.PARAM_DEFAULT_ROWS));
+		}
 		validateRows(enrichRequest.getRows());
 
         // build query
         EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
-        Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(enrichRequest.getQuery(), entityType, enrichRequest.getRows());
+        Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(enrichRequest.getQuery(), entityType, enrichRequest.getRows(), entityWebConfig.getEnrichMaxPageSize());
 
         // perform search
         ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,

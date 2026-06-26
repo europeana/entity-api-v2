@@ -1,5 +1,7 @@
 package eu.europeana.entity.solr.model;
 
+import org.apache.solr.common.SolrException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -145,5 +147,23 @@ public class SolrUtils {
 		itemArr = itemList.toArray(itemArr);
 		return itemArr;
 	}
-	
+
+
+	/**
+	 * Checks if the provided exception is a malformed query exception, specifically
+	 * when the exception is an instance of SolrException and its error code is
+	 * BAD_REQUEST.
+	 *
+	 * @param ex the exception to be checked, typically of type {@code Throwable}.
+	 * @return {@code true} if the exception is a malformed query exception,
+	 *         {@code false} otherwise.
+	 */
+	public static boolean isMalformedQueryException(Throwable ex) {
+		if (ex instanceof SolrException) {
+			if (((SolrException) ex).code() == SolrException.ErrorCode.BAD_REQUEST.code) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

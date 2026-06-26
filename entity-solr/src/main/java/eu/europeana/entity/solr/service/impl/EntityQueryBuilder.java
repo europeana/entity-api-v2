@@ -300,7 +300,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 	 * @return a {@code Query} object representing the constructed search query with applied filters,
 	 *         sorting, and pagination for enrichment purposes.
 	 */
-	public Query buildSearchQueryForEnrichment(List<EnrichQuery> enrichQuery, EntityTypes entityType, int pageSize) {
+	public Query buildSearchQueryForEnrichment(List<EnrichQuery> enrichQuery, EntityTypes entityType, int pageSize, int maxPageSize) {
 		Query searchQuery = new QueryImpl();
 		StringJoiner joiner = new StringJoiner(OR);
 		for (EnrichQuery q : enrichQuery) {
@@ -312,11 +312,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 			searchQuery.setFilters(createFilterForEnrichment(Collections.singletonList(entityType)));
 		}
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
-		// default pageSize
-		if (pageSize == 0) {
-			pageSize = Integer.parseInt(WebEntityConstants.PARAM_DEFAULT_ROWS);
-		}
-		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
+		searchQuery.setPageSize(Math.min(pageSize, maxPageSize));
 		return searchQuery;
 	}
 

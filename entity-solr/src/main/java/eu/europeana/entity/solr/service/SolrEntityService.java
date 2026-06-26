@@ -9,6 +9,7 @@ import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
+import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import eu.europeana.entity.web.model.view.EntityPreview;
 
 public interface SolrEntityService {
@@ -44,7 +45,7 @@ public interface SolrEntityService {
 	 * @throws EntityRetrievalException exception while retrieving entity
 	 */
 	<T extends Entity> ResultSet<T> search(Query searchQuery, String[] outLanguage,
-											  List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException;
+											  List<EntityTypes> entityTypes, String scope) throws EntityRetrievalException, InvalidSearchQueryException;
 	
 	/**
 	 * This method retrieves available Entities that meet the query criteria using search by label algorithm
