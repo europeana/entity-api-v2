@@ -244,11 +244,16 @@ public class SearchController extends BaseRest {
         // validate mandotory and valid fields
 		EntityTypes entityType = validateEntityType(enrichRequest.getType());
 		validateEnrichQuery(enrichRequest.getQuery());
+
+		// set default rows is not present
+		if (enrichRequest.getRows() == null) {
+			enrichRequest.setRows(Integer.valueOf(WebEntityConstants.PARAM_DEFAULT_ROWS));
+		}
 		validateRows(enrichRequest.getRows());
 
         // build query
         EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
-        Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(enrichRequest.getQuery(), entityType, enrichRequest.getRows());
+        Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(enrichRequest.getQuery(), entityType, enrichRequest.getRows(), entityWebConfig.getEnrichMaxPageSize());
 
         // perform search
         ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,

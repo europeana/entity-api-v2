@@ -34,6 +34,9 @@ public class EntityWebConfig {
   @Value("${entity.data.endpoint:#{null}}")
   String entityDataEndpoint;
 
+  @Value("${entity.enrich.max.pagesize:50}")
+  int enrichMaxPageSize;
+
   @Value("${entity.id.baseurl:http://data.europeana.eu}")
   String entityIdBaseUrl;
 
@@ -67,5 +70,9 @@ public class EntityWebConfig {
 
   public String getGrantParams() {
     return grantParams;
+  }
+
+  public int getEnrichMaxPageSize() {
+    return enrichMaxPageSize;
   }
 }
