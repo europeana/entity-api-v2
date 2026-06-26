@@ -3,7 +3,6 @@ package eu.europeana.entity.web.controller;
 import eu.europeana.api.commons_sb3.definitions.statistics.UsageStatsFields;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
 import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
-import eu.europeana.api.commons_sb3.oauth2.utils.OAuthUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

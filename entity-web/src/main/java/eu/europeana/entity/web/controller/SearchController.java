@@ -195,8 +195,10 @@ public class SearchController extends BaseRest {
 			@RequestParam(value = CommonApiConstants.QUERY_PARAM_ROWS, defaultValue = WebEntityConstants.PARAM_DEFAULT_ROWS) int rows,
 			HttpServletRequest request)
 			throws  EuropeanaApiException {
-			if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-				verifyReadAccess(request);
+		 Authentication auth = null;
+
+		 if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+				auth = verifyReadAccess(request);
 			}
 
 			// validate text parameter
@@ -227,6 +229,7 @@ public class SearchController extends BaseRest {
 			// build response
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
 			headers.add(ALLOW, ALLOW_GET);
+			addRateLimitHeaders(headers, auth);
 			ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
 
 			return response;
@@ -237,8 +240,9 @@ public class SearchController extends BaseRest {
             CONTENT_TYPE_JSONLD_UTF8, CONTENT_TYPE_JSON_UTF8 })
     public ResponseEntity<String> enrichEntityPost(
 			@RequestBody EnrichRequest enrichRequest, HttpServletRequest request) throws  EuropeanaApiException {
-        if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
-            verifyReadAccess(request);
+		Authentication auth = null;
+		if (isAuthEnabled(webConfig.getApiKeyServiceUrl())) {
+            auth = verifyReadAccess(request);
         }
 
         // validate mandotory and valid fields
@@ -260,6 +264,7 @@ public class SearchController extends BaseRest {
         // build response
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
         headers.add(ALLOW, ALLOW_GET);
+		addRateLimitHeaders(headers, auth);
         ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
 
         return response;
