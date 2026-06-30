@@ -286,9 +286,8 @@ public class EntityServiceImpl implements EntityService {
     @Override
     public List<EntityTypes> getEntityTypesFromString(String commaSepEntityTypes) throws EuropeanaI18nApiException {
         try {
-            if (StringUtils.isEmpty(commaSepEntityTypes)) {
-                throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_TYPE,
-                        "Type cannot be empty", commaSepEntityTypes));
+            if (commaSepEntityTypes == null) {
+                return null;
             }
 
             String[] splittedEntityTypes = commaSepEntityTypes.split(",");
