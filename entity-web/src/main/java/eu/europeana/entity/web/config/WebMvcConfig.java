@@ -65,13 +65,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .allowCredentials(false)
         .maxAge(600L); // in seconds
         
-        registry.addMapping("/entity/**")
-        .allowedOrigins("*")
-        .allowedMethods("GET")
-        .allowedHeaders("If-Match")
-        .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.VARY, HttpHeaders.LINK, HttpHeaders.ETAG, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
-        .allowCredentials(false)
-        .maxAge(600L); // in seconds
+//        registry.addMapping("/entity/**")
+//        .allowedOrigins("*")
+//        .allowedMethods("GET")
+//        .allowedHeaders("If-Match")
+//        .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.VARY, HttpHeaders.LINK, HttpHeaders.ETAG, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+//        .allowCredentials(false)
+//        .maxAge(600L); // in seconds
+
+        registry.addMapping("/entity/enrich")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "OPTIONS")
+                .exposedHeaders(HttpHeaders.ALLOW, HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS)
+                .allowCredentials(false)
+                .maxAge(600L);
         
     }
 

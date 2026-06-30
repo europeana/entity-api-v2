@@ -224,8 +224,8 @@ public class SearchController extends BaseRest {
 
 			// build response
 			MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
-			headers.add(ALLOW, ALLOW_GET);
-			addRateLimitHeaders(headers, auth);
+	    	headers.add(ALLOW, "GET,POST");
+	    	addRateLimitHeaders(headers, auth);
 			ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
 
 			return response;
@@ -264,7 +264,7 @@ public class SearchController extends BaseRest {
 
         // build response
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);
-        headers.add(ALLOW, ALLOW_GET);
+		headers.add(ALLOW, "GET,POST");
 		addRateLimitHeaders(headers, auth);
         ResponseEntity<String> response = new ResponseEntity<>(jsonLd, headers, HttpStatus.OK);
 
