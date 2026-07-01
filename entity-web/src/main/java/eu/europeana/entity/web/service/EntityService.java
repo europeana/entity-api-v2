@@ -79,7 +79,7 @@ public interface EntityService {
 	 * @param request request sent
 	 * @return result page of the results fetched
 	 */
-	public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, HttpServletRequest request);
+	public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, HttpServletRequest request) throws EuropeanaI18nApiException;
 	
 	/**
 	 * @param entityTypes types of entities

@@ -260,7 +260,7 @@ public class SearchController extends BaseRest {
                 null);
 
         ResultsPage<? extends Entity> resPage = getEntityService().buildResultsPage(searchQuery, results, request);
-        String jsonLd = serializeResultsPage(resPage, null, entityWebConfig.getEntityDataEndpoint());
+		String jsonLd = serializeResultsPage(resPage, null, entityWebConfig.getEntityDataEndpoint());
 
         // build response
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(EXPECTED_SIZE);

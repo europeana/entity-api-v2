@@ -9,6 +9,7 @@ import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
 import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import eu.europeana.api.commons_sb3.error.exceptions.ResourceNotFoundException;
+import eu.europeana.api.commons_sb3.oauth2.utils.OAuthUtils;
 import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
@@ -28,9 +29,12 @@ import eu.europeana.entity.web.service.SearchServiceUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -169,9 +173,8 @@ public class EntityServiceImpl implements EntityService {
         return entityTypes;
     }
 
-
-    // TODO: consider usage of a helper class for helper methods
-    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results, HttpServletRequest request) {
+    public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results,
+                                                              HttpServletRequest request) throws EuropeanaI18nApiException {
         @SuppressWarnings({"rawtypes", "unchecked"})
         ResultsPage<T> resPage = new ResultsPageImpl<>();
 
@@ -191,7 +194,6 @@ public class EntityServiceImpl implements EntityService {
         StringBuffer methodFullUri = new StringBuffer(entityWebConfig.getEntityApiEndpoint());
         methodFullUri.append(servicePath);
 
-        //StringBuffer requestUrl = new StringBuffer(entityWebConfig.getEntityApiEndpoint() + "/search");
         String collectionUrl = buildCollectionUrl(searchQuery, methodFullUri, request.getQueryString());
         resPage.setCollectionUri(collectionUrl);
 
@@ -214,21 +216,22 @@ public class EntityServiceImpl implements EntityService {
         return resPage;
     }
 
-    private String buildPageUrl(String collectionUrl, int page, int pageSize) {
-        StringBuilder builder = new StringBuilder(collectionUrl);
-        builder.append("&").append(CommonApiConstants.QUERY_PARAM_PAGE).append("=").append(page);
+    private String buildPageUrl(String collectionUrl, int page, int pageSize) throws EuropeanaI18nApiException {
+        try {
+            URIBuilder builder = new URIBuilder(collectionUrl)
+                    .addParameter(CommonApiConstants.QUERY_PARAM_PAGE, String.valueOf(page))
+                    .addParameter( CommonApiConstants.QUERY_PARAM_PAGE_SIZE, String.valueOf(pageSize));
 
-        builder.append("&").append(CommonApiConstants.QUERY_PARAM_PAGE_SIZE).append("=").append(pageSize);
-
-        return builder.toString();
+            return builder.build().toString();
+        } catch (URISyntaxException e) {
+            throw new EuropeanaI18nApiException("Error creating Page  Urls " +e.getMessage(), null, null, HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+        }
     }
 
     private String buildCollectionUrl(Query searchQuery, StringBuffer requestUrl, String queryString) {
-        // queryString = removeParam(WebAnnotationFields.PARAM_WSKEY,
-        // queryString);
-
         // remove out of scope parameters
         if (StringUtils.isNotEmpty(queryString)) {
+            queryString = removeParam(OAuthUtils.PARAM_WSKEY,queryString);
             queryString = removeParam(CommonApiConstants.QUERY_PARAM_PAGE, queryString);
             queryString = removeParam(CommonApiConstants.QUERY_PARAM_PAGE_SIZE, queryString);
 
@@ -241,7 +244,10 @@ public class EntityServiceImpl implements EntityService {
             queryString += ("&" + CommonApiConstants.QUERY_PARAM_PROFILE + "=" + searchQuery.getSearchProfile());
         }
 
-        return requestUrl.append("?").append(queryString).toString();
+        if (StringUtils.isNotEmpty(queryString)) {
+            return requestUrl.append("?").append(queryString).toString();
+        }
+        return requestUrl.toString();
     }
 
     protected String removeParam(final String queryParam, String queryParams) {
