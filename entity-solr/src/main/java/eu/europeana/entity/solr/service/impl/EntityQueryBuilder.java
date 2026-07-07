@@ -313,6 +313,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 		}
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, maxPageSize));
+		searchQuery.setPageNr(1); // set to default page Nr
 		return searchQuery;
 	}
 
@@ -323,7 +324,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
-//		searchQuery.setPageNr(1);
+		searchQuery.setPageNr(1);
 		return searchQuery;
 	}
 
