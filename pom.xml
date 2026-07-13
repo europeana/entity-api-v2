@@ -50,9 +50,11 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<version.junit>5.7.0</version.junit>
+		<!-- Clears jackson-databind alerts -->
+		<jackson.version>2.18.9</jackson.version>
 
-		<!-- Spring Boot 3 is based on Spring Framework 6.0 and Jakarta EE 9.-->
-		<version.springBoot>3.3.5</version.springBoot>
+         <!-- Spring Boot 3 is based on Spring Framework 6.0 and Jakarta EE 9.-->
+		<version.springBoot>3.3.12</version.springBoot>
 		<spring-framework.version>6.2.0</spring-framework.version>
 		<springdoc.version>2.3.0</springdoc.version>
 		<version.swagger>3.0.0</version.swagger>
@@ -69,12 +71,17 @@
 		<jakarta.annotation.version>3.0.0</jakarta.annotation.version>
 
 		<version.commonsLang3>3.0</version.commonsLang3>
-		<version.commonsText>1.9</version.commonsText>
+		<version.commonsText>1.10.0</version.commonsText>
 		<version.morphia>2.1.4</version.morphia>
 		<version.apacheSolr>8.11.3</version.apacheSolr>
 		<version.servletJstl>1.2</version.servletJstl>
 		<version.log4j2>2.17.2</version.log4j2>
 		<version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
+		<!-- fixing critical vulnerabilities using Dependency Management (see below),
+		blocking vulnerable versions from sneaking in from parent poms, commons, etc -->
+		<version.safe.zookeeper>3.7.2</version.safe.zookeeper>
+		<version.safe.tomcat>10.1.55</version.safe.tomcat>
+		<version.safe.springsecurity>6.5.9</version.safe.springsecurity>
 		
 	</properties>
 
@@ -87,6 +94,37 @@
 				<version>${version.springBoot}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+
+			<!-- Force Tomcat Upgrade to a safe version -->
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-core</artifactId>
+				<version>${version.safe.tomcat}</version>
+			</dependency>
+
+			<!-- Force ZooKeeper Upgrade to a safe version -->
+			<dependency>
+				<groupId>org.apache.zookeeper</groupId>
+				<artifactId>zookeeper</artifactId>
+				<version>${version.safe.zookeeper}</version>
+			</dependency>
+
+			<!-- Fix GHSA-mf92-479x-3373 by upgrading Spring Security -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${version.safe.springsecurity}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${version.safe.springsecurity}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${version.safe.springsecurity}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
