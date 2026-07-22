@@ -1,144 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>eu.europeana.entity</groupId>
-	<artifactId>entity-api</artifactId>
-	<version>2.5.2-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Entity API - Version 2</name>
-
-
-	<parent>
-		<groupId>eu.europeana</groupId>
-		<artifactId>europeana-parent-pom</artifactId>
-		<version>3.0</version>
-	</parent>
+    <groupId>eu.europeana.entity</groupId>
+    <artifactId>entity-api</artifactId>
+    <version>2.5.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Entity API - Version 2</name>
 
 
-	<repositories>
-		<repository>
-			<id>libs-release-local</id>
-			<name>europeana-releases</name>
-			<url>https://artifactory-prod.eanadev.org/artifactory/libs-release</url>
-		</repository>
-		<repository>
-			<id>libs-snapshots-local</id>
-			<name>europeana-snapshots</name>
-			<url>https://artifactory-prod.eanadev.org/artifactory/libs-snapshot</url>
-		</repository>
-	</repositories>
-
-	<modules>
-		<module>entity-definitions</module>
-		<module>entity-common</module>
-		<module>entity-utils</module>
-		<module>entity-solr</module>
-		<module>entity-web</module>
-
-	</modules>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-		<java.version>17</java.version>
-		<maven.compiler.release>${java.version}</maven.compiler.release>
-		<maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
-
-		<!-- SG: NOTE: for newer maven compiler plugin only release version
-		should be required -->
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<version.junit>5.7.0</version.junit>
-		<!-- Clears jackson-databind alerts -->
-		<jackson.version>2.18.9</jackson.version>
-
-         <!-- Spring Boot 3 is based on Spring Framework 6.0 and Jakarta EE 9.-->
-		<version.springBoot>3.3.12</version.springBoot>
-		<spring-framework.version>6.2.0</spring-framework.version>
-		<springdoc.version>2.3.0</springdoc.version>
-		<version.swagger>3.0.0</version.swagger>
-
-		<!--  Sonar cloud properties -->
-		<sonar.organization>europeana</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
-		<!--	Other apis -->
-		<version.commons.api.sb3>0.1.7</version.commons.api.sb3>
-
-		<version.corelib>2.15.4</version.corelib>
-		<jackson.version>2.18.3</jackson.version>
-		<jakarta.annotation.version>3.0.0</jakarta.annotation.version>
-
-		<version.commonsLang3>3.0</version.commonsLang3>
-		<version.commonsText>1.10.0</version.commonsText>
-		<version.morphia>2.1.4</version.morphia>
-		<version.apacheSolr>8.11.3</version.apacheSolr>
-		<version.servletJstl>1.2</version.servletJstl>
-		<version.log4j2>2.17.2</version.log4j2>
-		<version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
-		<!-- fixing critical vulnerabilities using Dependency Management (see below),
-		blocking vulnerable versions from sneaking in from parent poms, commons, etc -->
-		<version.safe.zookeeper>3.7.2</version.safe.zookeeper>
-		<version.safe.tomcat>10.1.55</version.safe.tomcat>
-		<version.safe.springsecurity>6.5.9</version.safe.springsecurity>
-		
-	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<!-- Import dependency management from Spring Boot (because we don't use Spring-Boot as parent pom)-->
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${version.springBoot}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<!-- Force Tomcat Upgrade to a safe version -->
-			<dependency>
-				<groupId>org.apache.tomcat.embed</groupId>
-				<artifactId>tomcat-embed-core</artifactId>
-				<version>${version.safe.tomcat}</version>
-			</dependency>
-
-			<!-- Force ZooKeeper Upgrade to a safe version -->
-			<dependency>
-				<groupId>org.apache.zookeeper</groupId>
-				<artifactId>zookeeper</artifactId>
-				<version>${version.safe.zookeeper}</version>
-			</dependency>
-
-			<!-- Fix GHSA-mf92-479x-3373 by upgrading Spring Security -->
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-				<version>${version.safe.springsecurity}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-core</artifactId>
-				<version>${version.safe.springsecurity}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-config</artifactId>
-				<version>${version.safe.springsecurity}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <parent>
+        <groupId>eu.europeana</groupId>
+        <artifactId>europeana-parent-pom</artifactId>
+        <version>3.0</version>
+    </parent>
 
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven.compiler.plugin.version}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+    <repositories>
+        <repository>
+            <id>libs-release-local</id>
+            <name>europeana-releases</name>
+            <url>https://artifactory-prod.eanadev.org/artifactory/libs-release</url>
+        </repository>
+        <repository>
+            <id>libs-snapshots-local</id>
+            <name>europeana-snapshots</name>
+            <url>https://artifactory-prod.eanadev.org/artifactory/libs-snapshot</url>
+        </repository>
+    </repositories>
+
+    <modules>
+        <module>entity-definitions</module>
+        <module>entity-common</module>
+        <module>entity-utils</module>
+        <module>entity-solr</module>
+        <module>entity-web</module>
+
+    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
+
+        <!-- SG: NOTE: for newer maven compiler plugin only release version
+        should be required -->
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <version.junit>5.7.0</version.junit>
+        <!-- Clears jackson-databind alerts -->
+        <jackson.version>2.18.9</jackson.version>
+
+        <!-- Spring Boot 3 is based on Spring Framework 6.0 and Jakarta EE 9.-->
+        <version.springBoot>3.3.13</version.springBoot>
+        <spring-framework.version>6.2.0</spring-framework.version>
+        <springdoc.version>2.3.0</springdoc.version>
+        <version.swagger>3.0.0</version.swagger>
+
+        <!--  Sonar cloud properties -->
+        <sonar.organization>europeana</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <!--	Other apis -->
+        <version.commons.api.sb3>0.1.7</version.commons.api.sb3>
+
+        <version.corelib>2.15.4</version.corelib>
+        <jackson.version>2.18.8</jackson.version>
+        <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
+
+        <version.commonsLang3>3.0</version.commonsLang3>
+        <version.commonsText>1.10.0</version.commonsText>
+        <version.morphia>2.1.4</version.morphia>
+        <version.apacheSolr>8.11.3</version.apacheSolr>
+        <version.servletJstl>1.2</version.servletJstl>
+        <version.log4j2>2.17.2</version.log4j2>
+        <version.maven-surfire-plugin>3.0.0-M7</version.maven-surfire-plugin>
+
+        <!-- fixing critical vulnerabilities using Dependency Management (see below),
+        blocking vulnerable versions from sneaking in from parent poms, commons, etc -->
+        <version.safe.zookeeper>3.7.2</version.safe.zookeeper>
+        <version.safe.tomcat>10.1.55</version.safe.tomcat>
+        <version.safe.springsecurity>6.5.9</version.safe.springsecurity>
+
+        <!-- Fixing some high vulnerabilities, because why not-->
+        <jackson.version>2.18.8</jackson.version>
+        <spring-boot.version>3.3.13</spring-boot.version>
+        <netty.version>4.1.135.Final</netty.version>
+        <jetty.version>12.0.33</jetty.version>
+        <jetty-http.version>12.0.33</jetty-http.version>
+        <http2-common.version>9.4.58.v20250814</http2-common.version>
+        <snappy-java.version>1.1.10.4</snappy-java.version>
+        <commons-io.version>2.14.0</commons-io.version>
+        <libthrift.version>0.23.0</libthrift.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-http</artifactId>
+                <version>${jetty-http.version}</version>
+            </dependency>
+            <!-- If using the older 9.4 branch somewhere -->
+            <dependency>
+                <groupId>org.eclipse.jetty.http2</groupId>
+                <artifactId>http2-common</artifactId>
+                <version>${http2-common.version}</version>
+            </dependency>
+
+            <!-- Netty Handlers and Codecs -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport-native-epoll</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+
+            <!-- General Utilities -->
+            <dependency>
+                <groupId>org.xerial.snappy</groupId>
+                <artifactId>snappy-java</artifactId>
+                <version>${snappy-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.thrift</groupId>
+                <artifactId>libthrift</artifactId>
+                <version>${libthrift.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <!-- Import dependency management from Spring Boot (because we don't use Spring-Boot as parent pom)-->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${version.springBoot}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Force Tomcat Upgrade to a safe version -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${version.safe.tomcat}</version>
+            </dependency>
+
+            <!-- Force ZooKeeper Upgrade to a safe version -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${version.safe.zookeeper}</version>
+            </dependency>
+
+            <!-- Fix GHSA-mf92-479x-3373 by upgrading Spring Security -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${version.safe.springsecurity}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${version.safe.springsecurity}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${version.safe.springsecurity}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
