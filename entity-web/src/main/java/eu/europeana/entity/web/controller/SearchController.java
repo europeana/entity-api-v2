@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import jakarta.annotation.Resource;
@@ -202,8 +203,14 @@ public class SearchController extends BaseRest {
 				throw new InvalidParamException(Arrays.asList(CommonApiConstants.QUERY_PARAM_TEXT,
 						"text should not be empty", text));
 
-			// escape the quotes
+		System.out.println(text);
+
+
+		// EA-4646 remove space character, quotes and backslash
 			String validatedText = EntityUtils.escapeBackslashAndQuotes(text, WebEntityConstants.BACKSLASH, WebEntityConstants.QUOTE);
+			validatedText = EntityUtils.normaliseText(validatedText);
+
+			System.out.println(validatedText);
 
 			// validate language
 			validateLanguage(lang);
@@ -251,9 +258,14 @@ public class SearchController extends BaseRest {
 		}
 		validateRows(enrichRequest.getRows());
 
-        // build query
+		System.out.println(enrichRequest.getQuery());
+		// EA-4646 clean up the text - remove space character, quotes and backslash
+		List<LanguageText> cleanedText = EntityUtils.cleanUpText(enrichRequest.getQuery());
+		System.out.println(cleanedText);
+
+		// build query
         EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
-        Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(enrichRequest.getQuery(), entityType, enrichRequest.getRows(), entityWebConfig.getEnrichMaxPageSize());
+        Query searchQuery = queryBuilder.buildSearchQueryForEnrichment(cleanedText, entityType, enrichRequest.getRows(), entityWebConfig.getEnrichMaxPageSize());
 
         // perform search
         ResultSet<? extends Entity> results = getEntityService().search(searchQuery, null, null,
