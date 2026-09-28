@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import org.apache.commons.lang3.StringUtils;
 
@@ -75,7 +76,19 @@ public class EntityUtils {
         return null;
       }      
     }
-    
+
+    /**
+     * EA-4646
+     * Normalizes the input text by removing leading and trailing spaces, and replacing multiple
+     * consecutive whitespace characters with a single space.
+     *
+     * @param text the input text to be normalized
+     * @return the normalized version of the input text
+     */
+    public static String normaliseText(String text) {
+        return text.trim().replaceAll("\\s+", " ");
+    }
+
     public static String escapeBackslashAndQuotes(String text, String backslash, String quotes) {
       //first replace backslash to avoid conflict with string containing both " and /
       text = escapeBackslash(text);
@@ -141,5 +154,25 @@ public class EntityUtils {
             query = matcher.replaceAll(" ");
         }
         return query;
+    }
+
+    /**
+     * Cleans up a list of {@code LanguageText} objects by escaping special characters and normalizing the text.
+     * Each text is processed to escape backslashes and quotes and is then normalized by removing unnecessary spaces.
+     *
+     * @param input a list of {@code LanguageText} objects to be cleaned up
+     * @return a new list of {@code LanguageText} objects with cleaned and normalized text
+     */
+    public static List<LanguageText> cleanUpText(List<LanguageText> input) {
+        List<LanguageText> cleanedText = new ArrayList<>(input.size());
+        for (LanguageText languageText : input) {
+            String validatedText = EntityUtils.escapeBackslashAndQuotes(
+                    languageText.text(),
+                    WebEntityConstants.BACKSLASH,
+                    WebEntityConstants.QUOTE);
+            String normalisedText = normaliseText(validatedText);
+            cleanedText.add(new LanguageText(normalisedText, languageText.lang()));
+        }
+        return cleanedText;
     }
 }
