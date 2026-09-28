@@ -203,14 +203,9 @@ public class SearchController extends BaseRest {
 				throw new InvalidParamException(Arrays.asList(CommonApiConstants.QUERY_PARAM_TEXT,
 						"text should not be empty", text));
 
-		System.out.println(text);
-
-
-		// EA-4646 remove space character, quotes and backslash
+		    // EA-4646 remove space character, quotes and backslash
 			String validatedText = EntityUtils.escapeBackslashAndQuotes(text, WebEntityConstants.BACKSLASH, WebEntityConstants.QUOTE);
 			validatedText = EntityUtils.normaliseText(validatedText);
-
-			System.out.println(validatedText);
 
 			// validate language
 			validateLanguage(lang);
@@ -258,10 +253,8 @@ public class SearchController extends BaseRest {
 		}
 		validateRows(enrichRequest.getRows());
 
-		System.out.println(enrichRequest.getQuery());
 		// EA-4646 clean up the text - remove space character, quotes and backslash
 		List<LanguageText> cleanedText = EntityUtils.cleanUpText(enrichRequest.getQuery());
-		System.out.println(cleanedText);
 
 		// build query
         EntityQueryBuilder queryBuilder = new EntityQueryBuilder();
