@@ -1,6 +1,6 @@
 # Builds a docker image from a locally built Maven war. Requires 'mvn package' to have been run beforehand
 #FROM tomcat:9.0-jdk11-slim
-FROM eclipse-temurin:17-jre-alpine
+FROM tomcat:10-jre21
 LABEL Author="Europeana Foundation <development@europeana.eu>"
 #WORKDIR /usr/local/tomcat/webapps
 
