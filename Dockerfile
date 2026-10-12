@@ -2,7 +2,7 @@ FROM tomcat:10-jre21
 LABEL Author="Europeana Foundation <development@europeana.eu>"
 
 # Clear out any security patches published since the base image release
-RUN apk upgrade --no-cache
+#RUN apk upgrade --no-cache
 
 # Configure APM and add APM agent
 # requires 
