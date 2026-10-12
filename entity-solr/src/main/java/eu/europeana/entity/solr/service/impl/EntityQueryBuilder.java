@@ -1,21 +1,24 @@
 package eu.europeana.entity.solr.service.impl;
 
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonApiConstants.*;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-
-import eu.europeana.api.commons_sb3.definitions.search.Query;
-import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
-import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
-import eu.europeana.api.commons_sb3.definitions.search.impl.QueryImpl;
-import eu.europeana.api.commons_sb3.search.util.QueryBuilder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.StringJoiner;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.HighlightParams;
 import org.apache.solr.common.params.SimpleParams;
 import org.springframework.util.MultiValueMap;
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
+import eu.europeana.api.commons_sb3.definitions.search.impl.QueryImpl;
+import eu.europeana.api.commons_sb3.search.util.QueryBuilder;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.EntitySolrFields;
@@ -24,8 +27,6 @@ import eu.europeana.entity.definitions.model.vocabulary.OrganizationSolrFields;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
 import eu.europeana.entity.solr.model.vocabulary.SuggestionFields;
 import eu.europeana.entity.solr.service.SolrEntityService;
-
-import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonApiConstants.*;
 
 public class EntityQueryBuilder extends QueryBuilder {
 
