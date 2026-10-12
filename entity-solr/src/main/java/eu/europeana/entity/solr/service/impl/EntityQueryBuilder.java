@@ -6,7 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import eu.europeana.api.commons_sb3.definitions.search.Query;
-import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichQuery;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.api.commons_sb3.definitions.search.impl.QueryImpl;
 import eu.europeana.api.commons_sb3.search.util.QueryBuilder;
 import org.apache.commons.lang3.StringUtils;
@@ -300,11 +301,11 @@ public class EntityQueryBuilder extends QueryBuilder {
 	 * @return a {@code Query} object representing the constructed search query with applied filters,
 	 *         sorting, and pagination for enrichment purposes.
 	 */
-	public Query buildSearchQueryForEnrichment(List<EnrichQuery> enrichQuery, EntityTypes entityType, int pageSize, int maxPageSize) {
+	public Query buildSearchQueryForEnrichment(List<LanguageText> enrichQuery, EntityTypes entityType, int pageSize, int maxPageSize) {
 		Query searchQuery = new QueryImpl();
 		StringJoiner joiner = new StringJoiner(OR);
-		for (EnrichQuery q : enrichQuery) {
-			joiner.add(createSearchQueryForEnrichment(q.getText(), q.getLang()));
+		for (LanguageText q : enrichQuery) {
+			joiner.add(createSearchQueryForEnrichment(q.text(), q.lang()));
 		}
 		searchQuery.setQuery(joiner.toString());
 
@@ -320,7 +321,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 
     public Query buildSearchQueryForEnrichment(String text, String lang, List<EntityTypes> entityTypes, int pageSize) {
 		Query searchQuery = new QueryImpl();
-		searchQuery.setQuery(createSearchQueryForEnrichment(text, lang));
+		searchQuery.setQuery(createSearchQueryForEnrichment(text, Optional.ofNullable(lang)));
 		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
@@ -335,12 +336,12 @@ public class EntityQueryBuilder extends QueryBuilder {
 	 * @param text
 	 * @return
 	 */
-	public String createSearchQueryForEnrichment(String text, String lang) {
+	public String createSearchQueryForEnrichment(String text, Optional<String> lang) {
 		StringBuilder query = new StringBuilder(WebEntityConstants.ENRICH_LABEL_FIELD);
 		// Search on 'label_enrich' if no language or the value 'all' is indicated in the 'lang'
-		if (!StringUtils.isEmpty(lang) && !StringUtils.equals(lang, WebEntityConstants.PARAM_LANGUAGE_ALL)) {
+		if (lang.isPresent() && !StringUtils.equals(lang.get(), WebEntityConstants.PARAM_LANGUAGE_ALL)) {
 			query.append(WebEntityConstants.LANG_FIELD_DELIMITER);
-			query.append(lang);
+			query.append(lang.get());
 		}
 		query.append(WebEntityConstants.FIELD_DELIMITER);
 		query.append("\"" + text + "\"");
@@ -373,7 +374,7 @@ public class EntityQueryBuilder extends QueryBuilder {
      * This method enriches provided custom selection fields by required fields if
      * they are not already provided in input array.
      * 
-     * @param inputArray
+     * @param inputFields
      * @return enriched array
      */
     public String[] buildCustomSelectionFields(String[] inputFields) {

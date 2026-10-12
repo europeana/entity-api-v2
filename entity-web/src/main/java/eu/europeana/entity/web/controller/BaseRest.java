@@ -1,7 +1,7 @@
 package eu.europeana.entity.web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichQuery;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPageSerializer;
 import eu.europeana.api.commons_sb3.definitions.statistics.entity.EntityMetric;
@@ -249,7 +249,7 @@ public abstract class BaseRest extends BaseRestController {
         }
     }
 
-    public void validateEnrichQuery(List<EnrichQuery> query) throws InvalidParamException {
+    public void validateEnrichQuery(List<LanguageText> query) throws InvalidParamException {
         // chek if there is atleast one text present
         if (query == null || query.isEmpty()) {
             throw new InvalidParamException(Arrays.asList("query",
@@ -257,13 +257,13 @@ public abstract class BaseRest extends BaseRestController {
         }
 
         // chek the mandatory text field and lang param if present
-        for (EnrichQuery enrichQuery : query) {
-            if (StringUtils.isBlank(enrichQuery.getText())) {
+        for (LanguageText languageText : query) {
+            if (StringUtils.isBlank(languageText.text())) {
                 throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_TEXT,
                         "Text is mandatory field for searching", "empty"));
             }
-            if (StringUtils.isNotBlank(enrichQuery.getLang())) {
-                validateLanguage(enrichQuery.getLang());
+            if (languageText.lang().isPresent()) {
+                validateLanguage(languageText.lang().get());
             }
         }
     }
