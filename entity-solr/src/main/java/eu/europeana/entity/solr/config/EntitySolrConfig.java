@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudHttp2SolrClient;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.client.solrj.impl.Http2SolrClient.Builder;
 import org.apache.solr.client.solrj.impl.LBHttp2SolrClient;
 import org.apache.solr.client.solrj.impl.LBSolrClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,7 +71,11 @@ public class EntitySolrConfig {
         endpoints[i] = new LBSolrClient.Endpoint(solrUrls[i]); 
       }
       
-      return new LBHttp2SolrClient.Builder(new Http2SolrClient.Builder().build(), endpoints).build(); 
+      return new LBHttp2SolrClient.Builder(createHttpClientBuilder().build(), endpoints).build(); 
+    }
+
+    Builder createHttpClientBuilder() {
+      return new Http2SolrClient.Builder().useHttp1_1(true);
     }
 
     private SolrClient initSolrCloudClient() {
@@ -79,6 +84,7 @@ public class EntitySolrConfig {
         return new CloudHttp2SolrClient.Builder(Arrays.asList(solrZookeeperUrls),  Optional.empty())
             .withZkClientTimeout(solrTimeout, TimeUnit.MILLISECONDS)
             .withDefaultCollection(solrCollection)
+            .withHttpClientBuilder(createHttpClientBuilder())
             .build();
         
               
