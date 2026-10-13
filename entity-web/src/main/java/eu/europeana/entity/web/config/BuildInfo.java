@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import eu.europeana.entity.config.AppConfigConstants;
-
 /**
  * Makes build information and the application name and description from the project's pom.xml available.
  * While generating a war file this data is written automatically to the build.properties file which is read here.

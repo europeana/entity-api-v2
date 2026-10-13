@@ -1,5 +1,14 @@
 package eu.europeana.entity.web.service.impl;
 
+import static eu.europeana.entity.utils.EntityUtils.isEmptyOrAll;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.net.URIBuilder;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import eu.europeana.api.commons_sb3.definitions.search.Query;
 import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
 import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
@@ -10,8 +19,8 @@ import eu.europeana.api.commons_sb3.error.EuropeanaI18nApiException;
 import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import eu.europeana.api.commons_sb3.error.exceptions.ResourceNotFoundException;
 import eu.europeana.api.commons_sb3.oauth2.utils.OAuthUtils;
-import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.config.AppConfigConstants;
+import eu.europeana.entity.config.I18nConstants;
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
@@ -21,25 +30,12 @@ import eu.europeana.entity.solr.exception.EntityRetrievalException;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import eu.europeana.entity.solr.service.SolrEntityService;
-import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.model.view.EntityPreview;
 import eu.europeana.entity.web.service.EntityService;
 import eu.europeana.entity.web.service.SearchServiceUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.core5.net.URIBuilder;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static eu.europeana.entity.utils.EntityUtils.isEmptyOrAll;
 
 /**
  * Implementation class
@@ -103,7 +99,7 @@ public class EntityServiceImpl implements EntityService {
     public <T extends EntityPreview> ResultSet<T> suggest(String text, String[] language, List<EntityTypes> entityTypes,
                                                       String scope, String namespace, int rows, SuggestAlgorithmTypes algorithm)
             throws EuropeanaI18nApiException {
-        ResultSet<? extends EntityPreview> res;
+        ResultSet<T> res;
         try {
             switch (algorithm) {
                 case suggestByLabel:
@@ -175,7 +171,6 @@ public class EntityServiceImpl implements EntityService {
 
     public <T extends Entity> ResultsPage<T> buildResultsPage(Query searchQuery, ResultSet<T> results,
                                                               HttpServletRequest request) throws EuropeanaI18nApiException {
-        @SuppressWarnings({"rawtypes", "unchecked"})
         ResultsPage<T> resPage = new ResultsPageImpl<>();
 
         resPage.setItems(results.getResults());

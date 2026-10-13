@@ -1,19 +1,8 @@
 package eu.europeana.entity.web.controller;
 
+import static eu.europeana.api.commons_sb3.definitions.http.HttpHeaders.*;
 import java.util.Arrays;
 import java.util.List;
-
-import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
-import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
-import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
-import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
-
-import eu.europeana.api.commons_sb3.definitions.search.Query;
-import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
-import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonApiConstants;
-import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,20 +14,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import eu.europeana.api.commons_sb3.definitions.search.Query;
+import eu.europeana.api.commons_sb3.definitions.search.ResultSet;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.EnrichRequest;
+import eu.europeana.api.commons_sb3.definitions.search.enrich.LanguageText;
+import eu.europeana.api.commons_sb3.definitions.search.result.ResultsPage;
+import eu.europeana.api.commons_sb3.definitions.vocabulary.CommonApiConstants;
+import eu.europeana.api.commons_sb3.error.EuropeanaApiException;
+import eu.europeana.api.commons_sb3.error.exceptions.InvalidParamException;
 import eu.europeana.entity.config.AppConfigConstants;
 import eu.europeana.entity.definitions.model.Entity;
 import eu.europeana.entity.definitions.model.search.SearchProfiles;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.SuggestAlgorithmTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
-import eu.europeana.entity.solr.exception.InvalidSearchQueryException;
 import eu.europeana.entity.solr.service.impl.EntityQueryBuilder;
 import eu.europeana.entity.utils.EntityUtils;
 import eu.europeana.entity.web.config.EntityWebConfig;
 import eu.europeana.entity.web.jsonld.SuggestionSetSerializer;
 import eu.europeana.entity.web.model.view.EntityPreview;
-
-import static eu.europeana.api.commons_sb3.definitions.http.HttpHeaders.*;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class SearchController extends BaseRest {
