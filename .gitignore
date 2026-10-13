@@ -9,6 +9,7 @@
 #properties files
 **/entity-solr.properties
 **/entity.properties
+**/elastic-apm-agent.jar
 
 #IntelliJ project files
 .idea
