@@ -1,12 +1,13 @@
 package eu.europeana.entity.solr.config;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.impl.CloudSolrClient;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
+import org.apache.solr.client.solrj.impl.CloudHttp2SolrClient;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.client.solrj.impl.LBHttp2SolrClient;
+import org.apache.solr.client.solrj.impl.LBSolrClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,24 +62,24 @@ public class EntitySolrConfig {
     }
 
     private SolrClient initSolrClient() {
-        if(solrUrl.contains(",")) {
-            LBHttpSolrClient.Builder builder = new LBHttpSolrClient.Builder();
-            return builder.withBaseSolrUrls(solrUrl.split(",")).withConnectionTimeout(solrTimeout).build();    
-        }else {
-            HttpSolrClient.Builder builder = new HttpSolrClient.Builder();
-            return builder.withBaseSolrUrl(solrUrl).withConnectionTimeout(solrTimeout).build();
-        }
-        
+      
+      String[] solrUrls = solrUrl.split(",");
+      LBSolrClient.Endpoint[] endpoints = new LBSolrClient.Endpoint[solrUrls.length];
+      for (int i = 0; i < solrUrls.length; i++) {
+        endpoints[i] = new LBSolrClient.Endpoint(solrUrls[i]); 
+      }
+      
+      return new LBHttp2SolrClient.Builder(new Http2SolrClient.Builder().build(), endpoints).build(); 
     }
 
     private SolrClient initSolrCloudClient() {
         
         String[] solrZookeeperUrls = solrZookeeperUrl.trim().split(",");
-        CloudSolrClient.Builder builder = new CloudSolrClient.Builder(Arrays.asList(solrZookeeperUrls),  Optional.empty())
-                .withConnectionTimeout(solrTimeout); 
+        return new CloudHttp2SolrClient.Builder(Arrays.asList(solrZookeeperUrls))
+            .withZkClientTimeout(solrTimeout, TimeUnit.MILLISECONDS)
+            .withDefaultCollection(solrCollection)
+            .build();
         
-        CloudSolrClient client =  builder.build();
-        client.setDefaultCollection(solrCollection);
-        return client;      
+              
     }
 }

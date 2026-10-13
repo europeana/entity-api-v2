@@ -1,5 +1,7 @@
 package eu.europeana.entity.solr.service.impl;
 
+import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.id;
+import static eu.europeana.entity.definitions.model.vocabulary.WebEntityFields.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,20 +11,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.europeana.entity.definitions.exceptions.UnsupportedEntityTypeException;
 import eu.europeana.entity.definitions.model.ResourcePreview;
 import eu.europeana.entity.definitions.model.ResourcePreviewImpl;
 import eu.europeana.entity.definitions.model.vocabulary.EntityTypes;
 import eu.europeana.entity.definitions.model.vocabulary.WebEntityConstants;
-import eu.europeana.entity.definitions.model.vocabulary.WebEntityFields;
 import eu.europeana.entity.solr.exception.EntitySuggestionException;
 import eu.europeana.entity.solr.model.factory.EntityPreviewObjectFactory;
 import eu.europeana.entity.solr.model.vocabulary.SuggestionFields;
@@ -32,9 +30,6 @@ import eu.europeana.entity.web.model.view.EntityPreview;
 import eu.europeana.entity.web.model.view.OrganizationPreview;
 import eu.europeana.entity.web.model.view.PlacePreview;
 import eu.europeana.entity.web.model.view.TimeSpanPreview;
-
-import static eu.europeana.api.commons_sb3.definitions.vocabulary.CommonLdConstants.id;
-import static eu.europeana.entity.definitions.model.vocabulary.WebEntityFields.*;
 
 public class SuggestionUtils {
 
