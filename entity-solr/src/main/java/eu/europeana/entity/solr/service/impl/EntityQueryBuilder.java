@@ -322,7 +322,7 @@ public class EntityQueryBuilder extends QueryBuilder {
 
     public Query buildSearchQueryForEnrichment(String text, String lang, List<EntityTypes> entityTypes, int pageSize) {
 		Query searchQuery = new QueryImpl();
-		searchQuery.setQuery(createSearchQueryForEnrichment(text, Optional.ofNullable(lang)));
+		searchQuery.setQuery(createSearchQueryForEnrichment(text, lang));
 		searchQuery.setFilters(createFilterForEnrichment(entityTypes));
 		searchQuery.setSortCriteria(toArray(ConceptSolrFields.DERIVED_SCORE + " " +DESC));
 		searchQuery.setPageSize(Math.min(pageSize, WebEntityConstants.ENRICH_MAX_PAGE_SIZE));
@@ -337,12 +337,12 @@ public class EntityQueryBuilder extends QueryBuilder {
 	 * @param text
 	 * @return
 	 */
-	public String createSearchQueryForEnrichment(String text, Optional<String> lang) {
+	public String createSearchQueryForEnrichment(String text, String lang) {
 		StringBuilder query = new StringBuilder(WebEntityConstants.ENRICH_LABEL_FIELD);
 		// Search on 'label_enrich' if no language or the value 'all' is indicated in the 'lang'
-		if (lang.isPresent() && !StringUtils.equals(lang.get(), WebEntityConstants.PARAM_LANGUAGE_ALL)) {
+		if (StringUtils.isNotEmpty(lang) && !StringUtils.equals(lang, WebEntityConstants.PARAM_LANGUAGE_ALL)) {
 			query.append(WebEntityConstants.LANG_FIELD_DELIMITER);
-			query.append(lang.get());
+			query.append(lang);
 		}
 		query.append(WebEntityConstants.FIELD_DELIMITER);
 		query.append("\"" + text + "\"");

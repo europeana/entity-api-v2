@@ -262,8 +262,8 @@ public abstract class BaseRest extends BaseRestController {
                 throw new InvalidParamException(Arrays.asList(WebEntityConstants.QUERY_PARAM_TEXT,
                         "Text is mandatory field for searching", "empty"));
             }
-            if (languageText.lang().isPresent()) {
-                validateLanguage(languageText.lang().get());
+            if (StringUtils.isNotEmpty(languageText.lang())) {
+                validateLanguage(languageText.lang());
             }
         }
     }
