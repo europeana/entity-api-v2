@@ -268,10 +268,6 @@ public class EntityQueryBuilder extends QueryBuilder {
 	    retFields = buildCustomSelectionFields(retFields);
 	}
 
-	if (sort == null) {
-		sort = new String[] { ConceptSolrFields.DERIVED_SCORE + " " +DESC };
-	}
-
 	Query query = builder.buildSearchQuery(queryString, qf, facets, retFields, sort, page, pageSize, maxPageSize,
 		profileName);
 	return query;
