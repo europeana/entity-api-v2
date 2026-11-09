@@ -3,6 +3,8 @@ package eu.europeana.entity.web.controller;
 import static eu.europeana.api.commons_sb3.definitions.http.HttpHeaders.*;
 import java.util.Arrays;
 import java.util.List;
+
+import eu.europeana.entity.definitions.model.vocabulary.ConceptSolrFields;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -106,7 +108,8 @@ public class SearchController extends BaseRest {
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_LANG, required = false) String outLanguage,
 	    @RequestParam(value = WebEntityConstants.QUERY_PARAM_TYPE, required = false, defaultValue = WebEntityConstants.PARAM_TYPE_ALL) String type,
 	    @RequestParam(value = WebEntityConstants.QUERY_PARAM_SCOPE, required = false) String scope,
-	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_SORT, required = false) String sort,
+	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_SORT, required = false,
+				defaultValue = ConceptSolrFields.DERIVED_SCORE + " " + "desc") String sort,
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PAGE, required = false, defaultValue = "1") int page,
 	    @RequestParam(value = CommonApiConstants.QUERY_PARAM_PAGE_SIZE, required = false, defaultValue = ""
 		    + Query.DEFAULT_PAGE_SIZE) int pageSize,
