@@ -69,7 +69,7 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
     <!--	Other apis -->
-    <version.commons.api.sb3>0.1.8-SNAPSHOT</version.commons.api.sb3>
+    <version.commons.api.sb3>0.1.8</version.commons.api.sb3>
 
     <version.corelib>2.15.4</version.corelib>
     <!--
